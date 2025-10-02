@@ -1044,12 +1044,19 @@
 <div class="dlabnav">
     <div class="dlabnav-scroll">
         <ul class="metismenu" id="menu">
- <style>
-    /* Scoped styles only for #custom-nav */
-    #custom-nav .nav-text,
-    #custom-nav .material-symbols-outlined {
+  <style>
+    .nav-text,
+    .material-symbols-outlined {
         color: rgb(255, 255, 255) !important;
-        fill: rgb(255, 255, 255) !important; /* for SVG-based icons */
+    }
+</style>
+
+<style>
+    /* Force both text and icon to black */
+    li a.has-arrow .nav-text,
+    li a.has-arrow .material-symbols-outlined {
+        color: rgb(255, 255, 255) !important;
+        fill: rgb(255, 255, 255) !important; /* helps if icons are using SVG fill */
     }
 </style>
 
@@ -1116,6 +1123,9 @@
     </a>
 </li>
 
+
+           
+        </ul>
     </div>
 </div>
 
@@ -1147,567 +1157,539 @@
         <!--**********************************
     Content body start
 ***********************************-->
-        <div class="content-body default-height">
-            <div class="container-fluid">
+  <div class="content-body default-height">
+  <div class="container-fluid">
+
+    <style>
+      /* Filters styling */
+.filter-bar .form-label {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #333;
+}
+.filter-bar .form-select,
+.filter-bar .form-control {
+  font-size: 15px;
+  padding: 8px 12px;
+  min-width: 180px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+.filter-bar .form-select:focus,
+.filter-bar .form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, .25);
+}
+.filter-item {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sorting arrows */
+.sort-icon::before {
+  content: '⇅';
+  font-size: 12px;
+  margin-left: 6px;
+  color: #888;
+}
+.sorted-asc::before {
+  content: '▲';
+  color: #0d6efd;
+}
+.sorted-desc::before {
+  content: '▼';
+  color: #0d6efd;
+}
+
+/* Action buttons */
+.table .btn {
+  padding: 4px 8px;
+  font-size: 13px;
+}
+.btn-view { background: #0dcaf0; color:#fff; }
+.btn-edit { background: #ffc107; color:#000; }
+.btn-delete { background: #dc3545; color:#fff; }
+    </style>
+
+    <!-- Filters & Add User -->
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap filter-bar">
+  <div class="d-flex gap-3 align-items-center flex-wrap">
+
+    <div class="filter-item">
+      <label class="form-label fw-bold">Role</label>
+      <select id="roleFilter" class="form-select">
+        <option value="">All Roles</option>
+        <option>System Admin</option>
+        <option>Billing Manager</option>
+        <option>Billing Analyst</option>
+        <option>Rate Card Manager</option>
+        <option>PO Team</option>
+        <option>Approver</option>
+        <option>Read-Only Auditor</option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label class="form-label fw-bold">Status</label>
+      <select id="statusFilter" class="form-select">
+        <option value="">All Status</option>
+        <option>Active</option>
+        <option>Inactive</option>
+      </select>
+    </div>
+
+    <div class="filter-item flex-grow-1">
+      <label class="form-label fw-bold">Search</label>
+      <input type="text" id="searchInput" class="form-control" placeholder="Search name or email...">
+    </div>
+  </div>
+
+  <div class="mt-2 mt-md-0">
+    <button class="btn btn-primary" onclick="openAddUserModal()">+ Add User</button>
+  </div>
+</div>
+
+<!-- User Table -->
+<div class="table-responsive shadow-sm rounded">
+  <table class="table table-hover align-middle" id="userTable">
+    <thead>
+      <tr style="background:#fff;color:#000;">
+        <th style="width:50px; cursor:pointer" onclick="sortTable('index')">
+          # <span id="arrow-index" class="sort-icon"></span>
+        </th>
+        <th style="cursor:pointer" onclick="sortTable('name')">
+          Name <span id="arrow-name" class="sort-icon"></span>
+        </th>
+        <th style="cursor:pointer" onclick="sortTable('email')">
+          Email <span id="arrow-email" class="sort-icon"></span>
+        </th>
+        <th style="cursor:pointer" onclick="sortTable('role')">
+          Role <span id="arrow-role" class="sort-icon"></span>
+        </th>
+        <th style="cursor:pointer" onclick="sortTable('status')">
+          Status <span id="arrow-status" class="sort-icon"></span>
+        </th>
+        <th style="cursor:pointer" onclick="sortTable('lastLogin')">
+          Last Login <span id="arrow-lastLogin" class="sort-icon"></span>
+        </th>
+        <th style="width:140px">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="userTableBody"></tbody>
+  </table>
+</div>
+
+    <!-- View User Modal -->
+    <div class="modal fade" id="viewUserModal" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">User Details & Access Rights</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="userDetails"></div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button class="btn btn-success" id="saveRightsBtn">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title">Add / Edit User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="userForm">
+              <input type="hidden" id="editIndex" value="">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Name</label>
+                  <input type="text" id="userName" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Email</label>
+                  <input type="email" id="userEmail" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Role</label>
+                  <select id="userRole" class="form-select" required>
+                    <option>System Admin</option>
+                    <option>Billing Manager</option>
+                    <option>Billing Analyst</option>
+                    <option>Rate Card Manager</option>
+                    <option>PO Team</option>
+                    <option>Approver</option>
+                    <option>Read-Only Auditor</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Status</label>
+                  <select id="userStatus" class="form-select" required>
+                    <option>Active</option>
+                    <option>Inactive</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Last Login</label>
+                  <input type="datetime-local" id="userLastLogin" class="form-control">
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Access Rights (edit per-user)</label>
+                  <div id="addAccessRights" class="border rounded p-2 bg-light"></div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" id="saveUserBtn">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <style>
-/* ========== PO DASHBOARD – LIGHT THEME (replacement) ========== */
-:root{
-  --bg:#ffffff; --panel:#ffffff; --card:#ffffff; --ink:#111827; --muted:#6b7280;
-  --line:#e5e7eb; --brand:#4e1313; --brand-2:#6366f1; --ok:#059669; --warn:#d97706;
-  --low:#f59e0b; --zero:#9ca3af;
+/* header row style */
+.sort-icon { font-size:12px; margin-left:6px; color:#666 }
+.table-hover tbody tr:hover { background: #f8fafc }
+.btn-action {
+  border: none; background: none; cursor: pointer; font-size: 18px; padding: 6px;
 }
-
-/* container + buttons */
-#po-app{color:var(--ink); background:#ffffff;}
-.po-wrap{max-width:1120px;margin:0 auto;padding:16px}
-.po-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.po-title{font-size:28px;margin:0}
-.po-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#ffffff;color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer}
-.po-btn.primary{background:var(--brand);color:#fff;border-color:#4e1313;box-shadow:0 8px 24px rgba(79,70,229,.18)}
-.po-btn:active{transform:translateY(1px)}
-
-/* cards */
-.po-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 16px}
-.po-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
-.po-card .label{font-size:12px;color:var(--muted)}
-.po-card .value{margin-top:6px;font-weight:700;font-size:22px}
-.po-card .hint{color:var(--muted);font-size:12px}
-
-/* block */
-.po-block{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.po-toolbar{padding:14px;border-bottom:1px solid var(--line)}
-.po-toolbar .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.po-select,.po-search{background:#ffffff;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 10px}
-.po-search{display:flex;gap:8px;align-items:center}
-.po-search input{all:unset;color:var(--ink)}
-
-/* table */
-.po-table{padding:10px}
-.po-table table{width:100%;border-collapse:separate;border-spacing:0 8px}
-.po-table thead th{color:var(--muted);font-size:12px;text-align:left;padding:0 12px}
-.po-table tbody td{background:#ffffff;border:1px solid var(--line);padding:12px}
-.po-table tbody tr td:first-child{border-top-left-radius:10px;border-bottom-left-radius:10px}
-.po-table tbody tr td:last-child{border-top-right-radius:10px;border-bottom-right-radius:10px}
-.right{text-align:right}
-.helper{font-size:12px;color:var(--muted)}
-
-/* status chips */
-.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 8px;border-radius:999px;border:1px solid var(--line);background:#f8fafc}
-.status.ok{color:var(--ok);border-color:#bbf7d0;background:#ecfdf5}
-.status.low{color:#92400e;border-color:#fde68a;background:#fffbeb}
-.status.exp{color:#92400e;border-color:#fed7aa;background:#fff7ed}
-.status.zero{color:var(--zero);background:#f3f4f6}
-
-/* actions */
-.actions{display:flex;gap:10px;opacity:.9}
-.icon{cursor:pointer}
-
-/* progress */
-.progress{height:6px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:999px;position:relative;overflow:hidden}
-.bar{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--brand),var(--brand-2))}
-
-/* footer */
-.po-footer{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;padding:10px 14px;border-top:1px solid var(--line)}
-
-/* modal */
-dialog#po-modal{border:none;border-radius:14px;width:min(640px,94vw);padding:0;background:#ffffff;color:var(--ink)}
-dialog#po-modal::backdrop{background:rgba(0,0,0,.35)}
-.pm-h{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
-.pm-b{padding:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.pm-f{padding:14px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
-.field{display:flex;flex-direction:column;gap:6px;font-size:14px}
-.input{background:#ffffff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--ink)}
-.subtle{font-size:12px;color:var(--muted)}
-
-@media (max-width:900px){
-  .po-cards{grid-template-columns:repeat(2,1fr)}
-  .pm-b{grid-template-columns:1fr}
-}
+.btn-action.view { color: #0d6efd; }
+.btn-action.edit { color: #ffc107; }
+.btn-action.delete { color: #dc3545; }
+.form-select, .form-control { min-height: 38px; }
 </style>
 
+<!-- Bootstrap Icons (only the icons) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-<section id="po-app">
-  <div class="po-wrap">
-    <div class="po-header">
-      <h2 class="po-title">Purchase Orders</h2>
-      <div style="display:flex;gap:8px">
-        <button class="po-btn" id="po-export">Export PO Report</button>
-        <button class="po-btn primary" id="po-new">+ Create New PO</button>
-      </div>
-    </div>
-
-    <div class="po-cards">
-      <div class="po-card"><div class="label">Active POs</div><div class="value" id="statActive">0</div><div class="hint">Across all customers</div></div>
-      <div class="po-card"><div class="label">Total Value</div><div class="value" id="statTotal">$0</div><div class="hint">Combined PO value</div></div>
-      <div class="po-card"><div class="label">Low Balance</div><div class="value" id="statLow">0</div><div class="hint">Require attention</div></div>
-      <div class="po-card"><div class="label">Expiring Soon</div><div class="value" id="statExp">0</div><div class="hint">Within 30 days</div></div>
-    </div>
-
-    <div class="po-block">
-      <div class="po-toolbar">
-        <div class="row">
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <select class="po-select" id="fCustomer"><option value="">All Customers</option></select>
-            <select class="po-select" id="fStatus">
-              <option value="">All Statuses</option>
-              <option>Active</option><option>Low Balance</option><option>Expiring Soon</option><option>Fully Utilized</option>
-            </select>
-            <select class="po-select" id="fCurrency"><option value="">All Currencies</option><option>USD</option><option>EUR</option></select>
-            <button class="po-btn" id="fClear" type="button">Clear filters</button>
-          </div>
-          <div class="po-search"><span>🔍</span><input id="fSearch" placeholder="Search PO numbers…" /></div>
-        </div>
-      </div>
-
-      <div class="po-table">
-        <table>
-          <thead>
-            <tr>
-              <th>PO NUMBER</th>
-              <th>CUSTOMER / ACCOUNT</th>
-              <th class="right">TOTAL AMOUNT</th>
-              <th class="right">REMAINING BALANCE</th>
-              <th>VALID FROM</th>
-              <th>VALID UNTIL</th>
-              <th>STATUS</th>
-              <th>ACTIONS</th>
-            </tr>
-          </thead>
-          <tbody id="po-tbody"></tbody>
-        </table>
-      </div>
-
-      <div class="po-footer" style="display:flex;justify-content:space-between;align-items:center;padding-top:12px">
-        <div id="resultInfo">Showing 0 results</div>
-        <div style="display:flex;gap:6px">
-          <button class="po-btn" id="prev" disabled>Previous</button>
-          <button class="po-btn" id="next" disabled>Next</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Create/Edit PO modal -->
-<dialog id="po-modal" aria-modal="true">
-  <div class="pm-h">
-    <strong id="po-modal-title">Create New PO</strong>
-    <button type="button" class="po-btn" id="po-close-top" title="Close">✖</button>
-  </div>
-
-  <form id="po-form">
-    <div class="pm-b">
-      <label class="field">Customer
-        <input id="iCustomer" required class="input" placeholder="HCL Technologies" />
-      </label>
-
-      <label class="field">Account
-        <input id="iAccount" class="input" placeholder="HCL-ACC-001" />
-      </label>
-
-      <label class="field">Currency
-        <select id="iCurrency" class="input"><option>USD</option><option>EUR</option></select>
-      </label>
-
-      <label class="field">Total
-        <input id="iTotal" type="number" min="0" step="0.01" required class="input" />
-      </label>
-
-      <label class="field">Balance
-        <input id="iSpent" type="number" min="0" step="0.01" class="input" placeholder="0" />
-      </label>
-
-      <label class="field">Valid From
-  <input id="iFrom" type="text" placeholder="YYYY-MM-DD" required>
-</label>
-
-<label class="field">Valid Until
-  <input id="iUntil" type="text" placeholder="YYYY-MM-DD" required>
-</label>
-
-      <label class="field">reference number
-        <input id="iPrefix" class="input" placeholder="auto from customer (3 chars)" maxlength="10" />
-      </label>
-      <label class="field">Upload PO PDF
-  <input type="file" id="iPdf" accept="application/pdf" />
-</label>
-
-      <div class="subtle" style="grid-column:1/-1">Every record gets a secure <b>unique id</b>. Status auto-calculates.</div>
-    </div>
-
-    <div class="pm-f">
-      <button type="button" class="po-btn" id="po-cancel">Cancel</button>
-      <button type="submit" class="po-btn primary" id="po-save">Save PO</button>
-    </div>
-  </form>
-</dialog>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>// PDF Upload & Parse
-document.getElementById("iPdf").addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = async function () {
-    const typedarray = new Uint8Array(this.result);
-
-    const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
-    let textContent = "";
-
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      const text = await page.getTextContent();
-      text.items.forEach((item) => (textContent += item.str + " "));
-    }
-
-    console.log("Extracted PDF Text:", textContent);
-
-    // 📝 Example parsing rules (adjust to your PDF format)
-    const customerMatch = textContent.match(/Customer[:\-]?\s*([A-Za-z\s]+)/i);
-    const accountMatch  = textContent.match(/Account[:\-]?\s*([\w\-]+)/i);
-    const currencyMatch = textContent.match(/Currency[:\-]?\s*(USD|EUR)/i);
-    const totalMatch    = textContent.match(/Total[:\-]?\s*([\d,\.]+)/i);
-    const balanceMatch  = textContent.match(/Balance[:\-]?\s*([\d,\.]+)/i);
-    const fromMatch     = textContent.match(/Valid From[:\-]?\s*(\d{4}-\d{2}-\d{2})/i);
-    const untilMatch    = textContent.match(/Valid Until[:\-]?\s*(\d{4}-\d{2}-\d{2})/i);
-    const refMatch      = textContent.match(/Reference[:\-]?\s*([\w\-]+)/i);
-
-    // Fill inputs if matches found
-    if (customerMatch) document.getElementById("iCustomer").value = customerMatch[1].trim();
-    if (accountMatch)  document.getElementById("iAccount").value  = accountMatch[1].trim();
-    if (currencyMatch) document.getElementById("iCurrency").value = currencyMatch[1].trim();
-    if (totalMatch)    document.getElementById("iTotal").value    = totalMatch[1].replace(/,/g, "");
-    if (balanceMatch)  document.getElementById("iSpent").value    = balanceMatch[1].replace(/,/g, "");
-    if (fromMatch)     document.getElementById("iFrom").value     = fromMatch[1];
-    if (untilMatch)    document.getElementById("iUntil").value    = untilMatch[1];
-    if (refMatch)      document.getElementById("iPrefix").value   = refMatch[1].trim();
-  };
-
-  reader.readAsArrayBuffer(file);
-});
-</script>
 <script>
+/* Data: roles & default rights */
+const roleAccessRights = {
+  "System Admin": [
+    "Full access to all modules (tickets, rate cards, PO DB, approvals, billing files)",
+    "Manage user accounts, roles, permissions",
+    "Configure integrations (ticketing system, Xero, email automation, etc.)",
+    "Audit logs and troubleshooting"
+  ],
+  "Billing Manager": [
+    "Oversee all billing files (draft → approval → final release)",
+    "Adjust billing records (within rules) before submission",
+    "Review and reconcile ticket data vs. PO DB vs. rate card",
+    "Send billing files for approval",
+    "Lock billing cycle once approved"
+  ],
+  "Billing Analyst": [
+    "View tickets and timesheets pulled from systems",
+    "Generate draft billing files based on rate cards",
+    "Cross-check data with PO DB",
+    "Flag discrepancies to Billing Manager",
+    "Cannot release or approve billing files"
+  ],
+  "Rate Card Manager": [
+    "Maintain rate cards per customer/region/service type",
+    "Version control for rate card changes",
+    "Map ticket categories to correct rate card entries",
+    "Read-only access to PO DB for cross-checking"
+  ],
+  "PO Team": [
+    "Maintain and update PO database (PO numbers, validity, balances)",
+    "Approve or reject billing items that don’t align with active POs",
+    "Provide PO-related clarifications to Billing Analysts/Managers",
+    "No access to rate cards"
+  ],
+  "Approver": [
+    "Review generated billing files",
+    "Approve / reject billing file before release to customer",
+    "Add comments/notes on rejections",
+    "Cannot edit billing files, only accept/reject"
+  ],
+  "Read-Only Auditor": [
+    "Read-only access to billing files, approval logs, PO DB",
+    "Download reports for audit purposes",
+    "Cannot edit or approve"
+  ]
+};
 
-    
-(() => {
-  const $ = (s,el=document)=>el.querySelector(s);
-  const key = "po-state-v3";
-  const day = 86400000;
-  const df  = d=>new Date(d).toISOString().slice(0,10);
-  const money=(n,c='USD')=>new Intl.NumberFormat('en-US',{style:'currency',currency:c}).format(Number(n||0));
+/* sample users include per-user rights */
+let users = [
+  makeUser("Alice Johnson","alice@company.com","System Admin","Active","2025-09-28T09:30"),
+  makeUser("Bob Smith","bob@company.com","Billing Manager","Inactive","2025-09-10T15:45"),
+  makeUser("Carol White","carol@company.com","Billing Analyst","Active","2025-10-01T11:20"),
+  makeUser("David Brown","david@company.com","Rate Card Manager","Active","2025-09-25T14:05"),
+  makeUser("Eve Black","eve@company.com","PO Team","Inactive","2025-08-30T10:10"),
+  makeUser("Frank Green","frank@company.com","Approver","Active","2025-09-29T08:50"),
+  makeUser("Grace Lee","grace@company.com","Read-Only Auditor","Active","2025-09-20T12:00")
+];
 
-  let items = [];
-  let editingId = null; // track editing state
+function makeUser(name,email,role,status,lastLogin) {
+  // rights map default from role
+  const rights = {};
+  (roleAccessRights[role]||[]).forEach(r => rights[r] = true);
+  return { name, email, role, status, lastLogin, rights };
+}
 
-  // Helpers
-  function uid(){
-    try { if (crypto && crypto.randomUUID) return crypto.randomUUID(); } catch(e){}
-    const r = () => Math.floor((1+Math.random())*0x10000).toString(16).slice(1);
-    return `${Date.now().toString(16)}-${r()}-${r()}-${r()}-${r()}${r()}`;
-  }
-  function genPO(prefix='PO'){
-    const y=new Date().getFullYear();
-    const rnd=Math.random().toString(36).slice(2,5).toUpperCase();
-    return `PO-${prefix}-${y}-${rnd}`;
-  }
-  function statusOf(i){
-    const rem = Math.max((i.total||0)-(i.spent||0),0);
-    const pct = (i.total||0) > 0 ? rem/i.total : 0;
-    const daysLeft = (new Date(i.until) - Date.now())/day;
-    if (rem===0) return "Fully Utilized";
-    if (daysLeft<=30) return "Expiring Soon";
-    if (pct<0.10) return "Low Balance";
-    return "Active";
-  }
-  function safeDate(d){
-    if (!d) return "";
-    try { return new Date(d).toISOString().slice(0,10); }
-    catch { return ""; }
-  }
-  function getPrefix(po){
-    if (!po) return "";
-    const parts = po.split("-");
-    return parts.length >= 3 ? parts[1] : "";
-  }
+/* Sort state */
+let sortDirections = {
+  index: null, name: null, email: null, role: null, status: null, lastLogin: null
+};
 
-  // Sample data
-  function seed(){
-    return [
-      {id:uid(), po:genPO('HCL'), cust:'HCL Technologies', acct:'HCL-ACC-001', cur:'USD', total:125000, spent:37550, from:'2025-01-01', until:'2025-12-31'},
-      {id:uid(), po:genPO('COG'), cust:'Cognizant',        acct:'COG-ACC-002', cur:'USD', total:85000,  spent:79800, from:'2025-01-15', until:'2025-06-30'},
-      {id:uid(), po:genPO('ATO'), cust:'Atos',             acct:'ATO-ACC-001', cur:'EUR', total:95300,  spent:53000, from:'2024-10-01', until:'2025-03-15'},
-      {id:uid(), po:genPO('HCL'), cust:'HCL Technologies', acct:'HCL-ACC-003', cur:'USD', total:200000, spent:19500, from:'2025-02-01', until:'2026-01-31'},
-      {id:uid(), po:genPO('COG'), cust:'Cognizant',        acct:'COG-ACC-001', cur:'USD', total:150000, spent:150000,from:'2024-08-01', until:'2025-07-31'}
-    ];
-  }
-  function load(){
-    try { items = JSON.parse(localStorage.getItem(key) || "[]") || []; }
-    catch(_) { items=[]; }
-    if (!Array.isArray(items) || items.length===0){ items = seed(); save(); }
-  }
-  function save(){ localStorage.setItem(key, JSON.stringify(items)); }
+/* Render table applying filters & search */
+function renderTable() {
+  const tbody = document.getElementById("userTableBody");
+  tbody.innerHTML = "";
+  const roleFilter = document.getElementById("roleFilter").value;
+  const statusFilter = document.getElementById("statusFilter")?.value || "";
+  const search = (document.getElementById("searchInput").value || "").toLowerCase();
 
-  function customers(){ return Array.from(new Set(items.map(i=>i.cust))).sort(); }
-  function refreshFilterOptions(){
-    const sel = $("#fCustomer"); const v = sel.value;
-    sel.innerHTML = '<option value="">All Customers</option>' + customers().map(c=>`<option>${c}</option>`).join("");
-    sel.value = v;
-  }
+  // filtered array
+  const filtered = users.filter(u =>
+    (!roleFilter || u.role === roleFilter) &&
+    (!statusFilter || u.status === statusFilter) &&
+    (u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search))
+  );
 
-  function row(i){
-    const remaining = Math.max((i.total||0)-(i.spent||0),0);
-    const pct = (i.total||0)>0 ? (remaining/i.total*100) : 0;
-    const s = statusOf(i);
-    const cls = s==='Active'?'ok': s==='Low Balance'?'low': s==='Expiring Soon'?'exp':'zero';
-    return `<tr data-id="${i.id}">
-      <td><div style="font-weight:600"><a href="#" title="UID: ${i.id}">${i.po}</a></div><div class="helper">UID: ${i.id}</div></td>
-      <td><div style="font-weight:600">${i.cust}</div><div class="helper">${i.acct||''}</div></td>
-      <td class="right">${money(i.total,i.cur)} ${i.cur}</td>
-      <td class="right">
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-          <div>${money(remaining,i.cur)}</div>
-          <div class="progress" aria-label="remaining"><div class="bar" style="width:${Math.max(0,Math.min(100,pct))}%"></div></div>
-        </div>
-      </td>
-      <td>${i.from}</td>
-      <td>${i.until}</td>
-      <td><span class="status ${cls}">${s}</span></td>
-      <td class="actions">
-        <span class="icon" data-act="edit" title="Edit">✏️</span>
-        <span class="icon" data-act="dup" title="Duplicate">📄</span>
-        <span class="icon" data-act="del" title="Delete">🗑️</span>
-      </td>
-    </tr>`;
-  }
+  filtered.forEach((user, idx) => {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${escapeHtml(user.name)}</td>
+        <td>${escapeHtml(user.email)}</td>
+        <td>${escapeHtml(user.role)}</td>
+        <td>${user.status === "Active" ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Inactive</span>'}</td>
+        <td>${formatDateForDisplay(user.lastLogin)}</td>
+        <td>
+          <button class="btn-action view" title="View" onclick="viewUser(${getUserIndex(user)})"><i class="bi bi-eye"></i></button>
+          <button class="btn-action edit" title="Edit" onclick="editUser(${getUserIndex(user)})"><i class="bi bi-pencil"></i></button>
+          <button class="btn-action delete" title="Delete" onclick="deleteUser(${getUserIndex(user)})"><i class="bi bi-trash"></i></button>
+        </td>
+      </tr>
+    `);
+  });
+}
 
-  function render(){
-    const q   = $("#fSearch").value.trim().toLowerCase();
-    const fc  = $("#fCustomer").value;
-    const fs  = $("#fStatus").value;
-    const fcur= $("#fCurrency").value;
+/* Helper: stable user index by identity (users can be sorted) */
+function getUserIndex(userObj) {
+  return users.indexOf(userObj);
+}
 
-    const list = items.filter(i=>{
-      const s = statusOf(i);
-      if (q   && !i.po.toLowerCase().includes(q)) return false;
-      if (fc  && i.cust!==fc) return false;
-      if (fs  && s!==fs) return false;
-      if (fcur&& i.cur!==fcur) return false;
-      return true;
-    }).sort((a,b)=> new Date(b.from) - new Date(a.from));
+/* Open add-user modal (reset fields and load default rights for selected role) */
+function openAddUserModal() {
+  document.getElementById("userForm").reset();
+  document.getElementById("editIndex").value = "";
+  // default role rights -> load for the first role option
+  loadAddAccessRights(document.getElementById("userRole").value);
+  new bootstrap.Modal(document.getElementById("addUserModal")).show();
+}
 
-    $("#po-tbody").innerHTML = list.map(row).join("");
-    $("#resultInfo").textContent = `Showing ${list.length} of ${items.length} results`;
+/* Load rights checkboxes inside Add/Edit modal for the selected role */
+function loadAddAccessRights(role) {
+  const container = document.getElementById("addAccessRights");
+  container.innerHTML = "";
+  const rights = roleAccessRights[role] || [];
+  rights.forEach((r, i) => {
+    const id = `add-right-${i}`;
+    container.insertAdjacentHTML("beforeend",
+      `<div class="form-check">
+         <input class="form-check-input" type="checkbox" id="${id}" data-right="${escapeHtml(r)}" checked>
+         <label class="form-check-label" for="${id}">${escapeHtml(r)}</label>
+       </div>`);
+  });
+}
 
-    const active = items.filter(i=>statusOf(i)!=='Fully Utilized').length;
-    const total  = items.reduce((s,i)=>s+(i.total||0),0);
-    const low    = items.filter(i=>statusOf(i)==='Low Balance').length;
-    const exp    = items.filter(i=>statusOf(i)==='Expiring Soon').length;
-    $("#statActive").textContent = active;
-    $("#statTotal").textContent  = money(total,'USD');
-    $("#statLow").textContent    = low;
-    $("#statExp").textContent    = exp;
+/* Save user (add new or update existing) */
+document.getElementById("saveUserBtn").addEventListener("click", () => {
+  const name = document.getElementById("userName").value.trim();
+  const email = document.getElementById("userEmail").value.trim();
+  const role = document.getElementById("userRole").value;
+  const status = document.getElementById("userStatus") ? document.getElementById("userStatus").value : "Active";
+  const lastLoginInput = document.getElementById("userLastLogin") ? document.getElementById("userLastLogin").value : "";
+  if (!name || !email || !role) { alert("Please provide Name, Email and Role."); return; }
 
-    refreshFilterOptions();
-  }
-
-  // Actions (delegate)
-  $("#po-tbody").addEventListener("click", e=>{
-    const act = e.target?.dataset?.act; if(!act) return;
-    const tr  = e.target.closest("tr"); const id = tr?.dataset?.id; if(!id) return;
-    const idx = items.findIndex(x=>x.id===id); if(idx<0) return;
-
-    if (act==='del'){
-      if (confirm("Delete this PO?")){ items.splice(idx,1); save(); render(); }
-    }
-    if (act==='dup'){
-      const src = items[idx];
-      items.push({...src, id:uid(), po:genPO(src.cust.slice(0,3).toUpperCase())});
-      save(); render();
-    }
-    if (act==='edit'){
-      const item = items[idx];
-      editingId = item.id;
-      $("#po-modal").showModal();
-      $(".pm-h strong").textContent = "Edit PO";
-      $("#iCustomer").value = item.cust;
-      $("#iAccount").value  = item.acct;
-      $("#iCurrency").value = item.cur;
-      $("#iTotal").value    = item.total;
-      $("#iSpent").value    = item.spent;
-      $("#iFrom").value     = safeDate(item.from);
-      $("#iUntil").value    = safeDate(item.until);
-      $("#iPrefix").value   = getPrefix(item.po);
-    }
+  // collect rights from addAccessRights checkboxes
+  const rights = {};
+  (document.querySelectorAll("#addAccessRights .form-check-input") || []).forEach(cb => {
+    rights[cb.dataset.right] = cb.checked;
   });
 
-  // Create new
-  $("#po-new").addEventListener("click", ()=>{
-    editingId = null;
-    $("#po-form").reset();
-    $(".pm-h strong").textContent = "Create New PO";
-    $("#po-modal").showModal();
-    $("#iCustomer").focus();
+  const lastLogin = lastLoginInput ? normalizeDateInput(lastLoginInput) : new Date().toISOString();
+
+  const editIndex = document.getElementById("editIndex").value;
+  if (editIndex === "") {
+    users.push({ name, email, role, status, lastLogin, rights });
+  } else {
+    users[editIndex] = { ...users[editIndex], name, email, role, status, lastLogin, rights };
+  }
+
+  bootstrap.Modal.getInstance(document.getElementById("addUserModal")).hide();
+  renderTable();
+});
+
+/* Edit user: populate modal fields + rights */
+function editUser(index) {
+  const user = users[index];
+  if (!user) return;
+  document.getElementById("editIndex").value = index;
+  document.getElementById("userName").value = user.name;
+  document.getElementById("userEmail").value = user.email;
+  document.getElementById("userRole").value = user.role;
+  // ensure userStatus & userLastLogin inputs exist; create them if not
+  if (document.getElementById("userStatus")) document.getElementById("userStatus").value = user.status;
+  if (document.getElementById("userLastLogin")) {
+    document.getElementById("userLastLogin").value = formatForDatetimeLocal(user.lastLogin);
+  }
+  // show rights for this user's role but use user's rights values
+  loadAddAccessRights(user.role);
+  // set checkbox states according to user.rights
+  setTimeout(()=>{ // small delay so checkboxes exist
+    const rcbs = document.querySelectorAll("#addAccessRights .form-check-input");
+    rcbs.forEach(cb => {
+      const r = cb.dataset.right;
+      cb.checked = (user.rights && user.rights[r]) ? true : false;
+    });
+  }, 20);
+
+  new bootstrap.Modal(document.getElementById("addUserModal")).show();
+}
+
+/* Delete user */
+function deleteUser(index) {
+  if (!confirm("Are you sure you want to delete this user?")) return;
+  users.splice(index, 1);
+  renderTable();
+}
+
+/* View user: show a full details + rights on the modal; saveRightsBtn persists changes */
+let viewingIndex = null;
+function viewUser(index) {
+  const user = users[index];
+  if (!user) return;
+  viewingIndex = index;
+  const rights = roleAccessRights[user.role] || [];
+
+  let html = `<div class="mb-3"><strong>Name:</strong> ${escapeHtml(user.name)}</div>`;
+  html += `<div class="mb-2"><strong>Email:</strong> ${escapeHtml(user.email)}</div>`;
+  html += `<div class="mb-2"><strong>Role:</strong> ${escapeHtml(user.role)}</div>`;
+  html += `<div class="mb-2"><strong>Status:</strong> ${escapeHtml(user.status)}</div>`;
+  html += `<div class="mb-2"><strong>Last Login:</strong> ${formatDateForDisplay(user.lastLogin)}</div>`;
+
+  html += `<hr><h6>Access Rights</h6><div class="list-group">`;
+  rights.forEach((r, i) => {
+    const id = `view-right-${i}`;
+    const checked = (user.rights && user.rights[r]) ? "checked" : "";
+    html += `<label class="list-group-item">
+              <input class="form-check-input me-2" type="checkbox" id="${id}" data-right="${escapeHtml(r)}" ${checked}>
+              ${escapeHtml(r)}
+             </label>`;
+  });
+  html += `</div>`;
+
+  document.getElementById("userDetails").innerHTML = html;
+  new bootstrap.Modal(document.getElementById("viewUserModal")).show();
+}
+
+/* Save access rights from view modal into the user object */
+document.getElementById("saveRightsBtn").addEventListener("click", () => {
+  if (viewingIndex === null) return;
+  const user = users[viewingIndex];
+  const rights = {};
+  (document.querySelectorAll("#viewUserModal .list-group .form-check-input")||[]).forEach(cb => {
+    rights[cb.dataset.right] = cb.checked;
+  });
+  // If no checkboxes found (inputs are labels), fallback to inputs with data-right
+  if (Object.keys(rights).length === 0) {
+    document.querySelectorAll("#viewUserModal [data-right]").forEach(el => rights[el.dataset.right] = el.checked ?? true);
+  }
+  user.rights = rights;
+  bootstrap.Modal.getInstance(document.getElementById("viewUserModal")).hide();
+  viewingIndex = null;
+  renderTable();
+});
+
+/* Sorting: col keys: index,name,email,role,status,lastLogin */
+function sortTable(key) {
+  // toggle direction
+  sortDirections[key] = (sortDirections[key] === 'asc') ? 'desc' : 'asc';
+
+  users.sort((a,b) => {
+    let A = (key === 'index') ? users.indexOf(a) : (a[key] ?? "");
+    let B = (key === 'index') ? users.indexOf(b) : (b[key] ?? "");
+    // date sort for lastLogin
+    if (key === 'lastLogin') {
+      const da = new Date(A), db = new Date(B);
+      return sortDirections[key] === 'asc' ? da - db : db - da;
+    }
+    // normalize strings
+    A = String(A).toLowerCase(); B = String(B).toLowerCase();
+    if (A < B) return sortDirections[key] === 'asc' ? -1 : 1;
+    if (A > B) return sortDirections[key] === 'asc' ? 1 : -1;
+    return 0;
   });
 
-  // Save (create or update)
-$("#po-form").addEventListener("submit", ev => {
-  ev.preventDefault();
-  if (!ev.submitter || ev.submitter.id === "po-cancel") return;
+  // update arrows
+  ['index','name','email','role','status','lastLogin'].forEach(k => {
+    const el = document.getElementById("arrow-" + k);
+    if (!el) return;
+    if (k === key) el.textContent = sortDirections[key] === 'asc' ? '▲' : '▼';
+    else el.textContent = '⬍';
+  });
 
-  const fromVal = $("#iFrom").value.trim();
-  const untilVal = $("#iUntil").value.trim();
+  renderTable();
+}
 
-  if (!fromVal || !untilVal) {
-    alert("Please enter both Valid From and Valid Until dates.");
-    return;
-  }
+/* Load rights when role changes in Add/Edit modal */
+document.getElementById("userRole").addEventListener("change", (e) => loadAddAccessRights(e.target.value));
 
-  const prefix = ($("#iPrefix").value || $("#iCustomer").value.split(" ")[0] || "GEN")
-    .slice(0, 3).toUpperCase();
+/* Filters & search events */
+document.getElementById("roleFilter").addEventListener("change", renderTable);
+document.getElementById("statusFilter").addEventListener("change", renderTable);
+document.getElementById("searchInput").addEventListener("input", renderTable);
 
-  const item = {
-    id: editingId || uid(),
-    po: editingId ? items.find(x => x.id === editingId).po : genPO(prefix),
-    cust: $("#iCustomer").value.trim() || "—",
-    acct: $("#iAccount").value.trim(),
-    cur:  $("#iCurrency").value,
-    total:+$("#iTotal").value || 0,
-    spent:+$("#iSpent").value || 0,
-    from: fromVal,
-    until: untilVal
-  };
+/* Utility helpers */
+function formatDateForDisplay(value) {
+  if(!value) return "";
+  const d = new Date(value);
+  if (isNaN(d)) return value;
+  return d.toLocaleString();
+}
+function formatForDatetimeLocal(value) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (isNaN(d)) return "";
+  // to yyyy-mm-ddThh:mm
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function normalizeDateInput(s) {
+  // if already ISO, keep, else try to parse datetime-local style
+  if (!s) return new Date().toISOString();
+  if (s.indexOf('T') !== -1) return new Date(s).toISOString();
+  return new Date(s).toISOString();
+}
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
 
-  if (!item.total) {
-    alert("Please enter Total");
-    return;
-  }
-
-  if (editingId) {
-    const idx = items.findIndex(x => x.id === editingId);
-    if (idx >= 0) items[idx] = item;
-    editingId = null;
-  } else {
-    items.push(item);
-  }
-
-  save();
-  render();
-  $("#po-modal").close();
-  $("#po-form").reset();
-  $(".pm-h strong").textContent = "Create New PO";
-});
-
-  // Filters
-  ["fCustomer","fStatus","fCurrency","fSearch"].forEach(id=>document.getElementById(id).addEventListener("input", render));
-  $("#fClear").addEventListener("click", ()=>{ $("#fCustomer").value=""; $("#fStatus").value=""; $("#fCurrency").value=""; $("#fSearch").value=""; render(); });
-
-  // Export to CSV
-$("#po-export").addEventListener("click", () => {
-  if (!items.length) {
-    alert("No PO records to export.");
-    return;
-  }
-
-  const header = [
-    "UID",
-    "PO Number",
-    "Customer",
-    "Account",
-    "Currency",
-    "Total",
-    "Spent",
-    "Remaining",
-    "Valid From",
-    "Valid Until",
-    "Status"
-  ];
-
-  const rows = items.map(i => [
-    i.id,
-    i.po,
-    i.cust,
-    i.acct,
-    i.cur,
-    i.total,
-    i.spent || 0,
-    Math.max((i.total || 0) - (i.spent || 0), 0),
-    i.from,
-    i.until,
-    statusOf(i)
-  ]);
-
-  const csv = [header, ...rows]
-    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(","))
-    .join("\n");
-
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "po_export.csv";
-  a.click();
-  URL.revokeObjectURL(url);
-});
-// Cancel button
-$("#po-cancel").addEventListener("click", () => {
-  $("#po-modal").close();
-  $("#po-form").reset();
-  editingId = null;
-});
-
-// Top close button (✖)
-$("#po-close-top").addEventListener("click", () => {
-  $("#po-modal").close();
-  $("#po-form").reset();
-  editingId = null;
-});
-
-// Update save handler to not break when cancel is pressed
-$("#po-form").addEventListener("submit", ev => {
-  ev.preventDefault();
-
-  if (!ev.submitter || ev.submitter.id === "po-cancel") return; // ignore cancel
-
-  const prefix = ($("#iPrefix").value || $("#iCustomer").value.split(" ")[0] || "GEN")
-    .slice(0,3).toUpperCase();
-
-  const item = {
-    id: editingId || uid(),
-    po: editingId ? items.find(x=>x.id===editingId).po : genPO(prefix),
-    cust: $("#iCustomer").value.trim() || "—",
-    acct: $("#iAccount").value.trim(),
-    cur:  $("#iCurrency").value,
-    total:+$("#iTotal").value || 0,
-    spent:+$("#iSpent").value || 0,
-    from: $("#iFrom").value || df(new Date()),
-    until:$("#iUntil").value || df(new Date(Date.now()+day*180))
-  };
-
-  if (!item.total){ alert("Please enter Total"); return; }
-
-  if (editingId) {
-    const idx = items.findIndex(x => x.id === editingId);
-    if (idx >= 0) items[idx] = item;
-    editingId = null;
-  } else {
-    items.push(item);
-  }
-
-  save();
-  render();
-  $("#po-modal").close();
-  $("#po-form").reset();
-  $(".pm-h strong").textContent = "Create New PO";
-});
-
-  // boot
-  load(); render();
-})();
+/* initial render */
+renderTable();
 </script>
 
-            </div>
-        </div>
+
         <!--**********************************
     Content body end
 ***********************************-->
