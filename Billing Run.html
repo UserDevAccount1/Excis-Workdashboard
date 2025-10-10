@@ -1285,44 +1285,588 @@
 
 <div class="wrap">
   <div class="stepper" id="stepper">
-    <div class="step active" data-step="1"><div class="badge">1</div><div class="label">Select Customer & Account</div></div>
+    <div class="step active" data-step="1"><div class="badge">1</div><div class="label">Ticket Data Distribution</div></div>
     <div class="step" data-step="2"><div class="badge">2</div><div class="label">Select Billing Period</div></div>
     <div class="step" data-step="3"><div class="badge">3</div><div class="label">Import & Review Tickets</div></div>
-    <div class="step" data-step="4"><div class="badge">4</div><div class="label">Apply Rates & PO</div></div>
-    <div class="step" data-step="5"><div class="badge">5</div><div class="label">Generate File</div></div>
+    <div class="step" data-step="4"><div class="badge">4</div><div class="label">Consolidation</div></div>
+    <div class="step" data-step="5"><div class="badge">5</div><div class="label">Resolution and Finalization</div></div>
   </div>
 
   <div id="steps">
-    <!-- STEP 1 -->
-    <section class="grid" data-step="1">
-      <div class="card panel">
-        <h3>Step 1: Select Customer & Account</h3>
-        <div class="hint">Choose the customer and end customer account for this billing run</div>
-        <div class="field">
-          <div class="label">Customer</div>
-          <select><option>Select customer...</option></select>
-        </div>
-        <div class="list">
-          <label class="row"><input type="radio" class="radio" name="acct"><div><div class="acct-title">HCL-ACC-002</div><div class="acct-sub">Financial Services Unit</div></div><div class="pill">Bi-weekly Billing</div><div class="currency">EUR</div></label>
-          <label class="row"><input type="radio" class="radio" name="acct"><div><div class="acct-title">HCL-ACC-003</div><div class="acct-sub">Manufacturing Operations</div></div><div class="pill">Monthly Billing</div><div class="currency">USD</div></label>
-        </div>
-      </div>
-      <aside class="card summary">
-        <h4>Selection Summary</h4>
-        <div class="kv"><div class="muted">Customer</div><div>Not selected</div></div>
-        <div class="kv"><div class="muted">Account</div><div>Not selected</div></div>
-        <div class="kv"><div class="muted">Billing Cycle</div><div>-</div></div>
-        <div class="kv"><div class="muted">Currency</div><div>-</div></div>
-        <div style="margin-top:10px"><div class="placeholder">Account Details — select an account</div></div>
-      </aside>
-    </section>
+   
+   <!-- STEP 1 -->
+<!-- STEP 1 -->
+<section class="grid" data-step="1">
+  <div class="card panel">
+    <h3>Step 1 – Ticket Data Distribution</h3>
+    <div class="hint">
+      On the 1st business day of each month, Excis Service Desk generates ticket reports for all HCL accounts and sends them to the corresponding SDM regional email aliases.
+    </div>
+
+    <div class="field">
+      <div class="label">HCL Regional Accounts</div>
+      <table style="width:100%; border-collapse:collapse; font-size:14px;">
+        <thead>
+          <tr style="background:#f0f0ff; text-align:left;">
+            <th style="padding:10px; border-bottom:1px solid #ddd;">Region</th>
+            <th style="padding:10px; border-bottom:1px solid #ddd;">Account Code</th>
+            <th style="padding:10px; border-bottom:1px solid #ddd;">SDM Email Alias</th>
+            <th style="padding:10px; border-bottom:1px solid #ddd;">Status</th>
+            <th style="padding:10px; border-bottom:1px solid #ddd;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ticketTable">
+          <tr>
+            <td style="padding:10px;">Americas</td>
+            <td style="padding:10px;">HCL-AM-001</td>
+            <td style="padding:10px;"><a href="mailto:TestAmericas@gmail.com">TestAmericas@gmail.com</a></td>
+            <td style="padding:10px;" class="status">Pending</td>
+            <td style="padding:10px;">
+              <button class="btn small viewBtn">View</button>
+              <button class="btn small editBtn">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:10px;">Europe / Africa</td>
+            <td style="padding:10px;">HCL-EU-002</td>
+            <td style="padding:10px;"><a href="mailto:TestEurope-africa@gmail.com">TestEurope-africa@gmail.com</a></td>
+            <td style="padding:10px;" class="status">Pending</td>
+            <td style="padding:10px;">
+              <button class="btn small viewBtn">View</button>
+              <button class="btn small editBtn">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:10px;">APAC</td>
+            <td style="padding:10px;">HCL-AP-003</td>
+            <td style="padding:10px;"><a href="mailto:TestMapi@gmail.com">TestMapi@gmail.com</a></td>
+            <td style="padding:10px;" class="status">Pending</td>
+            <td style="padding:10px;">
+              <button class="btn small viewBtn">View</button>
+              <button class="btn small editBtn">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:10px;">Middle East</td>
+            <td style="padding:10px;">HCL-ME-004</td>
+            <td style="padding:10px;"><a href="mailto:TestMiddleEast@gmail.com">TestMiddleEast@gmail.com</a></td>
+            <td style="padding:10px;" class="status">Pending</td>
+            <td style="padding:10px;">
+              <button class="btn small viewBtn">View</button>
+              <button class="btn small editBtn">Edit</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+      <button id="distributeBtn" class="btn primary">
+        <span class="material-symbols-outlined">send</span> Distribute Tickets
+      </button>
+    </div>
+  </div>
+
+  <aside class="card summary">
+    <h4>Distribution Summary</h4>
+    <div id="summaryBox">
+      <div class="kv"><div class="muted">Total Regions</div><div>4</div></div>
+      <div class="kv"><div class="muted">Pending</div><div id="pendingCount">4</div></div>
+      <div class="kv"><div class="muted">Completed</div><div id="completedCount">0</div></div>
+    </div>
+  </aside>
+</section>
+
+
+
 
     <!-- STEP 2 -->
-    <section class="card panel hide" data-step="2"><h3>Step 2: Select Billing Period</h3><div class="placeholder">Date Range Placeholder</div></section>
-    <!-- STEP 3 -->
-    <section class="card panel hide" data-step="3"><h3>Step 3: Import & Review Tickets</h3><div class="placeholder">Tickets Table Placeholder</div></section>
-    <!-- STEP 4 -->
-    <section class="card panel hide" data-step="4"><h3>Step 4: Apply Rates & PO</h3><div class="placeholder">Rates & PO Placeholder</div></section>
+<!-- STEP 2 -->
+<section class="card panel hide" data-step="2" id="step2">
+  <h3>Step 2 – SDM Prebilling Preparation</h3>
+  <div class="hint">
+    SDM reviews the ticket data, validates accuracy, and incorporates FTE and Scheduled Visit (SV) data before submitting a prebilling file to the Excis FSO Team.
+  </div>
+
+  <!-- Ticket Table -->
+  <table id="prebillingTable" style="width:100%; border-collapse:collapse; font-size:14px;">
+    <thead>
+      <tr style="background:#f0f0ff; text-align:left;">
+        <th style="padding:8px;">Region</th>
+        <th style="padding:8px;">Account Code</th>
+        <th style="padding:8px;">Ticket Count</th>
+        <th style="padding:8px;">Support Model</th>
+        <th style="padding:8px;">FTE Data</th>
+        <th style="padding:8px;">Scheduled Visits</th>
+        <th style="padding:8px;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:8px;">Americas</td>
+        <td style="padding:8px;">HCL-AM-001</td>
+        <td style="padding:8px;">12</td>
+        <td style="padding:8px;">
+          <select class="supportSelect" style="padding:4px;">
+            <option>FTE</option>
+            <option>Dispatch</option>
+            <option>Scheduled Visit</option>
+          </select>
+        </td>
+        <td style="padding:8px;" class="fteStatus">—</td>
+        <td style="padding:8px;" class="svStatus">—</td>
+        <td style="padding:8px;">
+          <button class="btn small add-fte-btn">Add FTE</button>
+          <button class="btn small add-sv-btn">Add SV</button>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:8px;">EMEA</td>
+        <td style="padding:8px;">HCL-EU-002</td>
+        <td style="padding:8px;">8</td>
+        <td style="padding:8px;">
+          <select class="supportSelect" style="padding:4px;">
+            <option>FTE</option>
+            <option>Dispatch</option>
+            <option>Scheduled Visit</option>
+          </select>
+        </td>
+        <td style="padding:8px;" class="fteStatus">—</td>
+        <td style="padding:8px;" class="svStatus">—</td>
+        <td style="padding:8px;">
+          <button class="btn small add-fte-btn">Add FTE</button>
+          <button class="btn small add-sv-btn">Add SV</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+    <button id="submitPrebillingBtn" class="btn primary">
+      <span class="material-symbols-outlined">send</span> Submit Prebilling
+    </button>
+  </div>
+
+  <div id="submitMsg" style="display:none; margin-top:15px; padding:12px; border-radius:8px; background:#e8f5e9; color:#2e7d32; font-weight:500;">
+    ✅ Prebilling file submitted to Excis FSO Team successfully!
+  </div>
+</section>
+
+<!-- FTE Floating Modal -->
+<div id="fteModal" class="modal hide">
+  <div class="modal-content">
+    <h4>Add FTE Data</h4>
+    <label>Engineer Name</label>
+    <input type="text" id="fteName" class="input" placeholder="Enter engineer name">
+
+    <label>Working Days</label>
+    <input type="number" id="fteDays" class="input" placeholder="e.g., 22">
+
+    <label>Absent Days</label>
+    <input type="number" id="fteAbsent" class="input" placeholder="e.g., 1">
+
+    <label>Work Calendar</label>
+    <table id="fteCalendar" style="width:100%; border-collapse:collapse; margin-top:6px;">
+      <thead>
+        <tr style="background:#f5f5f5; text-align:center;">
+          <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="text-align:center;">
+          <td><input type="checkbox" class="fteDay" value="Mon"></td>
+          <td><input type="checkbox" class="fteDay" value="Tue"></td>
+          <td><input type="checkbox" class="fteDay" value="Wed"></td>
+          <td><input type="checkbox" class="fteDay" value="Thu"></td>
+          <td><input type="checkbox" class="fteDay" value="Fri"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px;">
+      <button id="closeFTE" class="btn">Cancel</button>
+      <button id="saveFTE" class="btn primary">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- SV Floating Modal -->
+<div id="svModal" class="modal hide">
+  <div class="modal-content">
+    <h4>Add Scheduled Visit</h4>
+    <label>Day of the Week</label>
+    <select id="svDay" class="input">
+      <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+      <option>Thursday</option><option>Friday</option>
+    </select>
+    <label>Visit Frequency</label>
+    <input type="text" id="svFreq" class="input" placeholder="e.g., Weekly, Biweekly">
+    <label>Remarks</label>
+    <input type="text" id="svRemarks" class="input" placeholder="Optional remarks">
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+      <button id="closeSV" class="btn">Cancel</button>
+      <button id="saveSV" class="btn primary">Save</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200;
+}
+.modal-content {
+  background: #fff; padding: 20px; border-radius: 12px;
+  width: 360px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.modal.hide {display:none;}
+.modal-content h4 {margin-top:0;}
+.input {
+  width: 100%; padding: 6px 8px; margin-top:4px; margin-bottom:10px;
+  border: 1px solid #ccc; border-radius: 6px;
+}
+.btn.small {font-size: 12px; padding: 4px 8px;}
+.btn.primary {background: #1976d2; color: white; border: none;}
+.btn.danger {background: #d32f2f; color: white; border: none;}
+.btn:hover {opacity: 0.9;}
+</style>
+
+<script>
+let currentFTERow = null;
+let currentSVRow = null;
+
+// Open FTE Modal
+document.querySelectorAll('.add-fte-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    currentFTERow = e.target.closest('tr');
+    document.getElementById('fteModal').classList.remove('hide');
+  });
+});
+
+// Open SV Modal
+document.querySelectorAll('.add-sv-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    currentSVRow = e.target.closest('tr');
+    document.getElementById('svModal').classList.remove('hide');
+  });
+});
+
+// Close Modals
+document.getElementById('closeFTE').addEventListener('click', () => document.getElementById('fteModal').classList.add('hide'));
+document.getElementById('closeSV').addEventListener('click', () => document.getElementById('svModal').classList.add('hide'));
+
+// Save FTE
+document.getElementById('saveFTE').addEventListener('click', () => {
+  const name = document.getElementById('fteName').value;
+  const days = document.getElementById('fteDays').value;
+  const absent = document.getElementById('fteAbsent').value;
+  const selectedDays = [...document.querySelectorAll('.fteDay:checked')].map(cb => cb.value).join(', ');
+  currentFTERow.querySelector('.fteStatus').textContent = `${name} – ${days} days (${absent} absent) [${selectedDays}]`;
+  currentFTERow.querySelector('.fteStatus').style.color = '#2e7d32';
+  document.getElementById('fteModal').classList.add('hide');
+});
+
+// Save SV
+document.getElementById('saveSV').addEventListener('click', () => {
+  const day = document.getElementById('svDay').value;
+  const freq = document.getElementById('svFreq').value;
+  const remarks = document.getElementById('svRemarks').value;
+  currentSVRow.querySelector('.svStatus').textContent = `${day} (${freq}) ${remarks}`;
+  currentSVRow.querySelector('.svStatus').style.color = '#2e7d32';
+  document.getElementById('svModal').classList.add('hide');
+  document.getElementById('svDay').value = 'Monday';
+  document.getElementById('svFreq').value = '';
+  document.getElementById('svRemarks').value = '';
+});
+
+// Submit Prebilling
+document.getElementById('submitPrebillingBtn').addEventListener('click', () => {
+  const btn = document.getElementById('submitPrebillingBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined">hourglass_empty</span> Submitting...';
+  setTimeout(() => {
+    btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Submitted';
+    document.getElementById('submitMsg').style.display = 'block';
+    setStep(3);
+  }, 1500);
+});
+</script>
+
+   <!-- ✅ STEP 3 -->
+<section class="card panel hide" data-step="3" id="step3">
+  <h3>Step 3 – Consolidation & Upload</h3>
+  <div class="hint">
+    Excis FSO Team consolidates all regional prebilling files (APAC, EMEA, Americas)
+    and uploads the combined billing file to the HCL FSO Portal.
+  </div>
+
+  <div class="field">
+    <div class="label">Preview – Ticket Data (Before Consolidation)</div>
+    <table id="ticketPreviewTable" class="styled-table">
+      <thead>
+        <tr>
+          <th>Region</th><th>Account Code</th><th>Ticket Count</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Americas</td><td>HCL-AM-001</td><td>12</td><td>Received</td></tr>
+        <tr><td>Europe / Africa</td><td>HCL-EU-002</td><td>8</td><td>Received</td></tr>
+        <tr><td>APAC</td><td>HCL-AP-003</td><td>10</td><td>Received</td></tr>
+        <tr><td>Middle East</td><td>HCL-ME-004</td><td>6</td><td>Received</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="field" style="margin-top:25px;">
+    <div class="label">Consolidated Billing File (After Combining FTE + SV Data)</div>
+    <table id="consolidatedTable" class="styled-table">
+      <thead>
+        <tr>
+          <th>Region</th><th>Account Code</th><th>Ticket Count</th>
+          <th>FTE Days</th><th>Scheduled Visits</th><th>Support Model</th><th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="consolidatedBody">
+        <tr>
+          <td>Americas</td><td>HCL-AM-001</td><td>12</td><td>20</td><td>0</td><td>FTE</td><td class="cStatus">Pending</td>
+          <td><button class="btn small edit-btn">Edit</button> <button class="btn small danger delete-btn">Delete</button></td>
+        </tr>
+        <tr>
+          <td>APAC</td><td>HCL-AP-003</td><td>10</td><td>15</td><td>4</td><td>Scheduled</td><td class="cStatus">Pending</td>
+          <td><button class="btn small edit-btn">Edit</button> <button class="btn small danger delete-btn">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+    <button id="addRow" class="btn">Add Entry</button>
+    <button id="finalizeBtn" class="btn primary">
+      <span class="material-symbols-outlined">upload</span> Finalize & Upload
+    </button>
+  </div>
+
+  <div id="uploadMessage" class="alert success" style="display:none;">
+    ✅ Consolidated Billing File uploaded to HCL FSO Portal successfully!
+  </div>
+</section>
+
+
+<!-- ✅ STEP 4 -->
+<section class="card panel hide" data-step="4" id="step4">
+  <h3>Step 4 – HCL Review & Approval</h3>
+  <p class="hint">
+    HCL Delivery POC retrieves the file from the FSO Portal for review (within 5 business days).
+  </p>
+
+  <div class="comparison-container">
+    <!-- BEFORE (Submitted Prebilling) -->
+    <div class="comparison-box">
+      <h4>Before – Submitted Prebilling</h4>
+      <div class="table-wrapper">
+        <table id="beforeTable" class="styled-table">
+          <thead>
+            <tr>
+              <th>Region</th>
+              <th>Account Code</th>
+              <th>Tickets</th>
+              <th>FTE Days</th>
+              <th>Visits</th>
+              <th>Support Model</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>APAC</td>
+              <td>HCL-001</td>
+              <td>12</td>
+              <td>4</td>
+              <td>2</td>
+              <td>FTE</td>
+              <td>Pending</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- AFTER (Consolidated Billing) -->
+    <div class="comparison-box">
+      <h4>After – Consolidated Billing</h4>
+      <div class="table-wrapper">
+        <table id="afterTable" class="styled-table">
+          <thead>
+            <tr>
+              <th>Region</th>
+              <th>Account Code</th>
+              <th>Tickets</th>
+              <th>FTE Days</th>
+              <th>Visits</th>
+              <th>Support Model</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>APAC</td>
+              <td>HCL-001</td>
+              <td>14</td>
+              <td>5</td>
+              <td>3</td>
+              <td>FTE</td>
+              <td>Validated</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="action-bar">
+    <button id="rejectBtn" class="btn danger">Reject</button>
+    <button id="approveBtn" class="btn primary">Approve</button>
+  </div>
+
+  <!-- Review Message -->
+  <div id="reviewMsg" class="review-msg"></div>
+</section>
+
+<script>
+function highlightDifferences() {
+  const beforeRows = document.querySelectorAll('#beforeTable tbody tr');
+  const afterRows = document.querySelectorAll('#afterTable tbody tr');
+
+  afterRows.forEach((aRow, i) => {
+    const bRow = beforeRows[i];
+    if (!bRow) return;
+
+    const aCells = aRow.querySelectorAll('td');
+    const bCells = bRow.querySelectorAll('td');
+
+    aCells.forEach((cell, j) => {
+      const beforeValue = bCells[j]?.textContent.trim() || '';
+      const afterValue = cell.textContent.trim();
+
+      if (beforeValue !== afterValue) {
+        cell.classList.add('highlight-change');
+      }
+    });
+  });
+}
+
+// Trigger highlighting after DOM ready
+document.addEventListener("DOMContentLoaded", highlightDifferences);
+
+// Approve / Reject logic
+document.getElementById('approveBtn').addEventListener('click', () => showReviewMsg('✅ Approved: HCL accepted the billing file.', 'approved'));
+document.getElementById('rejectBtn').addEventListener('click', () => showReviewMsg('❌ Rejected: HCL sent queries back for correction.', 'rejected'));
+
+function showReviewMsg(text, type) {
+  const msg = document.getElementById('reviewMsg');
+  msg.textContent = text;
+  msg.className = 'review-msg ' + type;
+  msg.style.display = 'block';
+}
+</script>
+
+<style>
+/* --- Layout --- */
+.comparison-container {
+  display: flex;
+  gap: 25px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+}
+.comparison-box {
+  flex: 1 1 48%;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 15px;
+}
+.table-wrapper {
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+/* --- Table --- */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 700px;
+}
+.styled-table th, .styled-table td {
+  border: 1px solid #e0e0e0;
+  padding: 8px 10px;
+  text-align: left;
+  white-space: nowrap;
+}
+.styled-table th {
+  background: #f5f8fb;
+  color: #333;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.highlight-change {
+  background-color: #fff6c7;
+  font-weight: 600;
+}
+
+/* --- Buttons & Messages --- */
+.action-bar {
+  text-align: right;
+  margin-top: 20px;
+}
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.25s;
+}
+.btn.primary { background: #007bff; color: white; }
+.btn.primary:hover { background: #005ecb; }
+.btn.danger { background: #dc3545; color: white; }
+.btn.danger:hover { background: #b52a35; }
+
+.review-msg {
+  display: none;
+  margin-top: 20px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+.review-msg.approved {
+  background: #e6f7ec;
+  color: #2d8a43;
+  border: 1px solid #c8e6c9;
+}
+.review-msg.rejected {
+  background: #fdecea;
+  color: #b02a37;
+  border: 1px solid #f5c6cb;
+}
+
+/* Responsive */
+@media(max-width: 900px) {
+  .comparison-container { flex-direction: column; }
+  .comparison-box { width: 100%; }
+}
+</style>
+
+
+
     <!-- STEP 5 -->
     <section class="card panel hide" data-step="5"><h3>Step 5: Generate File</h3><div class="placeholder">Final Export Placeholder</div></section>
   </div>
@@ -1343,6 +1887,50 @@ function setStep(n){
 document.getElementById('continueBtn').addEventListener('click',()=>setStep(Math.min(5,currentStep+1)));
 document.getElementById('backBtn').addEventListener('click',()=>setStep(Math.max(1,currentStep-1)));
 document.querySelectorAll('.step').forEach(el=>el.addEventListener('click',()=>setStep(+el.dataset.step)));
+
+// ACTION BUTTONS
+document.querySelectorAll('.viewBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    alert('Viewing ticket details for ' + btn.closest('tr').children[0].textContent);
+  });
+});
+
+document.querySelectorAll('.editBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    alert('Editing ticket for ' + btn.closest('tr').children[0].textContent);
+  });
+});
+
+// DISTRIBUTE TICKETS FUNCTION
+document.getElementById('distributeBtn').addEventListener('click', function() {
+  const btn = this;
+  const rows = document.querySelectorAll('#ticketTable .status');
+  let completed = 0;
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined">hourglass_empty</span> Distributing...';
+
+  rows.forEach((cell, index) => {
+    setTimeout(() => {
+      cell.textContent = 'Sent';
+      cell.style.color = '#2e7d32';
+      cell.style.fontWeight = '600';
+      completed++;
+      document.getElementById('completedCount').textContent = completed;
+      document.getElementById('pendingCount').textContent = rows.length - completed;
+
+      // when done, update button and proceed to step 2
+      if (completed === rows.length) {
+        btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Distribution Completed';
+        btn.style.background = '#2e7d32';
+        btn.style.color = '#fff';
+        setTimeout(() => {
+          setStep(2); // move automatically to Step 2
+        }, 1200);
+      }
+    }, 1000 * (index + 1));
+  });
+});
 </script>
 
             </div>

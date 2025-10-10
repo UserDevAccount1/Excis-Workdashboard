@@ -1160,525 +1160,330 @@
         <div class="content-body default-height">
             <div class="container-fluid">
 <style>
-  :root{
-    --bg:#fff;
-    --text:#000;
-    --muted:#555;
-    --line:#ddd;
-    --panel:#fafafa;
-    --chip:#f3f4f6;
-    --brand:#5335ff;
-    --btn:#f5f5f5;
-    --btn-h:#ececec;
-
-    --status-active-bg:#e8f7ef;
-    --status-active-fg:#135d33;
-    --status-pending-bg:#fff7e6;
-    --status-pending-fg:#7a5200;
-    --status-expired-bg:#fdeaea;
-    --status-expired-fg:#8b1c2e;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;}
-  body{
-    margin:0;
-    font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    color:var(--text);
-    background:var(--bg);
-  }
-  .wrap{min-height:100%; display:flex; flex-direction:column}
-
-  /* Top Title Bar */
-  .titlebar{
-    display:flex; align-items:center; gap:12px;
-    padding:16px; border-bottom:1px solid var(--line); background:var(--panel);
-  }
-  .titlebar h1{font-size:20px; margin:0; font-weight:700}
-  .spacer{flex:1}
-  .btn{
-    display:inline-flex; align-items:center; gap:8px;
-    background:var(--btn); border:1px solid var(--line);
-    color:var(--text); padding:8px 12px; border-radius:8px; cursor:pointer;
-    font-weight:600;
-  }
-  .btn:hover{background:var(--btn-h)}
-  .btn.primary{background:#e9e7ff; border-color:#c3b8fe}
-  .btn .icon{width:16px; height:16px}
-
-  /* Filters Row */
-  .filters{
-    display:flex; gap:10px; padding:12px 16px; border-bottom:1px solid var(--line); flex-wrap:wrap;
-    align-items:center;
-  }
-  .search{
-    display:flex; align-items:center; gap:8px; min-width:280px;
-    border:1px solid var(--line); border-radius:8px; padding:10px 12px; background:#fff;
-  }
-  .search input{border:none; outline:none; flex:1; font:inherit; color:var(--text); background:transparent}
-  .select{border:1px solid var(--line); border-radius:8px; padding:10px 12px; background:#fff; color:var(--text)}
-  .link{display:inline-flex; align-items:center; gap:8px; color:#111; font-weight:600; padding:8px 10px; border-radius:8px; cursor:pointer}
-  .link:hover{background:#f0f0f0}
-  .chips{display:flex; gap:8px; align-items:center; margin-left:6px}
-  .chip{
-    font-size:12px; color:var(--muted); background:var(--chip);
-    border:1px solid var(--line); padding:8px 10px; border-radius:20px;
-  }
-  .chip.clear{cursor:pointer}
-  .chip.clear:hover{background:#eee}
-
-  /* Table-like list */
-  .list{flex:1; overflow:auto}
-  table{width:100%; border-collapse:collapse; min-width:1100px}
-  thead th{
-    position:sticky; top:0; z-index:1;
-    text-align:left; padding:12px; background:#f3f3f3; color:#333; font-size:12px; font-weight:700;
-    border-bottom:1px solid var(--line);
-  }
-  tbody td{padding:12px; border-bottom:1px solid var(--line); vertical-align:middle}
-  tbody tr:hover{background:#f8f8f8}
-  .sub{font-size:12px; color:var(--muted)}
-  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
-  .rate{font-weight:700}
-  .x{opacity:.4}
-  .status{
-    display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; border:1px solid #ccc;
-  }
-  .status.active{background:var(--status-active-bg); color:var(--status-active-fg); border-color:#b9e4ca}
-  .status.pending{background:var(--status-pending-bg); color:var(--status-pending-fg); border-color:#efd49a}
-  .status.expired{background:var(--status-expired-bg); color:var(--status-expired-fg); border-color:#e2a1a1}
-  .actions{display:flex; gap:10px}
-  .iconbtn{
-    background:#fff; border:1px solid var(--line); border-radius:8px; padding:6px 8px; cursor:pointer
-  }
-  .iconbtn:hover{background:#f2f2f2}
-
-  /* Footer / Pagination */
-  .footer{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:12px 16px; border-top:1px solid var(--line); background:var(--panel); color:#333
-  }
-  .pager{display:flex; gap:6px; align-items:center}
-  .pager button{
-    background:#fff; border:1px solid var(--line); color:var(--text);
-    padding:6px 10px; border-radius:8px; cursor:pointer;
-  }
-  .pager button:hover{background:#f2f2f2}
-  .pager .current{background:#e9e7ff; border-color:#c3b8fe}
-
-  /* responsive tweaks */
-  @media (max-width: 1100px){
-    .filters .search{min-width:220px}
-  }
-
-/* Backdrop covers the whole page with a solid color */
-#viewDrawer.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0,0,0,0.7);   /* dark backdrop, hides list */
-  display: none;
-  align-items: center;
-  justify-content: center;
+/* ---------- keep your original style variables ---------- */
+:root{
+  --bg:#fff;
+  --text:#000;
+  --muted:#555;
+  --line:#ddd;
+  --panel:#fafafa;
+  --chip:#f3f4f6;
+  --brand:#5335ff;
+  --btn:#f5f5f5;
+  --btn-h:#ececec;
 }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  color:var(--text); background:var(--bg);
+}
+.wrap{min-height:100%; display:flex; flex-direction:column}
 
-#viewDrawer.modal-backdrop.show {
-  display: flex;
-}
+/* top/title */
+.titlebar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--btn);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+.btn:hover{background:var(--btn-h)}
+.btn.primary{background:#e9e7ff;border-color:#c3b8fe}
 
-/* Floating modal box */
-.center-modal {
-  width: min(600px, 90%);
-  max-height: 80vh;
-  background: #ffffff;           /* solid white box */
-  color: #000;
-  border-radius: 10px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: fadeIn .2s ease;
-}
+/* cards */
+.cards{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:#fafafa}
+.card{flex:1;min-width:160px;padding:16px;text-align:center;border:2px solid #ddd;border-radius:10px;background:#fff;cursor:pointer;transition:.18s}
+.card:hover{border-color:var(--brand)}
+.card.active{border-color:var(--brand);background:#e9e7ff;font-weight:700}
 
-.center-modal .modal-header,
-.center-modal .modal-footer {
-  background: #fafafa;
-  border-bottom: 1px solid #ddd;
-}
+/* filters */
+.filters{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:center;flex-wrap:wrap}
+.rc-input{border:1px solid var(--line);padding:8px 10px;border-radius:8px;background:#fff}
+.rc-select{border:1px solid var(--line);padding:8px 10px;border-radius:8px;background:#fff}
 
-.center-modal .modal-body {
-  padding: 16px;
-  overflow-y: auto;
-  flex: 1;
-}
+/* table */
+.list{flex:1;overflow:auto;padding:12px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead th{position:sticky;top:0;z-index:1;text-align:left;padding:10px;background:#f3f3f3;color:#333;font-size:12px;font-weight:700;border-bottom:1px solid var(--line)}
+tbody td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:hover{background:#fafafa}
+.actions{display:flex;gap:6px}
+.iconbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:14px}
+.iconbtn:hover{background:#eee}
+.footer{padding:12px 16px;border-top:1px solid var(--line);background:var(--panel);}
 
-@keyframes fadeIn {
-  from { transform: scale(.95); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
-}
-/* ===== Scoped, conflict-proof modal ===== */
-#rcModalBackdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;     /* above everything */
-  background: #ffffff !important;   /* fully opaque (no table visible) */
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
+/* dedicated / band headers */
+thead tr.rc-band-group th{background:#102a43;color:#fff;text-align:center}
+thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-weight:600}
 
-#rcModalBackdrop.show { display: flex; }
-
-/* Modal window */
-#rcModalWindow {
-  width: min(640px, 92%);
-  max-height: 80vh;
-  background: #fff !important;   /* solid white */
-  color: #000 !important;
-  border-radius: 12px;
-  box-shadow: 0 18px 60px rgba(0,0,0,.6);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  isolation: isolate;            /* own stacking context */
-  animation: rcFadeIn .18s ease;
-  opacity: 1 !important;         /* defeat any inherited opacity */
-  mix-blend-mode: normal !important;
-  backdrop-filter: none !important;
-}
-
-/* Sections (force solid backgrounds) */
-.rc-modal-header {
-  position: relative;
-  padding: 12px 16px;
-  background: #fafafa;
-  border-bottom: 1px solid #ddd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-/* Close button in top-right corner */
-.rc-close-btn {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  font-weight: bold;
-  color: #555;
-  cursor: pointer;
-}
-.rc-close-btn:hover {
-  color: #000;
-}
-#rcModalWindow .rc-modal-footer {
-  background: #fafafa !important;
-  color: #000 !important;
-  border-bottom: 1px solid #ddd;
-}
-#rcModalWindow .rc-modal-footer {
-  border-top: 1px solid #ddd;
-  border-bottom: 0;
-}
-#rcModalWindow .rc-modal-body {
-  background: #fff !important;
-  color: #000 !important;
-  padding: 16px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-/* Optional: prevent page scroll when modal open */
-body.rc-modal-open { overflow: hidden !important; }
-
-@keyframes rcFadeIn {
-  from { transform: scale(.96); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
-}
-
-
-
+/* modal (scoped) */
+#rcModalBackdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999}
+#rcModalBackdrop.show{display:flex}
+.rcModal{background:#fff;padding:18px;border-radius:10px;min-width:360px;max-width:900px;max-height:85vh;overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,0.45)}
+.rcModal h3{margin:0 0 10px 0}
+.rcFormRow{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.rcFormRow label{min-width:120px;font-weight:600}
+.rcFormRow input, .rcFormRow select {flex:1;padding:8px;border:1px solid var(--line);border-radius:6px}
+.rcModal .rcActions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.small{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- Title bar -->
+  <!-- cards -->
+  <div class="cards" id="rcCards">
+    <div class="card active" data-type="default">📋 Rate Cards</div>
+    <div class="card" data-type="dedicated">🧑‍💻 Dedicated Services</div>
+    <div class="card" data-type="scheduled">📅 Scheduled Services</div>
+    <div class="card" data-type="dispatch">🚚 Dispatch Services</div>
+    <div class="card" data-type="projects">🏗️ Projects</div>
+  </div>
+
+  <!-- titlebar -->
   <div class="titlebar">
-    
-    <div class="sub">Manage pricing by customer, region, and service type</div>
+    <div class="sub small">Manage pricing by customer, region, and service type</div>
     <div class="spacer"></div>
-    <button class="btn" id="btnImport">⬆ Import</button>
-    <button class="btn" id="btnExport">⬇ Export</button>
-    <button class="btn primary" id="btnNew">＋ New Rate Card</button>
+    <button class="btn" id="rcNewBtn">＋ New Rate Card</button>
   </div>
 
-  <!-- Filters -->
-  <div class="filters">
-    <div class="search">
-      <span class="x">🔎</span>
-      <input id="q" placeholder="Search rate cards..." />
-    </div>
-
-    <select id="fCustomer" class="select">
-      <option value="">All Customers</option>
-    </select>
-
-    <select id="fRegion" class="select">
-      <option value="">All Regions</option>
-      <option>North America</option>
-      <option>Europe</option>
-      <option>Asia Pacific</option>
-    </select>
-
-    <select id="fService" class="select">
-      <option value="">All Services</option>
-      <option>Full-Time Engineer</option>
-      <option>Dispatch</option>
-      <option>Scheduled Visit</option>
-    </select>
-
-    <span class="link" id="adv">⚙️ Advanced Filters</span>
-    <span class="link" id="history">🕘 Rate History</span>
-
-    <div class="chips" id="chips">
-      <span class="chip">Effective Date: Current</span>
-      <span class="chip clear" id="clearAll">Clear all</span>
-    </div>
+  <!-- filters -->
+  <div class="filters" id="rcFilters">
+    <input id="rc_search" class="rc-input" placeholder="Search customer/ country..." />
+    <select id="rc_region" class="rc-select"><option value="">All Regions</option><option>EMEA</option><option>APAC</option><option>NA</option></select>
+    <select id="rc_currency" class="rc-select"><option value="">All Currencies</option><option>USD</option><option>EUR</option><option>GBP</option></select>
+    <select id="rc_supplier" class="rc-select"><option value="">All Suppliers</option></select>
   </div>
 
-  <!-- List -->
-  <div class="list">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:26px;"></th>
-          <th>CUSTOMER</th>
-          <th>REGION</th>
-          <th>SERVICE TYPE</th>
-          <th>UNIT</th>
-          <th>BASE RATE</th>
-          <th>OT/WEEKEND</th>
-          <th>EFFECTIVE PERIOD</th>
-          <th>STATUS</th>
-          <th>ACTIONS</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
-<!-- View Details Modal (scoped) -->
+  <!-- table container -->
+  <div class="list" id="rcTableContainer"></div>
+
+  <div class="footer small">Demo — data stored only in page memory (JS). Refresh to reset.</div>
+</div>
+
+<!-- Modal (scoped unique IDs) -->
 <div id="rcModalBackdrop" aria-hidden="true">
-  <div id="rcModalWindow" role="dialog" aria-modal="true" aria-labelledby="rcModalTitle">
-    <div class="rc-modal-header">
-      <h3 id="rcModalTitle">Rate Card Details</h3>
-      <button id="rcModalClose" class="rc-close-btn" aria-label="Close">✕</button>
+  <div class="rcModal" role="dialog" aria-modal="true" aria-labelledby="rcModalTitle">
+    <h3 id="rcModalTitle">Rate Card</h3>
+    <div id="rcModalBody"></div>
+    <div class="rcActions">
+      <button class="btn" id="rcCancelBtn">Cancel</button>
+      <button class="btn primary" id="rcSaveBtn">Save</button>
     </div>
-    <div id="rcModalBody" class="rc-modal-body"></div>
-   
   </div>
 </div>
-
-
-
-
-
-  <!-- Footer -->
-  <div class="footer">
-    <div id="footNote">Showing 1 to 10 of 47 rate cards</div>
-    <div class="pager" id="pager"></div>
-  </div>
-</div>
-
 
 <script>
-  /* ---------- Mock Data ---------- */
-  const data = [
-    {customer:'HCL Technologies', contract:'HCL-2025-001', region:'North America', service:'Full-Time Engineer', level:'Senior Level', unit:'Hour', rate:85, ccy:'USD', ot:'1.5x / 1.25x', otNote:'OT / Weekend', period:'Jan 1 – Dec 31, 2025', days:'365 days remaining', status:'Active'},
-    {customer:'HCL Technologies', contract:'HCL-2025-001', region:'North America', service:'Dispatch', level:'Emergency Response', unit:'Hour', rate:125, ccy:'USD', ot:'2.0x / 1.5x', otNote:'OT / Weekend', period:'Jan 1 – Dec 31, 2025', days:'365 days remaining', status:'Active'},
-    {customer:'HCL Technologies', contract:'HCL-2025-001', region:'North America', service:'Scheduled Visit', level:'Maintenance', unit:'Visit', rate:350, ccy:'USD', ot:'–', otNote:'Fixed rate', period:'Jan 1 – Dec 31, 2025', days:'365 days remaining', status:'Active'},
-    {customer:'HCL Technologies', contract:'HCL-2025-001', region:'Europe', service:'Full-Time Engineer', level:'Senior Level', unit:'Hour', rate:75, ccy:'EUR', ot:'1.5x / 1.25x', otNote:'OT / Weekend', period:'Jan 1 – Dec 31, 2025', days:'365 days remaining', status:'Active'},
-    {customer:'Cognizant', contract:'COG-2025-001', region:'North America', service:'Full-Time Engineer', level:'Senior Level', unit:'Hour', rate:90, ccy:'USD', ot:'1.5x / 1.5x', otNote:'OT / Weekend', period:'Mar 15 – Mar 14, 2026', days:'Starts in 74 days', status:'Pending'},
-    {customer:'Atos', contract:'ATO-2024-003', region:'Asia Pacific', service:'Dispatch', level:'Standard Response', unit:'Hour', rate:85, ccy:'USD', ot:'1.75x / 1.5x', otNote:'OT / Weekend', period:'Jan 1 – Dec 31, 2024', days:'Expired 15 days ago', status:'Expired'},
-    // add more for pagination demo
-    ...Array.from({length:41}, (_,i)=>({
-      customer: i%2? 'Wipro':'TCS', contract:`${i%2?'WIP':'TCS'}-2025-${String(i).padStart(3,'0')}`,
-      region: ['North America','Europe','Asia Pacific'][i%3],
-      service: ['Full-Time Engineer','Dispatch','Scheduled Visit'][i%3],
-      level: ['Senior Level','Emergency Response','Maintenance'][i%3],
-      unit: i%3===2 ? 'Visit':'Hour', rate: 70 + (i%5)*10, ccy: ['USD','EUR','AUD'][i%3],
-      ot: i%3===2 ? '–' : '1.5x / 1.25x', otNote: i%3===2 ? 'Fixed rate':'OT / Weekend',
-      period: 'Jan 1 – Dec 31, 2025', days:'365 days remaining',
-      status: ['Active','Pending','Expired'][i%3]
-    }))
+(function RateCardApp(){
+  const ns = {};
+  ns.data = [
+    { id: 1, customer:'HCL Technologies', region:'EMEA', country:'Germany', supplier:'Vendor A', currency:'EUR', entity:'E1', payment:'30 Days', status:'Active' },
+    { id: 2, customer:'Cognizant', region:'APAC', country:'India', supplier:'Vendor B', currency:'USD', entity:'E2', payment:'45 Days', status:'Pending' },
+    { id: 3, customer:'TCS', region:'NA', country:'USA', supplier:'Vendor C', currency:'USD', entity:'E3', payment:'30 Days', status:'Active' }
   ];
 
-  /* ---------- Elements ---------- */
-  const tbody = document.getElementById('tbody');
-  const q = document.getElementById('q');
-  const fCustomer = document.getElementById('fCustomer');
-  const fRegion = document.getElementById('fRegion');
-  const fService = document.getElementById('fService');
-  const footNote = document.getElementById('footNote');
-  const pager = document.getElementById('pager');
+  ns.dedicatedCols = ['Band 0','Band 1','Band 2','Band 3','Band 4'];
+  ns.scheduledGroups = [
+    { title:'Full Day Visit (8hrs)', bands:['Band 0','Band 1','Band 2'] },
+    { title:'1/2 Day Visit (4hrs)', bands:['Band 0','Band 1','Band 2'] }
+  ];
+  ns.dispatchGroups = [
+    { title:'Dispatch Ticket (Incident)', bands:['4 hour','SBD','NBD','2 BD','3 BD','Additional Hour'] },
+    { title:'Dispatch Ticket (IMAC)', bands:['2 BD','3 BD','4 BD'] }
+  ];
+  ns.projectGroups = [
+    { title:'Short Term (Up to 3 months)', bands:['Band 0','Band 1','Band 2','Band 3','Band 4'] },
+    { title:'Long Term (more than 3 months)', bands:['Band 0','Band 1','Band 2','Band 3','Band 4'] }
+  ];
 
-  /* ---------- Populate customer filter ---------- */
-  const customers = [...new Set(data.map(d=>d.customer))].sort();
-  customers.forEach(c=>{
-    const o=document.createElement('option'); o.textContent=c; o.value=c; fCustomer.appendChild(o);
-  });
-
-  /* ---------- Helpers ---------- */
-  const pageSize = 10; let page=1;
-
-  function money(val, ccy){
-    try{
-      return new Intl.NumberFormat(undefined,{style:'currency', currency:ccy, maximumFractionDigits:2}).format(val);
-    }catch{ return `${ccy} ${val.toFixed(2)}`; }
+  ns.services = {};
+  function initServiceValues(){
+    ns.data.forEach(rec=>{
+      ns.services[rec.id] = {
+        dedicated: ns.dedicatedCols.flatMap((b,i)=>[`$${26000+i*2000}`, `$${23000+i*1800}`]),
+        scheduled: ns.scheduledGroups.flatMap(g=>g.bands.map((b,i)=>`$${300+i*20}`)),
+        dispatch: ns.dispatchGroups.flatMap(g=>g.bands.map((b,i)=>`$${100+i*50}`)),
+        projects: ns.projectGroups.flatMap(g=>g.bands.map((b,i)=>`$${5000+i*500}`))
+      };
+    });
   }
-  const statusClass = s => s==='Active'?'active':(s==='Pending'?'pending':'expired');
+  initServiceValues();
 
-  function row(d, idx){
-  return `
-    <tr>
-      <td><input type="checkbox" /></td>
-      <td>
-        <div style="font-weight:700">${d.customer}</div>
-        <div class="sub">Contract: ${d.contract}</div>
-      </td>
-      <td>${d.region}</td>
-      <td>
-        <div style="font-weight:600">${d.service}</div>
-        <div class="sub">${d.level}</div>
-      </td>
-      <td>${d.unit}</td>
-      <td>
-        <div class="rate mono">${money(d.rate,d.ccy)}</div>
-        <div class="sub mono">${d.ccy}</div>
-      </td>
-      <td>
-        <div>${d.ot}</div>
-        <div class="sub">${d.otNote}</div>
-      </td>
-      <td>
-        <div>${d.period}</div>
-        <div class="sub">${d.days}</div>
-      </td>
-      <td><span class="status ${statusClass(d.status)}">${d.status}</span></td>
-      <td class="actions">
-        <button class="iconbtn act-view" data-idx="${idx}" title="View">↗</button>
-        <button class="iconbtn" title="Edit">✎</button>
-        <button class="iconbtn" title="Clone">⧉</button>
-        <button class="iconbtn" title="More">⋯</button>
-      </td>
-    </tr>
-  `;
-}
+  // DOM
+  const container = document.getElementById('rcTableContainer');
+  const cards = document.querySelectorAll('#rcCards .card');
+  const modalBackdrop = document.getElementById('rcModalBackdrop');
+  const modalTitle = document.getElementById('rcModalTitle');
+  const modalBody = document.getElementById('rcModalBody');
+  const saveBtn = document.getElementById('rcSaveBtn');
+  const cancelBtn = document.getElementById('rcCancelBtn');
+  const searchEl = document.getElementById('rc_search');
+  const regionEl = document.getElementById('rc_region');
+  const currencyEl = document.getElementById('rc_currency');
+  const supplierEl = document.getElementById('rc_supplier');
+  const newBtn = document.getElementById('rcNewBtn');
+  ns.currentType='default';
 
+  // Utils
+  const esc = s=>String(s??'').replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+  const uniqueSuppliers=()=>[...new Set(ns.data.map(d=>d.supplier))];
+  function refreshSupplierFilter(){
+    supplierEl.innerHTML='<option value="">All Suppliers</option>'+uniqueSuppliers().map(s=>`<option>${s}</option>`).join('');
+  }
   function filterData(){
-    const text = q.value.trim().toLowerCase();
-    return data.filter(d=>{
-      const hit = !text || (
-        d.customer.toLowerCase().includes(text) ||
-        d.service.toLowerCase().includes(text) ||
-        d.contract.toLowerCase().includes(text) ||
-        d.region.toLowerCase().includes(text)
-      );
-      const okCustomer = !fCustomer.value || fCustomer.value===d.customer;
-      const okRegion = !fRegion.value || fRegion.value===d.region;
-      const okService = !fService.value || fService.value===d.service;
-      return hit && okCustomer && okRegion && okService;
-    });
+    const q=(searchEl.value||'').toLowerCase(),r=regionEl.value,c=currencyEl.value,s=supplierEl.value;
+    return ns.data.filter(d=>
+      (!r||d.region===r)&&(!c||d.currency===c)&&(!s||d.supplier===s)&&(!q||[d.customer,d.country,d.supplier].some(x=>x.toLowerCase().includes(q)))
+    );
   }
 
-  function render(){
-    const filtered = filterData();
-    const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
-    page = Math.min(page, pages);
-    const start = (page-1)*pageSize, end = Math.min(start+pageSize, filtered.length);
-    const slice = filtered.slice(start, end);
+  const baseCols=()=>`<th>#</th><th>Customer</th><th>Region</th><th>Country</th><th>Supplier</th><th>Currency</th><th>Entity</th><th>Payment</th>`;
+  const baseCells=(r,i)=>`<td>${i+1}</td><td>${esc(r.customer)}</td><td>${esc(r.region)}</td><td>${esc(r.country)}</td><td>${esc(r.supplier)}</td><td>${esc(r.currency)}</td><td>${esc(r.entity)}</td><td>${esc(r.payment)}</td>`;
 
-    tbody.innerHTML = slice.map((d,i)=> row(d, start + i)).join('');
-
-    footNote.textContent = `Showing ${filtered.length?start+1:0} to ${end} of ${filtered.length} rate cards`;
-
-    // pager
-    pager.innerHTML = `
-      <button ${page===1?'disabled':''} data-act="prev">Previous</button>
-      ${Array.from({length:pages}, (_,i)=>`<button data-page="${i+1}" class="${page===i+1?'current':''}">${i+1}</button>`).join('')}
-      <button ${page===pages?'disabled':''} data-act="next">Next</button>
-    `;
-    pager.querySelectorAll('button[data-page]').forEach(b=>b.onclick=()=>{page=+b.dataset.page; render();});
-    const pv = pager.querySelector('button[data-act="prev"]');
-    const nx = pager.querySelector('button[data-act="next"]');
-    pv && (pv.onclick=()=>{ if(page>1){ page--; render(); }});
-    nx && (nx.onclick=()=>{ const p=Math.ceil(filtered.length/pageSize)||1; if(page<p){ page++; render(); }});
+  // Renderers
+  function renderDefault(){
+    const rows=filterData().map((r,i)=>`
+      <tr data-id="${r.id}">
+        ${baseCells(r,i)}
+        <td>${r.status}</td>
+        <td class="actions">
+          <button class="iconbtn rc-view" data-id="${r.id}">👁️</button>
+          <button class="iconbtn rc-edit" data-id="${r.id}">✏️</button>
+          <button class="iconbtn rc-del" data-id="${r.id}">🗑️</button>
+        </td>
+      </tr>`).join('');
+    container.innerHTML=`<table><thead><tr>${baseCols()}<th>Status</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
   }
 
-  /* ---------- Events ---------- */
-  [q,fCustomer,fRegion,fService].forEach(el=>el.addEventListener('input', ()=>{ page=1; render(); }));
-  document.getElementById('clearAll').onclick = ()=>{
-    q.value=''; fCustomer.value=''; fRegion.value=''; fService.value=''; page=1; render();
-  };
+  function renderGeneric(groups,key){
+    const rows=filterData().map((r,i)=>{
+      const svc=ns.services[r.id][key];
+      const cells=svc.map(v=>`<td style="text-align:center">${esc(v)}</td>`).join('');
+      return `<tr data-id="${r.id}">${baseCells(r,i)}${cells}<td>${r.status}</td>
+      <td class="actions"><button class="iconbtn rc-view" data-id="${r.id}">👁️</button><button class="iconbtn rc-edit" data-id="${r.id}">✏️</button><button class="iconbtn rc-del" data-id="${r.id}">🗑️</button></td></tr>`;
+    }).join('');
+    const ths=groups.map(g=>`<th colspan="${g.bands.length}" style="text-align:center">${g.title}</th>`).join('');
+    const subs=groups.map(g=>g.bands.map(b=>`<th>${b}</th>`).join('')).join('');
+    container.innerHTML=`<table><thead><tr>${baseCols()}${ths}<th>Status</th><th>Actions</th></tr><tr><th colspan="8"></th>${subs}<th colspan="2"></th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
 
-  // delightful tap feedback
-  ['btnImport','btnExport','btnNew','adv','history'].forEach(id=>{
-    const el=document.getElementById(id); if(!el) return;
-    el.addEventListener('click', ()=>{
-      if(el.classList) { el.classList.add('primary'); setTimeout(()=>el.classList.remove('primary'),250); }
-      if(id==='btnNew') alert('Create New Rate Card (demo)');
-    });
+  function renderDedicated(){
+    const rows=filterData().map((r,i)=>{
+      const svc=ns.services[r.id].dedicated;
+      const cells=svc.map(v=>`<td style="text-align:center">${esc(v)}</td>`).join('');
+      return `<tr data-id="${r.id}">${baseCells(r,i)}${cells}<td>${r.status}</td>
+      <td class="actions"><button class="iconbtn rc-view" data-id="${r.id}">👁️</button><button class="iconbtn rc-edit" data-id="${r.id}">✏️</button><button class="iconbtn rc-del" data-id="${r.id}">🗑️</button></td></tr>`;
+    }).join('');
+    const bands=ns.dedicatedCols.map(b=>`<th colspan="2">${b}</th>`).join('');
+    const subs=ns.dedicatedCols.map(()=>`<th>With</th><th>Without</th>`).join('');
+    container.innerHTML=`<table><thead><tr>${baseCols()}${bands}<th>Status</th><th>Actions</th></tr><tr><th colspan="8"></th>${subs}<th colspan="2"></th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
+  function render(){ 
+    if(ns.currentType==='dedicated') renderDedicated();
+    else if(ns.currentType==='scheduled') renderGeneric(ns.scheduledGroups,'scheduled');
+    else if(ns.currentType==='dispatch') renderGeneric(ns.dispatchGroups,'dispatch');
+    else if(ns.currentType==='projects') renderGeneric(ns.projectGroups,'projects');
+    else renderDefault();
+  }
+
+  // ---------- MODAL ----------
+  function openModal(mode,id){
+    const rec=id?ns.data.find(x=>x.id===id):{id:Date.now(),customer:'',region:'',country:'',supplier:'',currency:'USD',entity:'',payment:'',status:'Active'};
+    const svcType=ns.currentType;
+    modalTitle.textContent=mode==='edit'?'Edit Record':mode==='view'?'View Record':'New Rate Card';
+    const readonly=mode==='view'?'readonly':'';
+    let html=`
+    <div class="rcFormRow"><label>Customer</label><input id="rcf_customer" value="${esc(rec.customer)}" ${readonly}></div>
+    <div class="rcFormRow"><label>Region</label><input id="rcf_region" value="${esc(rec.region)}" ${readonly}></div>
+    <div class="rcFormRow"><label>Country</label><input id="rcf_country" value="${esc(rec.country)}" ${readonly}></div>
+    <div class="rcFormRow"><label>Supplier</label><input id="rcf_supplier" value="${esc(rec.supplier)}" ${readonly}></div>
+    <div class="rcFormRow"><label>Currency</label><input id="rcf_currency" value="${esc(rec.currency)}" ${readonly}></div>
+    <div class="rcFormRow"><label>Entity</label><input id="rcf_entity" value="${esc(rec.entity)}" ${readonly}></div>
+    <div class="rcFormRow"><label>Payment</label><input id="rcf_payment" value="${esc(rec.payment)}" ${readonly}></div>
+    <div class="rcFormRow"><label>Status</label><input id="rcf_status" value="${esc(rec.status)}" ${readonly}></div>`;
+
+    if(svcType!=='default'){
+      html+=`<div style="font-weight:700;margin:10px 0;">${svcType.toUpperCase()} VALUES</div>`;
+      const svc=ns.services[rec.id]||{};
+      let i=0;
+      if(svcType==='dedicated'){
+        ns.dedicatedCols.forEach(b=>{
+          html+=`<div class="rcFormRow"><label>${b} (With)</label><input id="rcf_ded_${i}" value="${esc(svc.dedicated?.[i]||'')}" ${readonly}></div>`;
+          i++;
+          html+=`<div class="rcFormRow"><label>${b} (Without)</label><input id="rcf_ded_${i}" value="${esc(svc.dedicated?.[i]||'')}" ${readonly}></div>`;
+          i++;
+        });
+      } else {
+        const groups=(svcType==='scheduled')?ns.scheduledGroups:(svcType==='dispatch')?ns.dispatchGroups:ns.projectGroups;
+        groups.forEach(g=>g.bands.forEach(b=>{
+          html+=`<div class="rcFormRow"><label>${g.title} - ${b}</label><input id="rcf_svc_${i}" value="${esc(svc[svcType]?.[i]||'')}" ${readonly}></div>`;
+          i++;
+        }));
+      }
+    }
+    modalBody.innerHTML=html;
+    modalBackdrop.style.display='flex';
+
+    // Save handler (edit/new)
+    saveBtn.onclick=()=>{
+      if(mode==='view'){modalBackdrop.style.display='none';return;}
+      rec.customer=document.getElementById('rcf_customer').value;
+      rec.region=document.getElementById('rcf_region').value;
+      rec.country=document.getElementById('rcf_country').value;
+      rec.supplier=document.getElementById('rcf_supplier').value;
+      rec.currency=document.getElementById('rcf_currency').value;
+      rec.entity=document.getElementById('rcf_entity').value;
+      rec.payment=document.getElementById('rcf_payment').value;
+      rec.status=document.getElementById('rcf_status').value;
+      if(!id) ns.data.push(rec);
+
+      if(svcType!=='default'){
+        const svc=ns.services[rec.id]||{};
+        if(svcType==='dedicated'){
+          svc.dedicated=[];
+          for(let i=0;i<ns.dedicatedCols.length*2;i++){
+            svc.dedicated[i]=document.getElementById(`rcf_ded_${i}`).value;
+          }
+        } else {
+          const groups=(svcType==='scheduled')?ns.scheduledGroups:(svcType==='dispatch')?ns.dispatchGroups:ns.projectGroups;
+          svc[svcType]=[];
+          let i=0;groups.forEach(g=>g.bands.forEach(()=>{
+            svc[svcType][i]=document.getElementById(`rcf_svc_${i}`).value;
+            i++;
+          }));
+        }
+        ns.services[rec.id]=svc;
+      }
+      modalBackdrop.style.display='none';
+      refreshSupplierFilter();
+      render();
+    };
+    cancelBtn.onclick=()=>modalBackdrop.style.display='none';
+  }
+
+  function deleteRec(id){
+    if(!confirm('Delete this record?'))return;
+    ns.data=ns.data.filter(x=>x.id!==id);
+    delete ns.services[id];
+    render();
+  }
+
+  // Events
+  container.addEventListener('click',e=>{
+    const id=+e.target.dataset.id;
+    if(e.target.classList.contains('rc-view'))openModal('view',id);
+    if(e.target.classList.contains('rc-edit'))openModal('edit',id);
+    if(e.target.classList.contains('rc-del'))deleteRec(id);
   });
+  cards.forEach(c=>c.onclick=()=>{cards.forEach(x=>x.classList.remove('active'));c.classList.add('active');ns.currentType=c.dataset.type;render();});
+  [searchEl,regionEl,currencyEl,supplierEl].forEach(el=>el.oninput=render);
+  newBtn.onclick=()=>openModal('new');
 
-  /* ---------- Init ---------- */
+  refreshSupplierFilter();
   render();
-// ===== Scoped modal refs =====
-const rcModalBackdrop = document.getElementById('rcModalBackdrop');
-const rcModalBody     = document.getElementById('rcModalBody');
-const rcModalTitle    = document.getElementById('rcModalTitle');
-const rcCloseBtns     = [document.getElementById('rcModalClose'), document.getElementById('rcModalClose2')];
-
-function rcOpenViewByIndex(globalIdx){
-  const list = filterData();
-  const rec  = list[globalIdx];
-  if(!rec) return;
-
-  rcModalTitle.textContent = `${rec.customer} – ${rec.service}`;
-  rcModalBody.innerHTML = `
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
-      <div><strong>Customer</strong><br>${rec.customer}</div>
-      <div><strong>Contract</strong><br>${rec.contract||'—'}</div>
-      <div><strong>Region</strong><br>${rec.region}</div>
-      <div><strong>Service Type</strong><br>${rec.service} <span class="sub">(${rec.level||'—'})</span></div>
-      <div><strong>Unit</strong><br>${rec.unit}</div>
-      <div><strong>Base Rate</strong><br><span class="mono">${money(rec.rate, rec.ccy)}</span></div>
-      <div><strong>OT / Weekend</strong><br>${rec.ot||'—'} <span class="sub">${rec.otNote||''}</span></div>
-      <div><strong>Effective Period</strong><br>${rec.period||'—'}<div class="sub">${rec.days||''}</div></div>
-      <div><strong>Status</strong><br><span class="status ${statusClass(rec.status)}">${rec.status}</span></div>
-    </div>
-  `;
-  rcModalBackdrop.classList.add('show');
-  document.body.classList.add('rc-modal-open');
-}
-
-function rcCloseView(){
-  rcModalBackdrop.classList.remove('show');
-  document.body.classList.remove('rc-modal-open');
-}
-
-rcCloseBtns.forEach(b=> b && b.addEventListener('click', rcCloseView));
-rcModalBackdrop.addEventListener('click', e=>{ if(e.target === rcModalBackdrop) rcCloseView(); });
-document.addEventListener('keydown', e=>{ if(e.key === 'Escape') rcCloseView(); });
-
-// Delegate "View" clicks to open the scoped modal
-tbody.addEventListener('click', (e)=>{
-  const btn = e.target.closest('.act-view');
-  if(!btn) return;
-  rcOpenViewByIndex(+btn.dataset.idx);
-});
-
-
+})();
 </script>
+
+
 
 
 
