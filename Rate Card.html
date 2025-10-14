@@ -1232,6 +1232,7 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
   <!-- cards -->
   <div class="cards" id="rcCards">
     <div class="card active" data-type="default">📋 Rate Cards</div>
+    <div class="card" data-type="service-rate">🧾 Service Rate Card</div>
     <div class="card" data-type="dedicated">🧑‍💻 Dedicated Services</div>
     <div class="card" data-type="scheduled">📅 Scheduled Services</div>
     <div class="card" data-type="dispatch">🚚 Dispatch Services</div>
@@ -1272,13 +1273,18 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
 </div>
 
 <script>
+
 (function RateCardApp(){
   const ns = {};
+  
   ns.data = [
-    { id: 1, customer:'HCL Technologies', region:'EMEA', country:'Germany', supplier:'Vendor A', currency:'EUR', entity:'E1', payment:'30 Days', status:'Active' },
-    { id: 2, customer:'Cognizant', region:'APAC', country:'India', supplier:'Vendor B', currency:'USD', entity:'E2', payment:'45 Days', status:'Pending' },
-    { id: 3, customer:'TCS', region:'NA', country:'USA', supplier:'Vendor C', currency:'USD', entity:'E3', payment:'30 Days', status:'Active' }
-  ];
+  { id: 1, customer:'HCL Technologies', region:'EMEA', country:'Germany', supplier:'Vendor A', currency:'EUR', entity:'E1', payment:'30 Days', status:'Active' },
+  { id: 2, customer:'Cognizant', region:'APAC', country:'India', supplier:'Vendor B', currency:'USD', entity:'E2', payment:'45 Days', status:'Pending' },
+  { id: 3, customer:'TCS', region:'NA', country:'USA', supplier:'Vendor C', currency:'USD', entity:'E3', payment:'30 Days', status:'Active' },
+
+  // 🆕 Lenovo Thailand (connected to rate_card sample)
+  { id: 101, customer:'Lenovo Thailand', region:'APAC', country:'Thailand', supplier:'Vendor TH', currency:'THB', entity:'Lenovo Entity TH', payment:'30 Days', status:'Active' }
+];
 
   ns.dedicatedCols = ['Band 0','Band 1','Band 2','Band 3','Band 4'];
   ns.scheduledGroups = [
@@ -1293,6 +1299,41 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
     { title:'Short Term (Up to 3 months)', bands:['Band 0','Band 1','Band 2','Band 3','Band 4'] },
     { title:'Long Term (more than 3 months)', bands:['Band 0','Band 1','Band 2','Band 3','Band 4'] }
   ];
+  ns.rateCardSample = {
+  id: 101,
+  account_name: "Lenovo Thailand",
+  currency: "THB",
+  valid_from: "2025-01-01",
+  valid_to: null,
+  contact_email: "finance.th@lenovo.com",
+  last_updated_by: "billing_admin",
+  last_updated_at: "2025-10-14T12:30:00Z",
+  service_rates: [
+    {
+      category: "Dispatch",
+      region: "Bangkok",
+      rate_type: "hourly",
+      rate_value: 850,
+      after_hours_multiplier: 1.5,
+      weekend_multiplier: 2.0,
+      travel_charge: 0
+    },
+    {
+      category: "FTE",
+      region: "Thailand",
+      rate_type: "monthly",
+      rate_value: 60000,
+      remarks: "Level 2 engineer full-time placement"
+    },
+    {
+      category: "Scheduled Visit",
+      region: "Thailand",
+      rate_type: "day",
+      rate_value: 3200,
+      includes_travel: true
+    }
+  ]
+};
 
   ns.services = {};
   function initServiceValues(){
@@ -1378,12 +1419,99 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
   }
 
   function render(){ 
-    if(ns.currentType==='dedicated') renderDedicated();
-    else if(ns.currentType==='scheduled') renderGeneric(ns.scheduledGroups,'scheduled');
-    else if(ns.currentType==='dispatch') renderGeneric(ns.dispatchGroups,'dispatch');
-    else if(ns.currentType==='projects') renderGeneric(ns.projectGroups,'projects');
-    else renderDefault();
-  }
+  if(ns.currentType==='dedicated') renderDedicated();
+  else if(ns.currentType==='scheduled') renderGeneric(ns.scheduledGroups,'scheduled');
+  else if(ns.currentType==='dispatch') renderGeneric(ns.dispatchGroups,'dispatch');
+  else if(ns.currentType==='projects') renderGeneric(ns.projectGroups,'projects');
+  else if(ns.currentType==='service-rate') renderServiceRateCard();
+  else renderDefault();
+}
+
+
+
+function renderServiceRateCard() {
+  const d = ns.rateCardSample;
+
+  // Render Rate Card Info
+  const rows = `
+    <tr>
+      <td>1</td>
+      <td>${d.account_name}</td>
+      <td>${d.region}</td>
+      <td>${d.country}</td>
+      <td>${d.supplier}</td>
+      <td>${d.currency}</td>
+      <td>${d.entity}</td>
+      <td>${d.payment}</td>
+      <td>${d.status}</td>
+      <td><button class="btn small rc-view" data-viewtype="main">View</button></td>
+    </tr>
+  `;
+
+  // Render Service Rate Table
+  const serviceRows = d.service_rates.map((s, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${s.category}</td>
+      <td>${s.region}</td>
+      <td>${s.rate_type}</td>
+      <td>${s.rate_value}</td>
+      <td>${s.after_hours_multiplier ?? '-'}</td>
+      <td>${s.weekend_multiplier ?? '-'}</td>
+      <td>${s.travel_charge ?? '-'}</td>
+      <td>${s.includes_travel ? '✅' : '❌'}</td>
+      <td>${s.remarks ?? '-'}</td>
+      <td><button class="btn small rc-view" data-viewtype="details">View</button></td>
+    </tr>
+  `).join('');
+
+  container.innerHTML = `
+    <h3>📋 Rate Card</h3>
+    <table>
+      <thead><tr><th>#</th><th>Customer</th><th>Region</th><th>Country</th><th>Supplier</th><th>Currency</th><th>Entity</th><th>Payment</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <hr style="margin:20px 0;">
+
+    <h3>🧾 Service Rate Details</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Category</th><th>Region</th><th>Rate Type</th><th>Rate Value</th>
+          <th>After Hours</th><th>Weekend</th><th>Travel</th><th>Includes Travel</th><th>Remarks</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>${serviceRows}</tbody>
+    </table>
+
+    <div style="margin-top:20px;text-align:right;">
+      <button class="btn primary" id="standardizeBtn">📤 Standardize Rate Card</button>
+    </div>
+  `;
+
+  // 📤 When "Standardize Rate Card" is clicked, show generated JSON
+  document.getElementById('standardizeBtn').onclick = () => {
+    const generated = {
+      id: d.id,
+      account_name: d.account_name,
+      currency: d.currency,
+      valid_from: d.valid_from,
+      valid_to: d.valid_to,
+      service_rates: d.service_rates,
+      contact_email: d.contact_email,
+      last_updated_by: d.last_updated_by,
+      last_updated_at: d.last_updated_at
+    };
+    modalTitle.textContent = "📤 Standardized Rate Card JSON";
+    modalBody.innerHTML = `<pre style="background:#f5f5f5;padding:10px;border-radius:6px;white-space:pre-wrap;">${JSON.stringify(generated, null, 2)}</pre>`;
+    modalBackdrop.style.display = "flex";
+    saveBtn.onclick = () => (modalBackdrop.style.display = "none");
+  };
+}
+
+
+
 
   // ---------- MODAL ----------
   function openModal(mode,id){
@@ -1468,12 +1596,34 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
   }
 
   // Events
-  container.addEventListener('click',e=>{
-    const id=+e.target.dataset.id;
-    if(e.target.classList.contains('rc-view'))openModal('view',id);
-    if(e.target.classList.contains('rc-edit'))openModal('edit',id);
-    if(e.target.classList.contains('rc-del'))deleteRec(id);
-  });
+  container.addEventListener('click', e => {
+  const id = +e.target.dataset.id;
+  const viewType = e.target.dataset.viewtype;
+
+  if (e.target.classList.contains('rc-view')) {
+    if (viewType === 'details') {
+      const d = ns.rateCardSample;
+      modalTitle.textContent = "Service Rate Card Details";
+      modalBody.innerHTML = `
+        <div><b>${d.account_name}</b></div>
+        <div>Currency: ${d.currency}</div>
+        <div>Valid From: ${d.valid_from}</div>
+        <div>Valid To: ${d.valid_to ?? '—'}</div>
+        <div>Contact Email: ${d.contact_email}</div>
+        <div>Last Updated By: ${d.last_updated_by}</div>
+        <div>Last Updated At: ${new Date(d.last_updated_at).toLocaleString()}</div>
+      `;
+      modalBackdrop.style.display = 'flex';
+      saveBtn.onclick = () => (modalBackdrop.style.display = 'none');
+    } else {
+      openModal('view', id);
+    }
+  }
+
+  if (e.target.classList.contains('rc-edit')) openModal('edit', id);
+  if (e.target.classList.contains('rc-del')) deleteRec(id);
+});
+
   cards.forEach(c=>c.onclick=()=>{cards.forEach(x=>x.classList.remove('active'));c.classList.add('active');ns.currentType=c.dataset.type;render();});
   [searchEl,regionEl,currencyEl,supplierEl].forEach(el=>el.oninput=render);
   newBtn.onclick=()=>openModal('new');
