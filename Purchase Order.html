@@ -1246,39 +1246,81 @@ dialog#po-modal::backdrop{background:rgba(0,0,0,.35)}
     <div class="po-block">
       <div class="po-toolbar">
         <div class="row">
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <select class="po-select" id="fCustomer"><option value="">All Customers</option></select>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <select class="po-select" id="fCustomer">
+              <option value="">All Customers</option>
+              <option value="HCL">HCL Technologies</option>
+              <option value="Cognizant">Cognizant</option>
+            </select>
             <select class="po-select" id="fStatus">
               <option value="">All Statuses</option>
               <option>Active</option><option>Low Balance</option><option>Expiring Soon</option><option>Fully Utilized</option>
             </select>
-            <select class="po-select" id="fCurrency"><option value="">All Currencies</option><option>USD</option><option>EUR</option></select>
+            <select class="po-select" id="fCurrency">
+              <option value="">All Currencies</option>
+              <option>USD</option>
+              <option>EUR</option>
+            </select>
+
+            <!-- ✅ Show More Info dropdown -->
+            <div class="po-select" style="position:relative;">
+              <button type="button" id="showMoreBtn" class="po-btn">Show More Info ▾</button>
+              <div id="showMoreDropdown"
+                style="display:none;position:absolute;top:110%;left:0;background:white;border:1px solid #e5e7eb;
+                       padding:10px;border-radius:8px;z-index:100;min-width:240px;">
+                <div style="max-height:260px;overflow:auto;padding-right:6px;">
+                  <label><input type="checkbox" class="col-toggle" data-col="project"> Project</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="sdm"> SDM</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="billto"> Bill To</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="billaddr"> Billing Address</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="about"> About</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="workdone"> Work Done</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="comment"> Comment</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="expdays"> Expiration Days</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="currency"> Currency</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="payterms"> Payment Terms</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="clientyear"> Client Year</label><br>
+                </div>
+                <hr style="margin:8px 0">
+                <div style="display:flex;gap:8px;justify-content:space-between">
+                  <button id="showFullBtn" type="button" class="po-btn">Show All</button>
+                  <button id="revertBtn" type="button" class="po-btn" style="background:#6b7280;color:#fff;">Revert</button>
+                </div>
+              </div>
+            </div>
+
             <button class="po-btn" id="fClear" type="button">Clear filters</button>
           </div>
+
           <div class="po-search"><span>🔍</span><input id="fSearch" placeholder="Search PO numbers…" /></div>
         </div>
       </div>
 
-      <div class="po-table">
-        <table>
+      <!-- ✅ Scrollable container -->
+      <div class="po-table" style="overflow-x:auto;">
+        <table id="po-table" style="min-width:1600px;border-collapse:collapse;width:100%;">
           <thead>
-            <tr>
+            <tr id="po-head">
               <th>PO NUMBER</th>
               <th>CUSTOMER / ACCOUNT</th>
-              <th class="right">TOTAL AMOUNT</th>
-              <th class="right">REMAINING BALANCE</th>
+              <th class="right">TOTAL</th>
+              <th class="right">BALANCE</th>
               <th>VALID FROM</th>
               <th>VALID UNTIL</th>
               <th>STATUS</th>
               <th>ACTIONS</th>
             </tr>
           </thead>
-          <tbody id="po-tbody"></tbody>
+          <tbody id="po-tbody">
+            <tr>
+              <td>PO-001</td><td>HCL Technologies</td><td class="right">$12,000</td><td class="right">$2,000</td><td>2025-01-01</td><td>2025-12-31</td><td>Active</td><td>...</td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
       <div class="po-footer" style="display:flex;justify-content:space-between;align-items:center;padding-top:12px">
-        <div id="resultInfo">Showing 0 results</div>
+        <div id="resultInfo">Showing 1 result</div>
         <div style="display:flex;gap:6px">
           <button class="po-btn" id="prev" disabled>Previous</button>
           <button class="po-btn" id="next" disabled>Next</button>
@@ -1288,7 +1330,7 @@ dialog#po-modal::backdrop{background:rgba(0,0,0,.35)}
   </div>
 </section>
 
-<!-- Create/Edit PO modal -->
+<!-- ✅ Create/Edit PO modal -->
 <dialog id="po-modal" aria-modal="true">
   <div class="pm-h">
     <strong id="po-modal-title">Create New PO</strong>
@@ -1298,15 +1340,26 @@ dialog#po-modal::backdrop{background:rgba(0,0,0,.35)}
   <form id="po-form">
     <div class="pm-b">
       <label class="field">Customer
-        <input id="iCustomer" required class="input" placeholder="HCL Technologies" />
+        <select id="iCustomer" required class="input">
+          <option value="">-- Select Customer --</option>
+          <option>HCL Technologies</option>
+          <option>Cognizant</option>
+        </select>
       </label>
 
       <label class="field">Account
         <input id="iAccount" class="input" placeholder="HCL-ACC-001" />
       </label>
 
+      <label class="field">Upload CSV File
+        <input type="file" id="iCsv" accept=".csv" />
+      </label>
+
       <label class="field">Currency
-        <select id="iCurrency" class="input"><option>USD</option><option>EUR</option></select>
+        <select id="iCurrency" class="input">
+          <option>USD</option>
+          <option>EUR</option>
+        </select>
       </label>
 
       <label class="field">Total
@@ -1318,21 +1371,64 @@ dialog#po-modal::backdrop{background:rgba(0,0,0,.35)}
       </label>
 
       <label class="field">Valid From
-  <input id="iFrom" type="text" placeholder="YYYY-MM-DD" required>
-</label>
+        <input id="iFrom" type="text" placeholder="YYYY-MM-DD" required />
+      </label>
 
-<label class="field">Valid Until
-  <input id="iUntil" type="text" placeholder="YYYY-MM-DD" required>
-</label>
+      <label class="field">Valid Until
+        <input id="iUntil" type="text" placeholder="YYYY-MM-DD" required />
+      </label>
 
-      <label class="field">reference number
+      <label class="field">Reference Number
         <input id="iPrefix" class="input" placeholder="auto from customer (3 chars)" maxlength="10" />
       </label>
-      <label class="field">Upload PO PDF
-  <input type="file" id="iPdf" accept="application/pdf" />
-</label>
 
-      <div class="subtle" style="grid-column:1/-1">Every record gets a secure <b>unique id</b>. Status auto-calculates.</div>
+      <!-- ✅ Additional “Show More Info” Inputs -->
+      <hr style="grid-column:1/-1">
+      <h4 style="grid-column:1/-1;margin:6px 0 2px;">Additional Info</h4>
+
+      <label class="field">Project
+        <input id="iProject" class="input" placeholder="Project name" />
+      </label>
+
+      <label class="field">SDM
+        <input id="iSdm" class="input" placeholder="Service Delivery Manager" />
+      </label>
+
+      <label class="field">Bill To
+        <input id="iBillto" class="input" placeholder="Billing entity" />
+      </label>
+
+      <label class="field">Billing Address
+        <input id="iBilladdr" class="input" placeholder="Billing address" />
+      </label>
+
+      <label class="field">About
+        <input id="iAbout" class="input" placeholder="Short description" />
+      </label>
+
+      <label class="field">Work Done
+        <input id="iWorkdone" class="input" placeholder="e.g., 80%" />
+      </label>
+
+      <label class="field">Comment
+        <input id="iComment" class="input" placeholder="Remarks" />
+      </label>
+
+      <label class="field">Expiration Days
+        <input id="iExpdays" type="number" min="0" step="1" class="input" placeholder="e.g., 30" />
+      </label>
+
+      <label class="field">Payment Terms
+        <input id="iPayterms" class="input" placeholder="e.g., Net 30" />
+      </label>
+
+      <label class="field">Client Year
+        <input id="iClientyear" class="input" placeholder="e.g., 2025" />
+      </label>
+
+      <div class="subtle" style="grid-column:1/-1">
+        Every record gets a secure <b>unique id</b>. Status auto-calculates.
+      </div>
     </div>
 
     <div class="pm-f">
@@ -1704,6 +1800,136 @@ $("#po-form").addEventListener("submit", ev => {
   // boot
   load(); render();
 })();
+
+
+
+
+
+
+
+
+
+
+
+(() => {
+  const $ = (s, el=document)=>el.querySelector(s);
+  let visibleCols = JSON.parse(localStorage.getItem("po-visible-cols") || "{}");
+
+  // Dummy data (sample dataset)
+  const items = [
+    {id:1, po:"PO-HCL-2025-A1B", cust:"HCL Tech", acct:"HCL-001", cur:"USD", total:120000, spent:40000, from:"2025-01-01", until:"2025-12-31",
+     project:"Network Upgrade", sdm:"John Smith", billto:"HCL HQ", billaddr:"Manila, PH", about:"Infra project", workdone:"50%", comment:"On track", expdays:72, currency:"USD", payterms:"Net 30", clientyear:"2025"},
+    {id:2, po:"PO-COG-2025-A9D", cust:"Cognizant", acct:"COG-002", cur:"EUR", total:95000, spent:50000, from:"2025-02-01", until:"2025-08-30",
+     project:"Software Renewal", sdm:"Jane Doe", billto:"COG Europe", billaddr:"Dublin, IE", about:"License maintenance", workdone:"90%", comment:"Almost done", expdays:12, currency:"EUR", payterms:"Net 45", clientyear:"2025"}
+  ];
+
+  const allExtraCols = {
+    project:"Project",
+    sdm:"SDM",
+    billto:"Bill To",
+    billaddr:"Billing Address",
+    about:"About",
+    workdone:"Work Done",
+    comment:"Comment",
+    expdays:"Expiration Days",
+    currency:"Currency",
+    payterms:"Payment Terms",
+    clientyear:"Client Year"
+  };
+
+  function statusOf(i){
+    const rem = i.total - i.spent;
+    const pct = rem / i.total;
+    const days = (new Date(i.until) - Date.now()) / (1000*60*60*24);
+    if (rem<=0) return "Fully Utilized";
+    if (days<=30) return "Expiring Soon";
+    if (pct<0.1) return "Low Balance";
+    return "Active";
+  }
+
+  function money(n,c='USD'){return new Intl.NumberFormat('en-US',{style:'currency',currency:c}).format(n);}
+
+  function render(){
+    // Header
+    let headHTML = `
+      <th>PO NUMBER</th>
+      <th>CUSTOMER / ACCOUNT</th>
+      <th class="right">TOTAL</th>
+      <th class="right">BALANCE</th>
+      <th>VALID FROM</th>
+      <th>VALID UNTIL</th>
+      <th>STATUS</th>
+      <th>ACTIONS</th>
+    `;
+    for(const key in allExtraCols){
+      if(visibleCols[key]) headHTML += `<th>${allExtraCols[key]}</th>`;
+    }
+    $("#po-head").innerHTML = headHTML;
+
+    // Body
+    const bodyHTML = items.map(i=>{
+      const rem = i.total - i.spent;
+      let row = `
+        <td>${i.po}</td>
+        <td>${i.cust}<div class="helper">${i.acct}</div></td>
+        <td class="right">${money(i.total,i.cur)}</td>
+        <td class="right">${money(rem,i.cur)}</td>
+        <td>${i.from}</td>
+        <td>${i.until}</td>
+        <td>${statusOf(i)}</td>
+        <td>✏️ 🗑️</td>
+      `;
+      for(const key in allExtraCols){
+        if(visibleCols[key]) row += `<td>${i[key] || '-'}</td>`;
+      }
+      return `<tr>${row}</tr>`;
+    }).join('');
+    $("#po-tbody").innerHTML = bodyHTML;
+
+    localStorage.setItem("po-visible-cols", JSON.stringify(visibleCols));
+  }
+
+  // Dropdown open/close
+  const dropdown = $("#showMoreDropdown");
+  $("#showMoreBtn").onclick = e=>{
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display==="block"?"none":"block";
+  };
+  window.onclick = e=>{
+    if(!e.target.closest("#showMoreDropdown") && !e.target.closest("#showMoreBtn"))
+      dropdown.style.display="none";
+  };
+
+  // Checkbox actions
+  document.querySelectorAll(".col-toggle").forEach(cb=>{
+    cb.checked = !!visibleCols[cb.dataset.col];
+    cb.onchange = e=>{
+      visibleCols[e.target.dataset.col] = e.target.checked;
+      render();
+    };
+  });
+
+  $("#showFullBtn").onclick = ()=>{
+    document.querySelectorAll(".col-toggle").forEach(cb=>{
+      cb.checked = true; visibleCols[cb.dataset.col]=true;
+    });
+    render();
+  };
+  $("#revertBtn").onclick = ()=>{
+    document.querySelectorAll(".col-toggle").forEach(cb=>{
+      cb.checked = false; visibleCols[cb.dataset.col]=false;
+    });
+    render();
+  };
+
+  render();
+})();
+
+
+
+
+
+
 </script>
 
             </div>
