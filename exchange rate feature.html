@@ -651,7 +651,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
                             <div class="dashboard_bar">
-                                Billing Run </div>
+                                Dashboard </div>
                         </div>
                         <ul class="navbar-nav header-right">
                             <li class="nav-item dropdown notification_dropdown all">
@@ -1044,19 +1044,12 @@
 <div class="dlabnav">
     <div class="dlabnav-scroll">
         <ul class="metismenu" id="menu">
-  <style>
-    .nav-text,
-    .material-symbols-outlined {
+ <style>
+    /* Scoped styles only for #custom-nav */
+    #custom-nav .nav-text,
+    #custom-nav .material-symbols-outlined {
         color: rgb(255, 255, 255) !important;
-    }
-</style>
-
-<style>
-    /* Force both text and icon to black */
-    li a.has-arrow .nav-text,
-    li a.has-arrow .material-symbols-outlined {
-        color: rgb(255, 255, 255) !important;
-        fill: rgb(255, 255, 255) !important; /* helps if icons are using SVG fill */
+        fill: rgb(255, 255, 255) !important; /* for SVG-based icons */
     }
 </style>
 
@@ -1073,6 +1066,7 @@
         <span class="nav-text">Manage Users</span>
     </a>
 </li>
+
 <li>
     <a class="has-arrow" href="./Customer & Accounts.html" aria-expanded="false">
         <i class="material-symbols-outlined">group</i>
@@ -1122,9 +1116,6 @@
     </a>
 </li>
 
-
-           
-        </ul>
     </div>
 </div>
 
@@ -1158,843 +1149,521 @@
 ***********************************-->
         <div class="content-body default-height">
             <div class="container-fluid">
-
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400&display=swap" rel="stylesheet">
-
 <style>
-  :root{
-    --bg:#ffffff;
-    --panel:#ffffff;
-    --panel-2:#f9f9f9;
-    --muted:#555;
-    --text:#111;
-    --line:#ddd;
-    --brand:#5335ff;
-    --brand-2:#c3b8fe;
-    --radius:10px;
-    --shadow:0 2px 6px rgba(0,0,0,.08);
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-    color:var(--text);
-    background:var(--bg);
-  }
+/* ========== PO DASHBOARD – LIGHT THEME (replacement) ========== */
+:root{
+  --bg:#ffffff; --panel:#ffffff; --card:#ffffff; --ink:#111827; --muted:#6b7280;
+  --line:#e5e7eb; --brand:#4e1313; --brand-2:#6366f1; --ok:#059669; --warn:#d97706;
+  --low:#f59e0b; --zero:#9ca3af;
+}
 
-  .topbar{
-    display:flex; align-items:center; gap:14px;
-    padding:16px 20px;
-    border-bottom:1px solid var(--line);
-    background:#fff;
-    position:sticky; top:0; z-index:100;
-  }
-  .topbar .back{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:36px; height:36px; border-radius:6px; border:1px solid var(--line);
-    background:#fff; cursor:pointer;
-  }
-  .title{font-weight:700; font-size:20px}
-  .subtitle{color:var(--muted); font-size:13px}
-  .spacer{flex:1}
-  .btn{
-    display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 14px;
-    border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--text);
-    cursor:pointer; transition:.2s;
-  }
-  .btn.primary{background:var(--brand); border:none; color:#fff}
-  .btn:hover{box-shadow:var(--shadow)}
+/* container + buttons */
+#po-app{color:var(--ink); background:#ffffff;}
+.po-wrap{max-width:1120px;margin:0 auto;padding:16px}
+.po-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.po-title{font-size:28px;margin:0}
+.po-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#ffffff;color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer}
+.po-btn.primary{background:var(--brand);color:#fff;border-color:#4e1313;box-shadow:0 8px 24px rgba(79,70,229,.18)}
+.po-btn:active{transform:translateY(1px)}
 
-  .wrap{padding:20px}
-  .card{
-    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);
-  }
+/* cards */
+.po-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 16px}
+.po-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.po-card .label{font-size:12px;color:var(--muted)}
+.po-card .value{margin-top:6px;font-weight:700;font-size:22px}
+.po-card .hint{color:var(--muted);font-size:12px}
 
-  .stepper{
-    display:flex; gap:10px; flex-wrap:wrap;
-    padding:10px; margin-bottom:14px; background:var(--panel-2);
-    border:1px solid var(--line); border-radius:var(--radius);
-  }
-  .step{
-    display:flex; align-items:center; gap:8px; padding:8px 12px;
-    border:1px solid var(--line); border-radius:8px; background:#fff; cursor:pointer;
-  }
-  .step.active{border-color:var(--brand); background:#f0f0ff}
-  .badge{
-    width:24px; height:24px; border-radius:6px; display:grid; place-items:center;
-    background:#f5f5f5; color:var(--text); font-weight:600; font-size:13px;
-  }
-  .step.active .badge{background:var(--brand); color:#fff}
-  .label{font-weight:600; font-size:13px}
+/* block */
+.po-block{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.po-toolbar{padding:14px;border-bottom:1px solid var(--line)}
+.po-toolbar .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.po-select,.po-search{background:#ffffff;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 10px}
+.po-search{display:flex;gap:8px;align-items:center}
+.po-search input{all:unset;color:var(--ink)}
 
-  .grid{display:grid; grid-template-columns:1.5fr .8fr; gap:16px}
-  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+/* table */
+.po-table{padding:10px}
+.po-table table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.po-table thead th{color:var(--muted);font-size:12px;text-align:left;padding:0 12px}
+.po-table tbody td{background:#ffffff;border:1px solid var(--line);padding:12px}
+.po-table tbody tr td:first-child{border-top-left-radius:10px;border-bottom-left-radius:10px}
+.po-table tbody tr td:last-child{border-top-right-radius:10px;border-bottom-right-radius:10px}
+.right{text-align:right}
+.helper{font-size:12px;color:var(--muted)}
 
-  .panel{padding:18px}
-  .panel h3{margin:0 0 6px; font-size:18px}
-  .panel .hint{color:var(--muted); font-size:13px; margin-bottom:16px}
+/* status chips */
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 8px;border-radius:999px;border:1px solid var(--line);background:#f8fafc}
+.status.ok{color:var(--ok);border-color:#bbf7d0;background:#ecfdf5}
+.status.low{color:#92400e;border-color:#fde68a;background:#fffbeb}
+.status.exp{color:#92400e;border-color:#fed7aa;background:#fff7ed}
+.status.zero{color:var(--zero);background:#f3f4f6}
 
-  .field{margin-bottom:14px}
-  .label{font-size:13px; color:var(--muted); margin-bottom:6px}
-  select,.input{
-    width:100%; height:38px; padding:0 10px; color:var(--text);
-    background:#fff; border:1px solid var(--line); border-radius:6px;
-  }
+/* actions */
+.actions{display:flex;gap:10px;opacity:.9}
+.icon{cursor:pointer}
 
-  .list{border:1px solid var(--line); border-radius:6px; overflow:hidden}
-  .row{
-    display:grid; grid-template-columns:auto 1fr auto auto; gap:10px; align-items:center;
-    padding:10px 12px; border-top:1px solid var(--line); background:#fff;
-  }
-  .row:first-child{border-top:none}
-  .radio{accent-color:var(--brand)}
-  .acct-title{font-weight:600}
-  .acct-sub{color:var(--muted); font-size:12px}
-  .pill{
-    font-size:12px; padding:4px 8px; border-radius:20px; background:#f5f5f5; border:1px solid var(--line);
-  }
-  .currency{font-size:12px; color:var(--muted)}
+/* progress */
+.progress{height:6px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:999px;position:relative;overflow:hidden}
+.bar{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--brand),var(--brand-2))}
 
-  .summary{padding:18px}
-  .summary h4{margin:0 0 12px}
-  .kv{display:grid; grid-template-columns:120px 1fr; gap:8px; padding:8px 0; border-bottom:1px dashed #ddd; font-size:14px}
-  .kv:last-child{border-bottom:none}
-  .muted{color:var(--muted)}
-  .placeholder{
-    display:grid; place-items:center; min-height:100px; border:1px dashed #ccc; border-radius:6px; color:var(--muted); font-size:13px; background:#fafafa;
-  }
+/* footer */
+.po-footer{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;padding:10px 14px;border-top:1px solid var(--line)}
 
-  .footer{display:flex; gap:10px; justify-content:flex-end; margin-top:16px}
-  .hide{display:none !important}
+/* modal */
+dialog#po-modal{border:none;border-radius:14px;width:min(640px,94vw);padding:0;background:#ffffff;color:var(--ink)}
+dialog#po-modal::backdrop{background:rgba(0,0,0,.35)}
+.pm-h{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.pm-b{padding:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pm-f{padding:14px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.input{background:#ffffff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--ink)}
+.subtle{font-size:12px;color:var(--muted)}
+
+@media (max-width:900px){
+  .po-cards{grid-template-columns:repeat(2,1fr)}
+  .pm-b{grid-template-columns:1fr}
+}
 </style>
 
 
-<div class="topbar">
-  
-  <div>
-    <div class="title">Create Billing Run</div>
-    <div class="subtitle">Step-by-step wizard to generate billing files from ticket data</div>
+<section id="po-app">
+  <div class="po-wrap">
+    <div class="po-header">
+      <h2 class="po-title">Purchase Orders</h2>
+      <div style="display:flex;gap:8px">
+        <button class="po-btn" id="po-exchange">💱 Exchange System</button>
+        <button class="po-btn" id="po-export">Export PO Report</button>
+        <button class="po-btn primary" id="po-new">+ Create New PO</button>
+        
+      </div>
+    </div>
+
+  <div class="po-cards">
+  <div class="po-card">
+    <div class="label">Active POs</div>
+    <div class="value" id="statActive">0</div>
+    <div class="hint">Across all customers</div>
   </div>
-  <div class="spacer"></div>
-  <button class="btn">Save Draft</button>
-  <button class="btn primary">Continue</button>
+
+  <div class="po-card">
+    <div class="label">Total Value</div>
+    <div class="value" id="statTotal">$0</div>
+    <div class="hint">Combined PO value</div>
+  </div>
+
+  <div class="po-card">
+    <div class="label">Low Balance</div>
+    <div class="value" id="statLow">0</div>
+    <div class="hint">Require attention</div>
+  </div>
+
+  <div class="po-card">
+    <div class="label">Expiring Soon</div>
+    <div class="value" id="statExp">0</div>
+    <div class="hint">Within 30 days</div>
+  </div>
+
+  <!-- ✅ NEW CARD -->
+  <div class="po-card">
+    <div class="label">Total Amount Invoiced</div>
+    <div class="value" id="statInvoiced">$0</div>
+    <div class="hint">Converted to USD</div>
+  </div>
 </div>
 
-<div class="wrap">
-  <div class="stepper" id="stepper">
-    <div class="step active" data-step="1"><div class="badge">1</div><div class="label">Ticket Data Distribution</div></div>
-    <div class="step" data-step="2"><div class="badge">2</div><div class="label">Rate Card Assignment</div></div>
-    <div class="step" data-step="3"><div class="badge">3</div><div class="label">Manual Computation and Verification</div></div>
-    <div class="step" data-step="4"><div class="badge">4</div><div class="label">Consolidation</div></div>
-    <div class="step" data-step="5"><div class="badge">5</div><div class="label">Review and Monitoring</div></div>
-    <div class="step" data-step="5"><div class="badge">6</div><div class="label">Query resolution & resubmission</div></div>
-    <div class="step" data-step="5"><div class="badge">7</div><div class="label">Final approval & Invoice Preparation</div></div>
-  </div>
 
-  <div id="steps">
-   
-   <!-- STEP 1 -->
-<!-- STEP 1 -->
-<section class="grid" data-step="1">
-  <div class="card panel">
-    <h3>Step 1 – Ticket Data Distribution</h3>
-    <div class="hint">
-      On the 1st business day of each month, Excis Service Desk generates ticket reports for all HCL accounts and sends them to the corresponding SDM regional email aliases.
+    <div class="po-block">
+      <div class="po-toolbar">
+        <div class="row">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <select class="po-select" id="fCustomer">
+              <option value="">All Customers</option>
+              <option value="HCL">HCL Technologies</option>
+              <option value="Cognizant">Cognizant</option>
+            </select>
+            <select class="po-select" id="fStatus">
+              <option value="">All Statuses</option>
+              <option>Active</option><option>Low Balance</option><option>Expiring Soon</option><option>Fully Utilized</option>
+            </select>
+            <select class="po-select" id="fCurrency">
+              <option value="">All Currencies</option>
+              <option>USD</option>
+              <option>EUR</option>
+            </select>
+
+            <!-- ✅ Show More Info dropdown -->
+            <div class="po-select" style="position:relative;">
+              <button type="button" id="showMoreBtn" class="po-btn">Show More Info ▾</button>
+              <div id="showMoreDropdown"
+                style="display:none;position:absolute;top:110%;left:0;background:white;border:1px solid #e5e7eb;
+                       padding:10px;border-radius:8px;z-index:100;min-width:240px;">
+                <div style="max-height:260px;overflow:auto;padding-right:6px;">
+                  <label><input type="checkbox" class="col-toggle" data-col="project"> Project</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="sdm"> SDM</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="billto"> Bill To</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="billaddr"> Billing Address</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="about"> About</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="workdone"> Work Done</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="comment"> Comment</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="expdays"> Expiration Days</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="currency"> Currency</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="payterms"> Payment Terms</label><br>
+                  <label><input type="checkbox" class="col-toggle" data-col="clientyear"> Client Year</label><br>
+                </div>
+                <hr style="margin:8px 0">
+                <div style="display:flex;gap:8px;justify-content:space-between">
+                  <button id="showFullBtn" type="button" class="po-btn">Show All</button>
+                  <button id="revertBtn" type="button" class="po-btn" style="background:#6b7280;color:#fff;">Revert</button>
+                </div>
+              </div>
+            </div>
+
+            <button class="po-btn" id="fClear" type="button">Clear filters</button>
+          </div>
+
+          <div class="po-search"><span>🔍</span><input id="fSearch" placeholder="Search PO numbers…" /></div>
+        </div>
+      </div>
+
+      <!-- ✅ Scrollable container -->
+      <div class="po-table" style="overflow-x:auto;">
+        <table id="po-table" style="min-width:1600px;border-collapse:collapse;width:100%;">
+          <thead>
+            <tr id="po-head">
+              <th>PO NUMBER</th>
+              <th>CUSTOMER / ACCOUNT</th>
+              <th class="right">TOTAL</th>
+              <th class="right">BALANCE</th>
+              <th>VALID FROM</th>
+              <th>VALID UNTIL</th>
+              <th>STATUS</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="po-tbody">
+            <tr>
+              <td>PO-001</td><td>HCL Technologies</td><td class="right">$12,000</td><td class="right">$2,000</td><td>2025-01-01</td><td>2025-12-31</td><td>Active</td><td>...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="po-footer" style="display:flex;justify-content:space-between;align-items:center;padding-top:12px">
+        <div id="resultInfo">Showing 1 result</div>
+        <div style="display:flex;gap:6px">
+          <button class="po-btn" id="prev" disabled>Previous</button>
+          <button class="po-btn" id="next" disabled>Next</button>
+        </div>
+      </div>
     </div>
-
-    <div class="field">
-      <div class="label">HCL Regional Accounts</div>
-      <table style="width:100%; border-collapse:collapse; font-size:14px;">
-        <thead>
-          <tr style="background:#f0f0ff; text-align:left;">
-            <th style="padding:10px; border-bottom:1px solid #ddd;">Region</th>
-            <th style="padding:10px; border-bottom:1px solid #ddd;">Account Code</th>
-            <th style="padding:10px; border-bottom:1px solid #ddd;">SDM Email Alias</th>
-            <th style="padding:10px; border-bottom:1px solid #ddd;">Status</th>
-            <th style="padding:10px; border-bottom:1px solid #ddd;">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="ticketTable">
-          <tr>
-            <td style="padding:10px;">Americas</td>
-            <td style="padding:10px;">HCL-AM-001</td>
-            <td style="padding:10px;"><a href="mailto:TestAmericas@gmail.com">TestAmericas@gmail.com</a></td>
-            <td style="padding:10px;" class="status">Pending</td>
-            <td style="padding:10px;">
-              <button class="btn small viewBtn">View</button>
-              <button class="btn small editBtn">Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:10px;">Europe / Africa</td>
-            <td style="padding:10px;">HCL-EU-002</td>
-            <td style="padding:10px;"><a href="mailto:TestEurope-africa@gmail.com">TestEurope-africa@gmail.com</a></td>
-            <td style="padding:10px;" class="status">Pending</td>
-            <td style="padding:10px;">
-              <button class="btn small viewBtn">View</button>
-              <button class="btn small editBtn">Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:10px;">APAC</td>
-            <td style="padding:10px;">HCL-AP-003</td>
-            <td style="padding:10px;"><a href="mailto:TestMapi@gmail.com">TestMapi@gmail.com</a></td>
-            <td style="padding:10px;" class="status">Pending</td>
-            <td style="padding:10px;">
-              <button class="btn small viewBtn">View</button>
-              <button class="btn small editBtn">Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:10px;">Middle East</td>
-            <td style="padding:10px;">HCL-ME-004</td>
-            <td style="padding:10px;"><a href="mailto:TestMiddleEast@gmail.com">TestMiddleEast@gmail.com</a></td>
-            <td style="padding:10px;" class="status">Pending</td>
-            <td style="padding:10px;">
-              <button class="btn small viewBtn">View</button>
-              <button class="btn small editBtn">Edit</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
-      <button id="distributeBtn" class="btn primary">
-        <span class="material-symbols-outlined">send</span> Distribute Tickets
-      </button>
-    </div>
-  </div>
-
-  <aside class="card summary">
-    <h4>Distribution Summary</h4>
-    <div id="summaryBox">
-      <div class="kv"><div class="muted">Total Regions</div><div>4</div></div>
-      <div class="kv"><div class="muted">Pending</div><div id="pendingCount">4</div></div>
-      <div class="kv"><div class="muted">Completed</div><div id="completedCount">0</div></div>
-    </div>
-  </aside>
-</section>
-
-
-
-
-    <!-- STEP 2 -->
-<!-- STEP 2 -->
-<section class="card panel hide" data-step="2" id="step2">
-  <h3>Step 2 – Rate Card Assignment</h3>
-  <div class="hint">
-    SDM reviews the ticket data, validates accuracy, and incorporates FTE and Scheduled Visit (SV) data before submitting a prebilling file to the Excis FSO Team.
-  </div>
-
-  <!-- Ticket Table -->
-  <table id="prebillingTable" style="width:100%; border-collapse:collapse; font-size:14px;">
-    <thead>
-      <tr style="background:#f0f0ff; text-align:left;">
-        <th style="padding:8px;">Region</th>
-        <th style="padding:8px;">Account Code</th>
-        <th style="padding:8px;">Ticket Count</th>
-        <th style="padding:8px;">Support Model</th>
-        <th style="padding:8px;">FTE Data</th>
-        <th style="padding:8px;">Scheduled Visits</th>
-        <th style="padding:8px;">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding:8px;">Americas</td>
-        <td style="padding:8px;">HCL-AM-001</td>
-        <td style="padding:8px;">12</td>
-        <td style="padding:8px;">
-          <select class="supportSelect" style="padding:4px;">
-            <option>FTE</option>
-            <option>Dispatch</option>
-            <option>Scheduled Visit</option>
-          </select>
-        </td>
-        <td style="padding:8px;" class="fteStatus">—</td>
-        <td style="padding:8px;" class="svStatus">—</td>
-        <td style="padding:8px;">
-          <button class="btn small add-fte-btn">Add FTE</button>
-          <button class="btn small add-sv-btn">Add SV</button>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:8px;">EMEA</td>
-        <td style="padding:8px;">HCL-EU-002</td>
-        <td style="padding:8px;">8</td>
-        <td style="padding:8px;">
-          <select class="supportSelect" style="padding:4px;">
-            <option>FTE</option>
-            <option>Dispatch</option>
-            <option>Scheduled Visit</option>
-          </select>
-        </td>
-        <td style="padding:8px;" class="fteStatus">—</td>
-        <td style="padding:8px;" class="svStatus">—</td>
-        <td style="padding:8px;">
-          <button class="btn small add-fte-btn">Add FTE</button>
-          <button class="btn small add-sv-btn">Add SV</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
-    <button id="submitPrebillingBtn" class="btn primary">
-      <span class="material-symbols-outlined">send</span> Submit Prebilling
-    </button>
-  </div>
-
-  <div id="submitMsg" style="display:none; margin-top:15px; padding:12px; border-radius:8px; background:#e8f5e9; color:#2e7d32; font-weight:500;">
-    ✅ Prebilling file submitted to Excis FSO Team successfully!
   </div>
 </section>
 
-<!-- FTE Floating Modal -->
-<div id="fteModal" class="modal hide">
-  <div class="modal-content">
-    <h4>Add FTE Data</h4>
-    <label>Engineer Name</label>
-    <input type="text" id="fteName" class="input" placeholder="Enter engineer name">
+<!-- ✅ Create/Edit PO modal -->
+<dialog id="po-modal" aria-modal="true">
+  <div class="pm-h">
+    <strong id="po-modal-title">Create New PO</strong>
+    <button type="button" class="po-btn" id="po-close-top" title="Close">✖</button>
+  </div>
 
-    <label>Working Days</label>
-    <input type="number" id="fteDays" class="input" placeholder="e.g., 22">
+  <form id="po-form">
+    <div class="pm-b">
+      <label class="field">Customer
+        <select id="iCustomer" required class="input">
+          <option value="">-- Select Customer --</option>
+          <option>HCL Technologies</option>
+          <option>Cognizant</option>
+        </select>
+      </label>
 
-    <label>Absent Days</label>
-    <input type="number" id="fteAbsent" class="input" placeholder="e.g., 1">
+      <label class="field">Account
+        <input id="iAccount" class="input" placeholder="HCL-ACC-001" />
+      </label>
 
-    <label>Work Calendar</label>
-    <table id="fteCalendar" style="width:100%; border-collapse:collapse; margin-top:6px;">
-      <thead>
-        <tr style="background:#f5f5f5; text-align:center;">
-          <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th>
+      <label class="field">Upload CSV File
+        <input type="file" id="iCsv" accept=".csv" />
+      </label>
+
+      <label class="field">Currency
+        <select id="iCurrency" class="input">
+          <option>USD</option>
+          <option>EUR</option>
+        </select>
+      </label>
+
+      <label class="field">Total
+        <input id="iTotal" type="number" min="0" step="0.01" required class="input" />
+      </label>
+
+      <label class="field">Balance
+        <input id="iSpent" type="number" min="0" step="0.01" class="input" placeholder="0" />
+      </label>
+
+      <label class="field">Valid From
+        <input id="iFrom" type="text" placeholder="YYYY-MM-DD" required />
+      </label>
+
+      <label class="field">Valid Until
+        <input id="iUntil" type="text" placeholder="YYYY-MM-DD" required />
+      </label>
+
+      <label class="field">Reference Number
+        <input id="iPrefix" class="input" placeholder="auto from customer (3 chars)" maxlength="10" />
+      </label>
+
+      <!-- ✅ Additional “Show More Info” Inputs -->
+      <hr style="grid-column:1/-1">
+      <h4 style="grid-column:1/-1;margin:6px 0 2px;">Additional Info</h4>
+
+      <label class="field">Project
+        <input id="iProject" class="input" placeholder="Project name" />
+      </label>
+
+      <label class="field">SDM
+        <input id="iSdm" class="input" placeholder="Service Delivery Manager" />
+      </label>
+
+      <label class="field">Bill To
+        <input id="iBillto" class="input" placeholder="Billing entity" />
+      </label>
+
+      <label class="field">Billing Address
+        <input id="iBilladdr" class="input" placeholder="Billing address" />
+      </label>
+
+      <label class="field">About
+        <input id="iAbout" class="input" placeholder="Short description" />
+      </label>
+
+      <label class="field">Work Done
+        <input id="iWorkdone" class="input" placeholder="e.g., 80%" />
+      </label>
+
+      <label class="field">Comment
+        <input id="iComment" class="input" placeholder="Remarks" />
+      </label>
+
+      <label class="field">Expiration Days
+        <input id="iExpdays" type="number" min="0" step="1" class="input" placeholder="e.g., 30" />
+      </label>
+
+      <label class="field">Payment Terms
+        <input id="iPayterms" class="input" placeholder="e.g., Net 30" />
+      </label>
+
+      <label class="field">Client Year
+        <input id="iClientyear" class="input" placeholder="e.g., 2025" />
+      </label>
+
+      <div class="subtle" style="grid-column:1/-1">
+        Every record gets a secure <b>unique id</b>. Status auto-calculates.
+      </div>
+    </div>
+
+    <div class="pm-f">
+      <button type="button" class="po-btn" id="po-cancel">Cancel</button>
+      <button type="submit" class="po-btn primary" id="po-save">Save PO</button>
+    </div>
+  </form>
+</dialog>
+<!-- 💰 Exchange Rate System & Smart Calculator -->
+<div class="exchange-calculator container my-3 p-3 border rounded bg-light">
+  <h3 class="mb-2">💱 Exchange Rate & Smart Calculator</h3>
+
+  <!-- 🌍 Exchange Rate Table -->
+  <div class="table-responsive mb-3">
+    <table class="table table-sm align-middle table-bordered" id="exchangeTable">
+      <thead class="table-light">
+        <tr>
+          <th>Currency</th>
+          <th>Symbol</th>
+          <th>1 Unit = USD</th>
+          <th>Action</th>
         </tr>
       </thead>
-      <tbody>
-        <tr style="text-align:center;">
-          <td><input type="checkbox" class="fteDay" value="Mon"></td>
-          <td><input type="checkbox" class="fteDay" value="Tue"></td>
-          <td><input type="checkbox" class="fteDay" value="Wed"></td>
-          <td><input type="checkbox" class="fteDay" value="Thu"></td>
-          <td><input type="checkbox" class="fteDay" value="Fri"></td>
+      <tbody id="exchangeBody">
+        <tr>
+          <td>USD</td>
+          <td>$</td>
+          <td><input type="number" class="form-control form-control-sm rate-input" data-currency="USD" value="1.00" readonly></td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>EUR</td>
+          <td>€</td>
+          <td><input type="number" class="form-control form-control-sm rate-input" data-currency="EUR" value="1.10" step="0.01"></td>
+          <td><button class="btn btn-sm btn-outline-secondary update-rate">Update</button></td>
+        </tr>
+        <tr>
+          <td>GBP</td>
+          <td>£</td>
+          <td><input type="number" class="form-control form-control-sm rate-input" data-currency="GBP" value="1.25" step="0.01"></td>
+          <td><button class="btn btn-sm btn-outline-secondary update-rate">Update</button></td>
+        </tr>
+        <tr>
+          <td>JPY</td>
+          <td>¥</td>
+          <td><input type="number" class="form-control form-control-sm rate-input" data-currency="JPY" value="0.007" step="0.0001"></td>
+          <td><button class="btn btn-sm btn-outline-secondary update-rate">Update</button></td>
         </tr>
       </tbody>
     </table>
-
-    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px;">
-      <button id="closeFTE" class="btn">Cancel</button>
-      <button id="saveFTE" class="btn primary">Save</button>
-    </div>
   </div>
+
+ <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+  <select id="filterCurrency" class="form-select form-select-sm" style="width:auto;">
+    <option value="">All Currencies</option>
+    <option value="USD">USD Only</option>
+    <option value="NONUSD">Non-USD Only</option>
+  </select>
+
+  <!-- 🪙 NEW: Specific Currency Option -->
+  <select id="specificCurrency" class="form-select form-select-sm" style="width:auto;">
+    <option value="">Select Specific Currency</option>
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+    <option value="GBP">GBP</option>
+    <option value="JPY">JPY</option>
+  </select>
+
+  <button id="recalcBtn" class="btn btn-sm btn-primary">Recalculate</button>
 </div>
 
-<!-- SV Floating Modal -->
-<div id="svModal" class="modal hide">
-  <div class="modal-content">
-    <h4>Add Scheduled Visit</h4>
-    <label>Day of the Week</label>
-    <select id="svDay" class="input">
-      <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
-      <option>Thursday</option><option>Friday</option>
-    </select>
-    <label>Visit Frequency</label>
-    <input type="text" id="svFreq" class="input" placeholder="e.g., Weekly, Biweekly">
-    <label>Remarks</label>
-    <input type="text" id="svRemarks" class="input" placeholder="Optional remarks">
-    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
-      <button id="closeSV" class="btn">Cancel</button>
-      <button id="saveSV" class="btn primary">Save</button>
-    </div>
-  </div>
+<!-- 📋 Purchase Order Table -->
+<div class="table-responsive mt-3">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>PO #</th>
+        <th>Customer</th>
+        <th>Total</th>
+        <th>Balance</th>
+        <th>Currency</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="po-tbody"></tbody>
+  </table>
+  <div id="resultInfo" class="small text-muted mt-1"></div>
 </div>
 
-<style>
-.modal {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 200;
-}
-.modal-content {
-  background: #fff; padding: 20px; border-radius: 12px;
-  width: 360px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-.modal.hide {display:none;}
-.modal-content h4 {margin-top:0;}
-.input {
-  width: 100%; padding: 6px 8px; margin-top:4px; margin-bottom:10px;
-  border: 1px solid #ccc; border-radius: 6px;
-}
-.btn.small {font-size: 12px; padding: 4px 8px;}
-.btn.primary {background: #1976d2; color: white; border: none;}
-.btn.danger {background: #d32f2f; color: white; border: none;}
-.btn:hover {opacity: 0.9;}
-</style>
-
 <script>
-let currentFTERow = null;
-let currentSVRow = null;
+// ==============================
+// 💾 Sample Purchase Order Data
+// ==============================
+const poData = [
+  { number: "PO-001", customer: "HCL Technologies", total: 12000, balance: 2000, currency: "USD", status: "Active" },
+  { number: "PO-002", customer: "Cognizant", total: 9000, balance: 3000, currency: "EUR", status: "Low Balance" },
+  { number: "PO-003", customer: "IBM", total: 15000, balance: 5000, currency: "USD", status: "Active" },
+  { number: "PO-004", customer: "Capgemini", total: 7000, balance: 1500, currency: "EUR", status: "Expiring Soon" },
+  { number: "PO-005", customer: "Infosys", total: 5000, balance: 800, currency: "GBP", status: "Active" },
+  { number: "PO-006", customer: "NTT Data", total: 300000, balance: 50000, currency: "JPY", status: "Active" },
+];
 
-// Open FTE Modal
-document.querySelectorAll('.add-fte-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    currentFTERow = e.target.closest('tr');
-    document.getElementById('fteModal').classList.remove('hide');
+// ==============================
+// 💹 Exchange Rate Data
+// ==============================
+let exchangeRates = {
+  USD: 1.0,
+  EUR: 1.10,
+  GBP: 1.25,
+  JPY: 0.007,
+};
+
+// ==============================
+// 📋 Render Purchase Order Table
+// ==============================
+function renderTable(filter = "") {
+  const tbody = document.getElementById("po-tbody");
+  tbody.innerHTML = "";
+
+  const filtered = poData.filter(po => {
+    if (filter === "USD") return po.currency === "USD";
+    if (filter === "NONUSD") return po.currency !== "USD";
+    return true;
   });
-});
 
-// Open SV Modal
-document.querySelectorAll('.add-sv-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    currentSVRow = e.target.closest('tr');
-    document.getElementById('svModal').classList.remove('hide');
-  });
-});
-
-// Close Modals
-document.getElementById('closeFTE').addEventListener('click', () => document.getElementById('fteModal').classList.add('hide'));
-document.getElementById('closeSV').addEventListener('click', () => document.getElementById('svModal').classList.add('hide'));
-
-// Save FTE
-document.getElementById('saveFTE').addEventListener('click', () => {
-  const name = document.getElementById('fteName').value;
-  const days = document.getElementById('fteDays').value;
-  const absent = document.getElementById('fteAbsent').value;
-  const selectedDays = [...document.querySelectorAll('.fteDay:checked')].map(cb => cb.value).join(', ');
-  currentFTERow.querySelector('.fteStatus').textContent = `${name} – ${days} days (${absent} absent) [${selectedDays}]`;
-  currentFTERow.querySelector('.fteStatus').style.color = '#2e7d32';
-  document.getElementById('fteModal').classList.add('hide');
-});
-
-// Save SV
-document.getElementById('saveSV').addEventListener('click', () => {
-  const day = document.getElementById('svDay').value;
-  const freq = document.getElementById('svFreq').value;
-  const remarks = document.getElementById('svRemarks').value;
-  currentSVRow.querySelector('.svStatus').textContent = `${day} (${freq}) ${remarks}`;
-  currentSVRow.querySelector('.svStatus').style.color = '#2e7d32';
-  document.getElementById('svModal').classList.add('hide');
-  document.getElementById('svDay').value = 'Monday';
-  document.getElementById('svFreq').value = '';
-  document.getElementById('svRemarks').value = '';
-});
-
-// Submit Prebilling
-document.getElementById('submitPrebillingBtn').addEventListener('click', () => {
-  const btn = document.getElementById('submitPrebillingBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="material-symbols-outlined">hourglass_empty</span> Submitting...';
-  setTimeout(() => {
-    btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Submitted';
-    document.getElementById('submitMsg').style.display = 'block';
-    setStep(3);
-  }, 1500);
-});
-</script>
-
-<!-- STEP 4 + STEP 5 PANEL (FULL) -->
-<section class="card panel hide" data-step="4" id="step4Panel" style="padding:18px;">
-  <h3>Step 4 – Manual Computation & Verification</h3>
-  <div class="small">Performed by: FSO Team · Monitored by: Admin</div>
-  <div style="margin-top:10px;" class="muted">This is the editable Billing Computation Module (Option B - fully manual). FSO edits rows directly. Admin reviews & approves.</div>
-
-  <div style="margin-top:12px;" id="billingModuleArea"></div>
-
-  <h3 style="margin-top:20px">Step 5 – Consolidation & Upload to HCL</h3>
-  <div class="small">Performed by: Admin</div>
-  <div style="margin-top:8px;" class="muted">Preview the Rate Card Before and After consolidation, validate currencies, and upload the consolidated file.</div>
-
-  <div id="consolidationArea" style="margin-top:12px;"></div>
-
-  <div class="controls" style="margin-top:14px">
-    <button class="btn" id="backToList">⬅ Back</button>
-    <button class="btn" id="downloadCSV">⬇ Export CSV</button>
-    <button class="btn primary" id="doConsolidate">📤 Consolidate & Upload</button>
-  </div>
-
-  <div id="uploadResult" style="margin-top:12px;display:none"></div>
-</section>
-
-<style>
-  /* Panel layout */
-  #step4Panel { background:var(--panel); border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.06); }
-  #step4Panel h3{margin:0 0 8px 0}
-  .flex-row{display:flex;gap:18px;align-items:flex-start}
-  .col{flex:1}
-  .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px}
-  table.step-table{width:100%;border-collapse:collapse;font-size:13px}
-  table.step-table th, table.step-table td{border:1px solid #eee;padding:8px;text-align:left}
-  table.step-table th{position:sticky;top:0;background:#f7f9fc;z-index:1}
-  .small{font-size:12px;color:var(--muted)}
-  .controls{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
-  .btn{padding:8px 12px;border-radius:8px;border:1px solid var(--line);cursor:pointer;background:var(--btn);font-weight:600}
-  .btn.primary{background:var(--brand);color:white;border-color:transparent}
-  .btn.danger{background:#ffebe8;color:#7a0b0b}
-  .badge{display:inline-block;padding:4px 8px;border-radius:12px;background:#f0f4ff;color:#243b53;font-weight:600;font-size:12px}
-  .muted{color:var(--muted);font-size:13px}
-  .highlight{background:#fff7e6}
-  .preview-panels{display:flex;gap:12px;margin-top:14px}
-  .preview-box{flex:1;background:#fff;padding:10px;border-radius:8px;border:1px solid var(--line);min-width:240px}
-  .log-table{width:100%;border-collapse:collapse}
-  .log-table th,.log-table td{border:1px solid #eee;padding:6px}
-  .uploader{display:flex;gap:8px;align-items:center}
-  input[type='number'], input[type='text'], select, input[type='date']{padding:6px;border:1px solid #ddd;border-radius:6px;width:100%;box-sizing:border-box}
-  .actions-col{min-width:120px}
-  @media(max-width:900px){.flex-row{flex-direction:column}.preview-panels{flex-direction:column}}
-</style>
-
-<script>
-/*
-  Full Step 4 + Step 5 module (Option B - fully manual).
-  Usage: call openStep45(ns) where ns.rateCardSample is the rate card object you shared.
-  The function captures BEFORE snapshot (service_rates), creates an AFTER working copy,
-  renders billing module (manual edit), renders before/after consolidation preview,
-  supports Approve/Reject, Save Edits, Export CSV, and mock Consolidate & Upload.
-
-  IMPORTANT: To hook into your existing "Standardize Rate Card" button, replace that
-  button's handler with:
-    document.getElementById('standardizeBtn').onclick = () => openStep45(ns);
-  (Assumes this call runs inside the same scope that has ns available.)
-*/
-
-(function(){
-  // Internal state
-  window._step45 = window._step45 || {};
-
-  // Utility: format number
-  function fmt(n){ return Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2}); }
-
-  // Create billing table (fully manual inputs)
-  function renderBillingModule(beforeData, afterData){
-    // afterData is the working copy FSO may edit
-    const rows = afterData.map((s,i)=>{
-      // placeholders
-      const ticketId = s.ticket_id || `T-${i+1}`;
-      const hours = (s.prebilling && s.prebilling.hours != null) ? s.prebilling.hours : '';
-      const rate = s.rate_value != null ? s.rate_value : '';
-      const multiplier = s.multiplier != null ? s.multiplier : '';
-      const total = s.manual_total != null ? s.manual_total : '';
-      const verified_by = s.verified_by || '';
-      const category = s.category || (s.rate_type ? s.rate_type : 'Service');
-      return `
-        <tr data-index="${i}">
-          <td>${i+1}</td>
-          <td class="cat-cell">${escapeHtml(category)}</td>
-          <td><input type="text" class="ticket_id" value="${escapeHtml(ticketId)}"></td>
-          <td><input type="number" class="hours" value="${escapeHtml(hours)}" placeholder="hours"></td>
-          <td><input type="number" class="rate" value="${escapeHtml(rate)}" placeholder="rate"></td>
-          <td><input type="number" class="multiplier" value="${escapeHtml(multiplier)}" placeholder="mult"></td>
-          <td><input type="number" class="total" value="${escapeHtml(total)}" placeholder="total"></td>
-          <td><input type="text" class="verified_by" value="${escapeHtml(verified_by)}" placeholder="Verifier"></td>
-          <td class="actions-col">
-            <button class="btn small approve">Approve</button>
-            <button class="btn small danger reject">Reject</button>
-          </td>
-        </tr>
-      `;
-    }).join('');
-
-    const html = `
-      <div class="table-wrap">
-        <table class="step-table" id="billingTable">
-          <thead>
-            <tr>
-              <th style="width:38px">#</th><th>Category</th><th>Ticket ID</th><th>Hours</th><th>Rate</th><th>Multiplier</th><th>Total</th><th>Verified By</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-        <button class="btn" id="addBillingRow">+ Add Row</button>
-        <button class="btn" id="saveBilling">Save Billing Edits</button>
-      </div>
+  filtered.forEach(po => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${po.number}</td>
+      <td>${po.customer}</td>
+      <td class="text-end">${po.total.toLocaleString()} ${po.currency}</td>
+      <td class="text-end">${po.balance.toLocaleString()} ${po.currency}</td>
+      <td>${po.currency}</td>
+      <td>${po.status}</td>
     `;
+    tbody.appendChild(tr);
+  });
 
-    document.getElementById('billingModuleArea').innerHTML = html;
-
-    // Attach row actions
-    document.getElementById('addBillingRow').onclick = () => {
-      const tbody = document.querySelector('#billingTable tbody');
-      const i = tbody.children.length;
-      const tr = document.createElement('tr');
-      tr.dataset.index = i;
-      tr.innerHTML = `
-        <td>${i+1}</td>
-        <td><input type="text" class="cat" value=""></td>
-        <td><input type="text" class="ticket_id" value="T-${i+1}"></td>
-        <td><input type="number" class="hours" value=""></td>
-        <td><input type="number" class="rate" value=""></td>
-        <td><input type="number" class="multiplier" value=""></td>
-        <td><input type="number" class="total" value=""></td>
-        <td><input type="text" class="verified_by" value=""></td>
-        <td class="actions-col"><button class="btn small approve">Approve</button> <button class="btn small danger reject">Reject</button></td>
-      `;
-      tbody.appendChild(tr);
-      attachRowButtons(tr);
-    };
-
-    function attachRowButtons(tr){
-      tr.querySelectorAll('.approve').forEach(b=>{
-        b.onclick = ()=>{ tr.style.background = '#e9f8ee'; const v = tr.querySelector('.verified_by'); if(v) v.value = 'Admin'; };
-      });
-      tr.querySelectorAll('.reject').forEach(b=>{
-        b.onclick = ()=>{ tr.style.background = '#fdecea'; const v = tr.querySelector('.verified_by'); if(v) v.value = 'Rejected'; };
-      });
-    }
-
-    document.querySelectorAll('#billingTable tbody tr').forEach(tr=>attachRowButtons(tr));
-
-    // Save billing edits: write back to afterData
-    document.getElementById('saveBilling').onclick = ()=>{
-      const tbody = document.querySelectorAll('#billingTable tbody tr');
-      tbody.forEach((tr,idx)=>{
-        const i = idx;
-        const s = afterData[i] || {};
-        s.ticket_id = (tr.querySelector('.ticket_id')?.value) || (`T-${i+1}`);
-        s.prebilling = s.prebilling || {};
-        s.prebilling.hours = Number(tr.querySelector('.hours')?.value) || 0;
-        s.rate_value = Number(tr.querySelector('.rate')?.value) || 0;
-        s.multiplier = Number(tr.querySelector('.multiplier')?.value) || 0;
-        s.manual_total = Number(tr.querySelector('.total')?.value) || 0;
-        s.verified_by = tr.querySelector('.verified_by')?.value || '';
-        // if a category input was added for new rows, handle it
-        const catInput = tr.querySelector('.cat');
-        if(catInput) s.category = catInput.value || s.category || 'N/A';
-      });
-      // Update after snapshot in state and re-render consolidation preview
-      window._step45.after = afterData;
-      renderConsolidationArea(window._step45.before, window._step45.after);
-      alert('Billing edits saved');
-    };
-  }
-
-  // Consolidation area: before/after preview and upload mock
-  function renderConsolidationArea(before, after){
-    // summary per region
-    function summarize(list){
-      const byRegion = {};
-      list.forEach(s=>{
-        const r = s.region || 'Unknown';
-        byRegion[r] = byRegion[r] || {tickets:0, fte:0, sv:0, total:0};
-        byRegion[r].tickets += 1;
-        byRegion[r].fte += Number(s.prebilling?.fte||0);
-        byRegion[r].sv += Number(s.prebilling?.sv||0);
-        // sum manual_total if exists else estimate 0
-        byRegion[r].total += Number(s.manual_total || 0);
-      });
-      return Object.keys(byRegion).map(k=>({region:k, ...byRegion[k]}));
-    }
-
-    const beforeSummary = summarize(before);
-    const afterSummary = summarize(after);
-
-    const beforeRows = beforeSummary.map(b=>`<tr><td>${escapeHtml(b.region)}</td><td>${b.tickets}</td><td>${b.fte}</td><td>${b.sv}</td><td>${fmt(b.total)}</td></tr>`).join('');
-    const afterRows = afterSummary.map(b=>`<tr><td>${escapeHtml(b.region)}</td><td>${b.tickets}</td><td>${b.fte}</td><td>${b.sv}</td><td>${fmt(b.total)}</td></tr>`).join('');
-
-    const html = `
-      <div class="preview-panels">
-        <div class="preview-box">
-          <h4>Before Prebilling (Snapshot)</h4>
-          <div class="table-wrap">
-            <table class="step-table">
-              <thead><tr><th>Region</th><th>Tickets</th><th>FTE</th><th>SV</th><th>Subtotal</th></tr></thead>
-              <tbody>${beforeRows}</tbody>
-            </table>
-          </div>
-        </div>
-        <div class="preview-box">
-          <h4>After Consolidation (Working)</h4>
-          <div class="table-wrap">
-            <table class="step-table">
-              <thead><tr><th>Region</th><th>Tickets</th><th>FTE</th><th>SV</th><th>Subtotal</th></tr></thead>
-              <tbody>${afterRows}</tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top:10px;display:flex;gap:10px;align-items:center;justify-content:flex-end">
-        <div class="uploader">
-          <input type="text" id="uploadRef" placeholder="Upload reference # (manual)" style="width:230px;padding:6px;border:1px solid #ddd;border-radius:6px">
-          <select id="currencyValidate"><option value="ok">Currency: OK</option></select>
-        </div>
-      </div>
-
-      <div style="margin-top:10px;">
-        <h5>Upload Log</h5>
-        <table class="log-table"><thead><tr><th>File Name</th><th>Upload Date</th><th>Uploader</th><th>Reference #</th><th>Status</th></tr></thead>
-        <tbody id="uploadLogBody"><tr><td colspan="5" class="small">No uploads yet</td></tr></tbody></table>
-      </div>
-    `;
-
-    document.getElementById('consolidationArea').innerHTML = html;
-  }
-
-  // CSV export helper
-  function exportCSV(after){
-    const rows = [];
-    rows.push(['Category','Region','Ticket ID','Hours','Rate','Multiplier','Total','Verified By']);
-    after.forEach(s=>{
-      rows.push([s.category||'', s.region||'', s.ticket_id||'', s.prebilling?.hours||'', s.rate_value||'', s.multiplier||'', s.manual_total||'', s.verified_by||'']);
-    });
-    const csv = rows.map(r=>r.map(cell=>`"${String(cell||'').replace(/"/g,'""')}"`).join(',')).join('\n');
-    const blob = new Blob([csv], {type:'text/csv'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'consolidated_billing.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-  }
-
-  // small helper to escape HTML content in string interpolation
-  function escapeHtml(s){
-    if(s==null) return '';
-    return String(s)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;')
-      .replace(/'/g,'&#39;');
-  }
-
-  // Public opener
-  window.openStep45 = function(ns){
-    if(!ns || !ns.rateCardSample || !Array.isArray(ns.rateCardSample.service_rates)){
-      console.warn('openStep45: missing ns.rateCardSample.service_rates');
-      alert('Cannot open Step 4/5 — rate card sample not found in provided ns object.');
-      return;
-    }
-
-    // capture before snapshot
-    const before = JSON.parse(JSON.stringify(ns.rateCardSample.service_rates));
-    // create after working copy
-    const after = JSON.parse(JSON.stringify(before));
-
-    // place panel visible (unhide the step4 <section>)
-    const root = document.getElementById('step4Panel');
-    if(root) root.classList.remove('hide');
-
-    window._step45.before = before;
-    window._step45.after = after;
-
-    renderBillingModule(before, after);
-    renderConsolidationArea(before, after);
-
-    // wire global buttons
-    const backBtn = document.getElementById('backToList');
-    if(backBtn) backBtn.onclick = ()=>{ document.getElementById('step4Panel').classList.add('hide'); /* optionally re-render main list*/ };
-
-    const doConsolidateBtn = document.getElementById('doConsolidate');
-    if(doConsolidateBtn) doConsolidateBtn.onclick = ()=>{
-      const ref = document.getElementById('uploadRef')?.value || `REF-${Date.now()}`;
-      // mock upload: append to upload log
-      const logBody = document.getElementById('uploadLogBody');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>consolidated_${Date.now()}.csv</td><td>${new Date().toLocaleString()}</td><td>Admin</td><td>${escapeHtml(ref)}</td><td>Uploaded</td>`;
-      if(logBody.children.length===1 && logBody.children[0].children.length===1) logBody.innerHTML = '';
-      logBody.appendChild(tr);
-      const ur = document.getElementById('uploadResult');
-      if(ur){ ur.style.display = ''; ur.innerHTML = '<div class="badge">✓ Consolidation uploaded (mock)</div>'; }
-      // also update ns.rateCardSample.service_rates with after working copy (apply manual edits)
-      after.forEach((s,i)=>{
-        const target = ns.rateCardSample.service_rates[i];
-        if(target){
-          target.prebilling = target.prebilling || {};
-          target.prebilling.hours = s.prebilling?.hours || target.prebilling.hours;
-          target.manual_total = s.manual_total || target.manual_total;
-          target.verified_by = s.verified_by || target.verified_by;
-        }
-      });
-      alert('Consolidation complete (mock). Rate card updated in-memory.');
-    };
-
-    const dl = document.getElementById('downloadCSV');
-    if(dl) dl.onclick = ()=> exportCSV(after);
-  };
-
-})();
-</script>
-
-<!--
-  Hook note:
-  Replace your existing standardizeBtn handler with (inside the same scope that holds `ns`):
-    document.getElementById('standardizeBtn').onclick = () => openStep45(ns);
-
-  If your standardize button lives inside renderServiceRateCard() and has its own behavior,
-  simply replace the final handler body with the single call above so it opens the Step4/5 UI.
--->
-
-</section>
-
-
-
-    <!-- STEP 5 -->
-    <section class="card panel hide" data-step="5"><h3>Step 5: Generate File</h3><div class="placeholder">Final Export Placeholder</div></section>
-  </div>
-
-  <div class="footer">
-    <button class="btn" id="backBtn">Back</button>
-    <button class="btn primary" id="continueBtn">Continue</button>
-  </div>
-</div>
-
-<script>
-let currentStep=1;
-function setStep(n){
-  currentStep=n;
-  document.querySelectorAll('.step').forEach(el=>el.classList.toggle('active',+el.dataset.step===n));
-  document.querySelectorAll('#steps > section').forEach(el=>el.classList.toggle('hide',+el.dataset.step!==n));
+  document.getElementById("resultInfo").textContent = `Showing ${filtered.length} purchase orders`;
 }
-document.getElementById('continueBtn').addEventListener('click',()=>setStep(Math.min(5,currentStep+1)));
-document.getElementById('backBtn').addEventListener('click',()=>setStep(Math.max(1,currentStep-1)));
-document.querySelectorAll('.step').forEach(el=>el.addEventListener('click',()=>setStep(+el.dataset.step)));
 
-// ACTION BUTTONS
-document.querySelectorAll('.viewBtn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    alert('Viewing ticket details for ' + btn.closest('tr').children[0].textContent);
+// ==============================
+// 🧮 Calculator Logic
+// ==============================
+function calculateTotals() {
+  const filter = document.getElementById("filterCurrency").value;
+  const specific = document.getElementById("specificCurrency").value;
+
+  let usdSum = 0, nonUsdSum = 0, convertedSum = 0;
+  let specificSum = 0, specificConverted = 0;
+
+  const filtered = poData.filter(po => {
+    if (filter === "USD") return po.currency === "USD";
+    if (filter === "NONUSD") return po.currency !== "USD";
+    return true;
   });
-});
 
-document.querySelectorAll('.editBtn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    alert('Editing ticket for ' + btn.closest('tr').children[0].textContent);
+  filtered.forEach(po => {
+    const rate = exchangeRates[po.currency] || 1;
+    const converted = po.total * rate;
+
+    if (po.currency === "USD") usdSum += po.total;
+    else {
+      nonUsdSum += po.total;
+      convertedSum += converted;
+    }
+
+    // 👇 check for specific currency total
+    if (specific && po.currency === specific) {
+      specificSum += po.total;
+      specificConverted += converted;
+    }
   });
-});
 
-// DISTRIBUTE TICKETS FUNCTION
-document.getElementById('distributeBtn').addEventListener('click', function() {
-  const btn = this;
-  const rows = document.querySelectorAll('#ticketTable .status');
-  let completed = 0;
+  const grandTotal = usdSum + convertedSum;
+  const usdPercent = grandTotal ? ((usdSum / grandTotal) * 100).toFixed(1) : 0;
+  const nonUsdPercent = grandTotal ? ((convertedSum / grandTotal) * 100).toFixed(1) : 0;
 
-  btn.disabled = true;
-  btn.innerHTML = '<span class="material-symbols-outlined">hourglass_empty</span> Distributing...';
+  // 🪙 update UI
+  let html = `
+    <div>🟦 USD Total: <b>$${usdSum.toLocaleString()}</b> (${usdPercent}%)</div>
+    <div>🌍 Non-USD (before conversion): <b>${nonUsdSum.toLocaleString()}</b></div>
+    <div>💹 Converted Non-USD → USD: <b>$${convertedSum.toLocaleString(undefined,{maximumFractionDigits:2})}</b></div>
+    <hr class="my-1">
+    <div><b>💰 Grand Total (USD): $${grandTotal.toLocaleString(undefined,{maximumFractionDigits:2})}</b></div>
+  `;
 
-  rows.forEach((cell, index) => {
-    setTimeout(() => {
-      cell.textContent = 'Sent';
-      cell.style.color = '#2e7d32';
-      cell.style.fontWeight = '600';
-      completed++;
-      document.getElementById('completedCount').textContent = completed;
-      document.getElementById('pendingCount').textContent = rows.length - completed;
+  // 🪙 add specific currency total if selected
+  if (specific) {
+    html += `
+      <hr class="my-1">
+      <div>💠 <b>${specific} Total:</b> ${specificSum.toLocaleString()} ${specific}</div>
+      <div>➡️ Converted to USD: <b>$${specificConverted.toLocaleString(undefined,{maximumFractionDigits:2})}</b></div>
+    `;
+  }
 
-      // when done, update button and proceed to step 2
-      if (completed === rows.length) {
-        btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Distribution Completed';
-        btn.style.background = '#2e7d32';
-        btn.style.color = '#fff';
-        setTimeout(() => {
-          setStep(2); // move automatically to Step 2
-        }, 1200);
-      }
-    }, 1000 * (index + 1));
-  });
-});
+  document.getElementById("calcResults").innerHTML = html;
+
+  // ✅ also update dashboard cards
+  document.getElementById("statTotal").textContent = `$${grandTotal.toLocaleString(undefined,{maximumFractionDigits:2})}`;
+  document.getElementById("statInvoiced").textContent = `$${specific ? specificConverted.toLocaleString(undefined,{maximumFractionDigits:2}) : grandTotal.toLocaleString(undefined,{maximumFractionDigits:2})}`;
+}
+
 </script>
+
+
 
             </div>
         </div>

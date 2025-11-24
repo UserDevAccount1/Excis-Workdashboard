@@ -1224,6 +1224,14 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
 .rcFormRow input, .rcFormRow select {flex:1;padding:8px;border:1px solid var(--line);border-radius:6px}
 .rcModal .rcActions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
 .small{font-size:12px;color:var(--muted)}
+  table.combinedTable { width:100%; border-collapse:collapse; font-size:13px; }
+  table.combinedTable th, table.combinedTable td { border:1px solid #ccc; padding:6px 8px; text-align:center; }
+  table.combinedTable th { background:#f0f0f0; }
+
+  .btn { padding:4px 8px; cursor:pointer; margin:0 2px; border:none; border-radius:3px; }
+  .btn.primary { background:#007bff; color:#fff; }
+  .btn.small { font-size:12px; }
+
 </style>
 </head>
 <body>
@@ -1432,83 +1440,338 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
 function renderServiceRateCard() {
   const d = ns.rateCardSample;
 
-  // Render Rate Card Info
-  const rows = `
-    <tr>
-      <td>1</td>
-      <td>${d.account_name}</td>
-      <td>${d.region}</td>
-      <td>${d.country}</td>
-      <td>${d.supplier}</td>
-      <td>${d.currency}</td>
-      <td>${d.entity}</td>
-      <td>${d.payment}</td>
-      <td>${d.status}</td>
-      <td><button class="btn small rc-view" data-viewtype="main">View</button></td>
-    </tr>
-  `;
+  // ------------------------------
+  // COLUMN VISIBILITY SETTINGS
+  // ------------------------------
+  const allColumns = [
+    { key: "customer", label: "Customer" },
+    { key: "region", label: "Region" },
+    { key: "country", label: "Country" },
+    { key: "supplier", label: "Supplier" },
+    { key: "currency", label: "Currency" },
+    { key: "entity", label: "Entity" },
+    { key: "payment", label: "Payment" },
+    { key: "status", label: "Status" },
+    { key: "category", label: "Category" },
+    { key: "sr_region", label: "SR Region" },
+    { key: "rate_type", label: "Rate Type" },
+    { key: "rate_value", label: "Rate Value" },
+    { key: "after_hours", label: "After Hours" },
+    { key: "weekend", label: "Weekend" },
+    { key: "travel", label: "Travel" },
+    { key: "includes_travel", label: "Includes Travel" },
+    { key: "remarks", label: "Remarks" },
+    { key: "fte", label: "FTE" },
+    { key: "sv", label: "Scheduled Visits" }
+  ];
 
-  // Render Service Rate Table
-  const serviceRows = d.service_rates.map((s, i) => `
-    <tr>
+  // ------------------------------
+  // DEFAULT COLUMN VISIBILITY
+  // ------------------------------
+ // Initialize hiddenColumns from localStorage or default to all visible
+let hiddenColumns = {};
+const saved = localStorage.getItem("defaultHiddenColumns");
+if (saved) {
+  hiddenColumns = JSON.parse(saved);
+} else {
+  allColumns.forEach(c => hiddenColumns[c.key] = false); // default = all visible
+}
+
+// ------------------------------
+// COLUMN TOGGLE DROPDOWN AND SAVE / REVERT
+// ------------------------------
+setTimeout(() => {
+  const checkboxes = container.querySelectorAll(".col-toggle-checkbox");
+  checkboxes.forEach(checkbox => {
+    const col = checkbox.dataset.col;
+
+    // initialize checkbox: unchecked = visible, checked = hidden
+    checkbox.checked = hiddenColumns[col] || false;
+
+    // apply column visibility
+    container.querySelectorAll(`.col-${col}`).forEach(td => {
+      td.style.display = hiddenColumns[col] ? "none" : "";
+    });
+
+    checkbox.onchange = () => {
+      hiddenColumns[col] = checkbox.checked; // checked = hide
+      container.querySelectorAll(`.col-${col}`).forEach(td => {
+        td.style.display = hiddenColumns[col] ? "none" : "";
+      });
+    };
+  });
+
+  // Add "Save Default Columns" button
+  if (!document.getElementById("saveDefaultColsBtn")) {
+    const saveColsBtn = document.createElement("button");
+    saveColsBtn.id = "saveDefaultColsBtn";
+    saveColsBtn.textContent = "💾 Save Default Columns";
+    saveColsBtn.className = "btn small primary";
+    saveColsBtn.style.marginLeft = "10px";
+    document.querySelector("#colToggle").appendChild(saveColsBtn);
+
+    saveColsBtn.onclick = () => {
+      localStorage.setItem("defaultHiddenColumns", JSON.stringify(hiddenColumns));
+      alert("Default column settings saved!");
+    };
+  }
+
+  // Add "Revert to Original Columns" button
+  if (!document.getElementById("revertColsBtn")) {
+    const revertColsBtn = document.createElement("button");
+    revertColsBtn.id = "revertColsBtn";
+    revertColsBtn.textContent = "🔄 Revert to Original Columns";
+    revertColsBtn.className = "btn small";
+    revertColsBtn.style.marginLeft = "10px";
+    document.querySelector("#colToggle").appendChild(revertColsBtn);
+
+    revertColsBtn.onclick = () => {
+      localStorage.removeItem("defaultHiddenColumns");
+      allColumns.forEach(c => hiddenColumns[c.key] = false); // reset all visible
+      // update table columns and checkboxes
+      checkboxes.forEach(cb => {
+        const col = cb.dataset.col;
+        cb.checked = false;
+        container.querySelectorAll(`.col-${col}`).forEach(td => td.style.display = "");
+      });
+      alert("Reverted to original table columns!");
+    };
+  }
+}, 100);
+  // ------------------------------
+  // COMBINED TABLE ROWS
+  // ------------------------------
+  const combinedRows = d.service_rates.map((s, i) => `
+    <tr class="combined-row" data-index="${i}">
       <td>${i + 1}</td>
-      <td>${s.category}</td>
-      <td>${s.region}</td>
-      <td>${s.rate_type}</td>
-      <td>${s.rate_value}</td>
-      <td>${s.after_hours_multiplier ?? '-'}</td>
-      <td>${s.weekend_multiplier ?? '-'}</td>
-      <td>${s.travel_charge ?? '-'}</td>
-      <td>${s.includes_travel ? '✅' : '❌'}</td>
-      <td>${s.remarks ?? '-'}</td>
-      <td><button class="btn small rc-view" data-viewtype="details">View</button></td>
+      <td class="col-customer">${d.account_name}</td>
+      <td class="col-region">${d.region}</td>
+      <td class="col-country">${d.country}</td>
+      <td class="col-supplier">${d.supplier}</td>
+      <td class="col-currency">${d.currency}</td>
+      <td class="col-entity">${d.entity}</td>
+      <td class="col-payment">${d.payment}</td>
+      <td class="col-status">${d.status}</td>
+
+      <td class="col-category">${s.category}</td>
+      <td class="col-sr_region">${s.region}</td>
+      <td class="col-rate_type">${s.rate_type}</td>
+      <td class="col-rate_value">${s.rate_value}</td>
+      <td class="col-after_hours">${s.after_hours_multiplier ?? '-'}</td>
+      <td class="col-weekend">${s.weekend_multiplier ?? '-'}</td>
+      <td class="col-travel">${s.travel_charge ?? '-'}</td>
+      <td class="col-includes_travel">${s.includes_travel ? '✅' : '❌'}</td>
+      <td class="col-remarks">${s.remarks ?? '-'}</td>
+
+      <td class="col-fte">${s.prebilling?.fte ?? '-'}</td>
+      <td class="col-sv">${s.prebilling?.sv ?? '-'}</td>
+
+      <td>
+        <button class="btn small rc-edit-modal" data-index="${i}">Edit</button>
+        <button class="btn small rc-delete" data-index="${i}">Delete</button>
+      </td>
     </tr>
   `).join('');
 
+  // ------------------------------
+  // RENDER HTML
+  // ------------------------------
   container.innerHTML = `
-    <h3>📋 Rate Card</h3>
-    <table>
-      <thead><tr><th>#</th><th>Customer</th><th>Region</th><th>Country</th><th>Supplier</th><th>Currency</th><th>Entity</th><th>Payment</th><th>Status</th><th>Action</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
+    <style>
+      table.combinedTable { width:100%; border-collapse:collapse; font-size:13px; }
+      table.combinedTable th, table.combinedTable td { border:1px solid #ccc; padding:6px 8px; text-align:center; }
+      table.combinedTable th { background:#f0f0f0; }
+      .btn { padding:4px 8px; cursor:pointer; margin:0 2px; border:none; border-radius:3px; }
+      .btn.primary { background:#007bff; color:#fff; }
+      .btn.small { font-size:12px; }
 
-    <hr style="margin:20px 0;">
+      /* Modal */
+      .modal-backdrop { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:flex-start; padding-top:40px; z-index:9999; }
+      .modal-content { background:#fff; padding:20px; border-radius:6px; width:700px; max-width:95%; max-height:90%; overflow:auto; box-sizing:border-box; }
+      .modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      .modal-grid .full { grid-column:1 / 3; }
+      .modal-grid label { display:block; font-weight:600; margin-bottom:4px; }
+      .modal-grid input, .modal-grid textarea, .modal-grid select { width:100%; padding:6px 8px; border:1px solid #ccc; border-radius:3px; font-size:13px; box-sizing:border-box; }
+      .modal-grid textarea { min-height:60px; resize:vertical; }
+      .modal-buttons { margin-top:15px; text-align:right; }
 
-    <h3>🧾 Service Rate Details</h3>
-    <table>
+      /* Column toggle dropdown */
+      .col-toggle-dropdown { position:relative; display:inline-block; margin-bottom:10px; }
+      .col-toggle-dropdown-content { display:none; position:absolute; background:#fff; border:1px solid #ccc; padding:10px; z-index:10; width:200px; max-height:300px; overflow:auto; box-shadow:0 2px 5px rgba(0,0,0,0.2); }
+      .col-toggle-dropdown.show .col-toggle-dropdown-content { display:block; }
+      .col-toggle-dropdown-content label { display:block; margin-bottom:4px; cursor:pointer; }
+    </style>
+
+    <h3>📋 Combined Rate Card & Service Rates</h3>
+
+    <div class="col-toggle-dropdown" id="colToggle">
+      <button class="btn small">Columns ▼</button>
+      <div class="col-toggle-dropdown-content">
+        ${allColumns.map(c => `
+          <label>
+            <input type="checkbox" class="col-toggle-checkbox" data-col="${c.key}"> ${c.label}
+          </label>
+        `).join('')}
+      </div>
+    </div>
+
+    <table class="combinedTable">
       <thead>
         <tr>
-          <th>#</th><th>Category</th><th>Region</th><th>Rate Type</th><th>Rate Value</th>
-          <th>After Hours</th><th>Weekend</th><th>Travel</th><th>Includes Travel</th><th>Remarks</th><th>Action</th>
+          <th>#</th><th class="col-customer">Customer</th><th class="col-region">Region</th><th class="col-country">Country</th><th class="col-supplier">Supplier</th>
+          <th class="col-currency">Currency</th><th class="col-entity">Entity</th><th class="col-payment">Payment</th><th class="col-status">Status</th>
+          <th class="col-category">Category</th><th class="col-sr_region">SR Region</th><th class="col-rate_type">Rate Type</th><th class="col-rate_value">Rate Value</th>
+          <th class="col-after_hours">After Hours</th><th class="col-weekend">Weekend</th><th class="col-travel">Travel</th><th class="col-includes_travel">Includes Travel</th><th class="col-remarks">Remarks</th>
+          <th class="col-fte">FTE</th><th class="col-sv">Scheduled Visits</th>
+          <th>Actions</th>
         </tr>
       </thead>
-      <tbody>${serviceRows}</tbody>
+      <tbody>${combinedRows}</tbody>
     </table>
 
     <div style="margin-top:20px;text-align:right;">
       <button class="btn primary" id="standardizeBtn">📤 Standardize Rate Card</button>
     </div>
+
+    <!-- Modal -->
+    <div class="modal-backdrop" id="pb-modal">
+      <div class="modal-content">
+        <h4 id="modalTitle">Edit Rate Card & Prebilling</h4>
+        <div id="modalBody" class="modal-grid"></div>
+        <div class="modal-buttons">
+          <button class="btn primary" id="pb-save-btn">💾 Save</button>
+          <button class="btn" id="pb-cancel-btn">❌ Cancel</button>
+        </div>
+      </div>
+    </div>
   `;
 
-  // 📤 When "Standardize Rate Card" is clicked, show generated JSON
-  document.getElementById('standardizeBtn').onclick = () => {
-    const generated = {
-      id: d.id,
-      account_name: d.account_name,
-      currency: d.currency,
-      valid_from: d.valid_from,
-      valid_to: d.valid_to,
-      service_rates: d.service_rates,
-      contact_email: d.contact_email,
-      last_updated_by: d.last_updated_by,
-      last_updated_at: d.last_updated_at
+  const modalBackdrop = document.getElementById("pb-modal");
+  const modalBody = document.getElementById("modalBody");
+  const saveBtnModal = document.getElementById("pb-save-btn");
+  const cancelBtnModal = document.getElementById("pb-cancel-btn");
+
+  // ------------------------------
+  // COLUMN TOGGLE DROPDOWN SHOW/HIDE
+  // ------------------------------
+  const colToggleBtn = document.querySelector("#colToggle > button");
+  const colToggleDropdown = document.querySelector("#colToggle");
+  colToggleBtn.onclick = () => colToggleDropdown.classList.toggle("show");
+
+  // COLUMN HIDE/SHOW
+  container.querySelectorAll(".col-toggle-checkbox").forEach(checkbox => {
+    const col = checkbox.dataset.col;
+
+    // initialize as unchecked = visible
+    checkbox.checked = hiddenColumns[col];
+
+    // apply initial column visibility
+    container.querySelectorAll(`.col-${col}`).forEach(td => {
+      td.style.display = hiddenColumns[col] ? "none" : "";
+    });
+
+    checkbox.onchange = () => {
+      hiddenColumns[col] = checkbox.checked; // save state
+      container.querySelectorAll(`.col-${col}`).forEach(td => {
+        td.style.display = hiddenColumns[col] ? "none" : "";
+      });
     };
+  });
+
+  // ------------------------------
+  // EDIT MODAL FUNCTION
+  // ------------------------------
+  container.querySelectorAll(".rc-edit-modal").forEach(btn => {
+    btn.onclick = () => {
+      const i = btn.dataset.index;
+      const s = d.service_rates[i];
+      s.prebilling = s.prebilling || {};
+
+      modalTitle.textContent = `📌 Edit Rate & Prebilling: ${s.category} (${s.region})`;
+      modalBody.innerHTML = `
+        <div class="modal-grid">
+          <div><label>Customer</label><input type="text" id="m-customer" value="${d.account_name}"></div>
+          <div><label>Region</label><input type="text" id="m-region" value="${d.region}"></div>
+          <div><label>Country</label><input type="text" id="m-country" value="${d.country}"></div>
+          <div><label>Supplier</label><input type="text" id="m-supplier" value="${d.supplier}"></div>
+          <div><label>Currency</label><input type="text" id="m-currency" value="${d.currency}"></div>
+          <div><label>Entity</label><input type="text" id="m-entity" value="${d.entity}"></div>
+          <div><label>Payment</label><input type="text" id="m-payment" value="${d.payment}"></div>
+          <div><label>Status</label><input type="text" id="m-status" value="${d.status}"></div>
+
+          <div><label>Category</label><input type="text" id="m-category" value="${s.category}"></div>
+          <div><label>Rate Type</label><input type="text" id="m-rate_type" value="${s.rate_type}"></div>
+          <div><label>Rate Value</label><input type="number" id="m-rate_value" value="${s.rate_value}"></div>
+          <div><label>After Hours Multiplier</label><input type="number" id="m-after_hours_multiplier" value="${s.after_hours_multiplier ?? ''}"></div>
+          <div><label>Weekend Multiplier</label><input type="number" id="m-weekend_multiplier" value="${s.weekend_multiplier ?? ''}"></div>
+          <div><label>Travel Charge</label><input type="number" id="m-travel_charge" value="${s.travel_charge ?? ''}"></div>
+          <div><label>Includes Travel</label>
+            <select id="m-includes_travel">
+              <option value="true" ${s.includes_travel?'selected':''}>Yes</option>
+              <option value="false" ${!s.includes_travel?'selected':''}>No</option>
+            </select>
+          </div>
+          <div class="full"><label>Remarks</label><textarea id="m-remarks">${s.remarks ?? ''}</textarea></div>
+
+          <div><label>FTE Count</label><input type="number" id="m-fte" value="${s.prebilling.fte ?? ''}"></div>
+          <div><label>Scheduled Visits</label><input type="number" id="m-sv" value="${s.prebilling.sv ?? ''}"></div>
+        </div>
+      `;
+      modalBackdrop.style.display = "flex";
+
+      saveBtnModal.onclick = () => {
+        d.account_name = document.getElementById("m-customer").value;
+        d.region = document.getElementById("m-region").value;
+        d.country = document.getElementById("m-country").value;
+        d.supplier = document.getElementById("m-supplier").value;
+        d.currency = document.getElementById("m-currency").value;
+        d.entity = document.getElementById("m-entity").value;
+        d.payment = document.getElementById("m-payment").value;
+        d.status = document.getElementById("m-status").value;
+
+        s.category = document.getElementById("m-category").value;
+        s.rate_type = document.getElementById("m-rate_type").value;
+        s.rate_value = document.getElementById("m-rate_value").value;
+        s.after_hours_multiplier = document.getElementById("m-after_hours_multiplier").value;
+        s.weekend_multiplier = document.getElementById("m-weekend_multiplier").value;
+        s.travel_charge = document.getElementById("m-travel_charge").value;
+        s.includes_travel = document.getElementById("m-includes_travel").value === "true";
+        s.remarks = document.getElementById("m-remarks").value;
+
+        s.prebilling.fte = document.getElementById("m-fte").value;
+        s.prebilling.sv = document.getElementById("m-sv").value;
+
+        renderServiceRateCard();
+        modalBackdrop.style.display = "none";
+        alert("Changes saved!");
+      };
+
+      cancelBtnModal.onclick = () => modalBackdrop.style.display = "none";
+    };
+  });
+
+  // DELETE SERVICE RATE
+  container.querySelectorAll(".rc-delete").forEach(btn => {
+    btn.onclick = () => {
+      const i = btn.dataset.index;
+      if(confirm("Delete this service rate?")) {
+        d.service_rates.splice(i, 1);
+        renderServiceRateCard();
+      }
+    };
+  });
+
+  // STANDARDIZE BUTTON
+  document.getElementById('standardizeBtn').onclick = () => {
     modalTitle.textContent = "📤 Standardized Rate Card JSON";
-    modalBody.innerHTML = `<pre style="background:#f5f5f5;padding:10px;border-radius:6px;white-space:pre-wrap;">${JSON.stringify(generated, null, 2)}</pre>`;
+    modalBody.innerHTML = `<pre style="background:#f5f5f5;padding:10px;border-radius:6px;white-space:pre-wrap;">${JSON.stringify(d, null, 2)}</pre>`;
     modalBackdrop.style.display = "flex";
-    saveBtn.onclick = () => (modalBackdrop.style.display = "none");
+    saveBtnModal.onclick = () => modalBackdrop.style.display = "none";
   };
 }
+
+
+
 
 
 

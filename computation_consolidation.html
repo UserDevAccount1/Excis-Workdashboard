@@ -1,0 +1,1073 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Billing & Consolidation Dashboard — Multi-Customer (Steps 4/5/6)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+ /* =============================
+   GENERAL LAYOUT
+============================= */
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f9fc;
+    margin: 0;
+    padding: 0;
+}
+
+#dashboard-container {
+    margin: 20px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* =============================
+   TABS
+============================= */
+.tabs {
+    margin-bottom: 15px;
+}
+.tab-btn {
+    padding: 8px 16px;
+    margin-right: 6px;
+    border: none;
+    background: #d1d1d1;
+    color: #000;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.tab-btn.active {
+    background: #007bff;
+    color: #fff;
+}
+.tab-content {
+    margin-top: 20px;
+}
+
+/* =============================
+   TABLES
+============================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+}
+table th {
+    background: #eef1f6;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+.highlight {
+    background: #ffe7c4;
+}
+
+/* =============================
+   BUTTONS
+============================= */
+.btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px 0;
+    font-size: 14px;
+}
+.btn.primary {
+    background: #007bff;
+    color: white;
+}
+.btn.success {
+    background: #28a745;
+    color: white;
+}
+.btn.reject {
+    background: #dc3545;
+    color: white;
+}
+.btn.warning {
+    background: #ff9800;
+    color: white;
+}
+.btn.danger {
+    background: #b50000;
+    color: white;
+}
+
+/* =============================
+   MODALS
+============================= */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    padding-top: 120px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+}
+.modal-content {
+    background: #fff;
+    margin: auto;
+    padding: 20px;
+    width: 450px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+}
+.close {
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+}
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #999;
+}
+
+/* =============================
+   CYCLE STATUS
+============================= */
+.cycle-status {
+    margin-top: 15px;
+    padding: 10px;
+    font-weight: bold;
+}
+.cycle-closed {
+    color: red;
+}
+
+/* =============================
+   READ ONLY MODE
+============================= */
+.locked {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+</style>
+</head>
+<body>
+
+<div id="dashboard-container">
+  <h2>📊 Billing & Consolidation Dashboard</h2>
+
+  <div class="controls">
+    <label for="customerSelect">Select Customer:</label>
+    <select id="customerSelect"></select>
+
+    <button id="downloadStateBtn" class="btn small">💾 Export State (JSON)</button>
+    <button id="loadStateBtn" class="btn small">↺ Load Last State</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="step4">Step 4 – Manual Computation & Verification</button>
+    <button class="tab-btn" data-tab="step5">Step 5 – Consolidation & Upload</button>
+    <button class="tab-btn" data-tab="step6">Step 6 – Review & Monitoring</button>
+    <button class="tab-btn" data-tab="step7">Step 7 – Query Resolution & Resubmission</button>
+    <button class="tab-btn" data-tab="step8">Step 8 – Final Approval & Invoice Preparation</button>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="tab-content" id="step4">
+    <p class="muted"><strong>Performed by:</strong> FSO Team &nbsp; | &nbsp; <strong>Monitored by:</strong> Admin</p>
+    <div id="step4-table-container"></div>
+    <div style="margin-top:10px;">
+      <button id="computeTotalsBtn" class="btn primary">Compute Totals & Highlight Anomalies</button>
+      <button id="resetSampleBtn" class="btn small" style="margin-left:8px;">🔁 Reset Customer Data</button>
+      <span style="margin-left:14px;" class="muted">Approve sends row to Step 5. Reject flags row for review.</span>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="tab-content" id="step5" style="display:none;">
+    <p class="muted"><strong>Performed by:</strong> Admin</p>
+
+    <div class="section-title">Before Consolidation / Prebilling</div>
+    <table id="beforeRateCard">
+      <thead>
+        <tr>
+          <th>Customer</th><th>Region</th><th>Country</th><th>Supplier</th><th>Currency</th>
+          <th>Entity</th><th>Payment</th><th>Status</th><th>Category</th><th>SR Region</th>
+          <th>Rate Type</th><th>Rate Value</th><th>After Hours</th><th>Weekend</th><th>Travel</th>
+          <th>Includes Travel</th><th>Remarks</th><th>FTE</th><th>Scheduled Visits</th><th>Total</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="section-title">After Consolidation / Prebilling Update</div>
+    <table id="afterRateCard">
+      <thead>
+        <tr>
+          <th>Customer</th><th>Region</th><th>Country</th><th>Supplier</th><th>Currency</th>
+          <th>Entity</th><th>Payment</th><th>Status</th><th>Category</th><th>SR Region</th>
+          <th>Rate Type</th><th>Rate Value</th><th>After Hours</th><th>Weekend</th><th>Travel</th>
+          <th>Includes Travel</th><th>Remarks</th><th>FTE</th><th>Scheduled Visits</th><th>Total</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div style="margin-top:12px;">
+      <div class="flex-row">
+        <button id="mergeUploadBtn" class="btn primary">Merge & Upload (Send to Review)</button>
+        <button id="validateCurrencyBtn" class="btn small" style="margin-left:8px;">Validate Currency Consistency</button>
+        <span class="muted" style="margin-left:12px;">Validate currency & totals before upload. Merge creates a consolidated file (simulated).</span>
+      </div>
+    </div>
+
+    <div class="section-title">Upload Log</div>
+    <table id="uploadLogTable">
+      <thead>
+        <tr>
+          <th>File Name</th><th>Upload Date</th><th>Uploader</th><th>Reference #</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="tab-content" id="step6" style="display:none;">
+    <h3>Step 6 – Review & Monitoring</h3>
+    <p class="muted"><strong>Performed by:</strong> Admin & FSO</p>
+
+    <div class="section-title">HCL Review Tracker</div>
+    <table id="reviewTracker">
+      <thead>
+        <tr>
+          <th>Customer</th><th>Status</th><th>Comments</th><th>Updated By</th><th>Date</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div style="margin-top:10px;">
+      <button id="notifySDM" class="btn primary">Notify SDM (Send Teams Message)</button>
+      <span class="muted" style="margin-left:10px;">(Simulation — shows a toast)</span>
+    </div>
+
+    <div class="section-title">Summary: Approved vs Rejected</div>
+    <div id="chartWrap">
+      <canvas id="reviewSummaryChart" width="300" height="200" style="border:1px solid #eee; border-radius:6px;"></canvas>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="tab-content" id="step7" style="display:none;">
+    <h3>Step 7 – Query Resolution & Resubmission</h3>
+    <p><strong>Performed by:</strong> SDM / FSO | <strong>Verified by:</strong> Admin</p>
+
+    <h4>❗ Rejected Files Queue</h4>
+    <table id="rejectedQueue">
+      <thead>
+        <tr>
+          <th>Customer</th><th>Category</th><th>Region</th><th>Issue</th><th>Rejected By</th><th>Date</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div id="correctionModal" class="modal">
+      <div class="modal-content">
+        <span id="closeCorrectionModal" class="close">&times;</span>
+        <h3>Correction Details</h3>
+        <label>Correction Notes:</label>
+        <textarea id="correctionNotes"></textarea>
+        <button id="submitCorrection" class="btn primary">Submit Correction</button>
+      </div>
+    </div>
+
+    <h4>📈 Resubmission Tracker</h4>
+    <canvas id="resubmissionChart"></canvas>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="tab-content" id="step8" style="display:none;">
+    <h3>Step 8 – Final Approval & Invoice Preparation</h3>
+    <p><strong>Performed by:</strong> Admin</p>
+
+    <h4>📄 Invoice Summary</h4>
+    <table id="invoiceSummaryTable">
+      <thead>
+        <tr>
+          <th>Customer</th><th>Category</th><th>Region</th><th>Total Amount</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h4>⬇ Export Controls</h4>
+    <button id="exportCsv" class="btn primary">Export CSV</button>
+    <button id="exportExcel" class="btn primary">Export Excel</button>
+
+    <h4>🔒 Cycle Control</h4>
+    <button id="closeCycleBtn" class="btn danger">Close Billing Cycle</button>
+    <p id="cycleStatus" class="cycle-status"></p>
+  </div>
+</div>
+
+<script>
+/* -------------------------
+   MULTI-CUSTOMER SAMPLE DATA (5 customers)
+   - Medium Sample: Acme, Globex, Wayne, Stark, Umbrella
+   ------------------------- */
+const rateCardDatabase = [
+  {
+    account_name: "Acme Corp",
+    region: "EMEA",
+    country: "UK",
+    supplier: "Supplier A",
+    currency: "USD",
+    entity: "Entity 1",
+    payment: "Net 30",
+    status: "Active",
+    service_rates: [
+      { category: "Consulting", region: "EMEA", rate_type: "Hourly", rate_value: 120, after_hours_multiplier: 1.5, weekend_multiplier: 2, travel_charge: 50, includes_travel:true, remarks:"Urgent", prebilling: { fte:2, sv:5 } },
+      { category: "Implementation", region: "EMEA", rate_type: "Fixed", rate_value: 150, after_hours_multiplier: null, weekend_multiplier: null, travel_charge: 0, includes_travel:false, remarks:null, prebilling: { fte:1, sv:3 } },
+      { category: "Support", region: "EMEA", rate_type: "Hourly", rate_value: 0, after_hours_multiplier:1.25, weekend_multiplier:1.5, travel_charge: 30, includes_travel:true, remarks:"", prebilling: { fte:3, sv:4 } },
+      { category: "Training", region: "EMEA", rate_type: "Daily", rate_value: 130, after_hours_multiplier: null, weekend_multiplier: null, travel_charge: 0, includes_travel:false, remarks:"Onsite", prebilling: { fte:1, sv:2 } },
+      { category: "Audit", region: "EMEA", rate_type: "Hourly", rate_value: 160, after_hours_multiplier:1.5, weekend_multiplier:2, travel_charge: 60, includes_travel:true, remarks:"Critical", prebilling: { fte:2, sv:1 } }
+    ]
+  },
+  {
+    account_name: "Globex Corporation",
+    region: "APAC",
+    country: "Singapore",
+    supplier: "Supplier B",
+    currency: "SGD",
+    entity: "Entity G",
+    payment: "Monthly",
+    status: "Active",
+    service_rates: [
+      { category: "Field Support", region: "APAC", rate_type: "Hourly", rate_value: 95, after_hours_multiplier:1.2, weekend_multiplier:1.5, travel_charge:20, includes_travel:false, remarks:"Local team", prebilling:{ fte:3, sv:4 } },
+      { category: "Deployment", region: "APAC", rate_type: "Fixed", rate_value: 2000, after_hours_multiplier:null, weekend_multiplier:null, travel_charge:0, includes_travel:true, remarks:"One-off", prebilling:{ fte:1, sv:1 } },
+      { category: "Support", region: "APAC", rate_type: "Hourly", rate_value: 80, after_hours_multiplier:1.1, weekend_multiplier:1.2, travel_charge:10, includes_travel:false, remarks:"24/7", prebilling:{ fte:2, sv:3 } }
+    ]
+  },
+  {
+    account_name: "Wayne Enterprises",
+    region: "NA",
+    country: "USA",
+    supplier: "Supplier C",
+    currency: "USD",
+    entity: "Entity W",
+    payment: "Quarterly",
+    status: "Active",
+    service_rates: [
+      { category: "Security Audit", region: "NA", rate_type: "Hourly", rate_value: 220, after_hours_multiplier:1.75, weekend_multiplier:2, travel_charge:150, includes_travel:true, remarks:"High priority", prebilling:{ fte:1, sv:2 } },
+      { category: "Monitoring", region: "NA", rate_type: "Monthly", rate_value: 5000, after_hours_multiplier:null, weekend_multiplier:null, travel_charge:0, includes_travel:false, remarks:"Managed", prebilling:{ fte:2, sv:0 } }
+    ]
+  },
+  {
+    account_name: "Stark Industries",
+    region: "EU",
+    country: "Germany",
+    supplier: "Supplier D",
+    currency: "EUR",
+    entity: "Entity S",
+    payment: "Net 45",
+    status: "Active",
+    service_rates: [
+      { category: "R&D Support", region: "EU", rate_type: "Hourly", rate_value: 300, after_hours_multiplier:2, weekend_multiplier:2.5, travel_charge:200, includes_travel:true, remarks:"Confidential", prebilling:{ fte:2, sv:1 } },
+      { category: "Integration", region: "EU", rate_type: "Fixed", rate_value: 10000, after_hours_multiplier:null, weekend_multiplier:null, travel_charge:0, includes_travel:false, remarks:"Large project", prebilling:{ fte:3, sv:2 } }
+    ]
+  },
+  {
+    account_name: "Umbrella Corp",
+    region: "LATAM",
+    country: "Brazil",
+    supplier: "Supplier E",
+    currency: "BRL",
+    entity: "Entity U",
+    payment: "Monthly",
+    status: "Active",
+    service_rates: [
+      { category: "Field Ops", region: "LATAM", rate_type: "Hourly", rate_value: 60, after_hours_multiplier:1.2, weekend_multiplier:1.5, travel_charge:30, includes_travel:true, remarks:"Regional", prebilling:{ fte:4, sv:6 } },
+      { category: "Compliance", region: "LATAM", rate_type: "Hourly", rate_value: 90, after_hours_multiplier:1.3, weekend_multiplier:1.6, travel_charge:40, includes_travel:false, remarks:"Regulatory", prebilling:{ fte:1, sv:1 } }
+    ]
+  }
+];
+
+/* -------------------------
+   WORKING STATE PER CUSTOMER
+   - We'll maintain a working copy per customer so edits don't alter database.
+   ------------------------- */
+const workingData = {}; // key: account_name -> deep clone of database row
+const approvedRowsMap = {}; // approved rows per customer
+let reviewData = []; // Step 6 tracker entries (aggregated across customers)
+let uploadLog = [];
+
+/* -------------------------
+   Populate Customer Select
+   ------------------------- */
+const customerSelect = document.getElementById('customerSelect');
+rateCardDatabase.forEach(rc => {
+  const opt = document.createElement('option');
+  opt.value = rc.account_name;
+  opt.textContent = rc.account_name;
+  customerSelect.appendChild(opt);
+});
+
+// defaults to first customer
+let currentCustomer = rateCardDatabase[0].account_name;
+customerSelect.value = currentCustomer;
+
+// create working data clones
+rateCardDatabase.forEach(rc => {
+  workingData[rc.account_name] = JSON.parse(JSON.stringify(rc));
+  approvedRowsMap[rc.account_name] = []; // empty approved rows initially
+});
+
+// load from localStorage if available
+const saved = localStorage.getItem('billingDashboardState_v1');
+if (saved) {
+  try {
+    const s = JSON.parse(saved);
+    // only restore if shape matches; otherwise keep defaults
+    if (s.workingData && s.approvedRowsMap && s.uploadLog) {
+      Object.assign(workingData, s.workingData);
+      Object.assign(approvedRowsMap, s.approvedRowsMap);
+      uploadLog = s.uploadLog || [];
+      reviewData = s.reviewData || [];
+    }
+  } catch(e){ /* ignore */ }
+}
+
+/* -------------------------
+   Tabs switching
+   ------------------------- */
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".tab-content").forEach(c => c.style.display = 'none');
+    document.getElementById(btn.dataset.tab).style.display = 'block';
+    if (btn.dataset.tab === 'step5') renderStep5();
+    if (btn.dataset.tab === 'step6') renderStep6();
+  });
+});
+
+/* -------------------------
+   When customer changes
+   ------------------------- */
+customerSelect.addEventListener('change', () => {
+  currentCustomer = customerSelect.value;
+  renderStep4();
+  // if viewing step5 or step6 update preview
+  if (document.querySelector('.tab-btn.active').dataset.tab === 'step5') renderStep5();
+  if (document.querySelector('.tab-btn.active').dataset.tab === 'step6') renderStep6();
+});
+
+/* -------------------------
+   STEP 4: Render & Events
+   ------------------------- */
+function getWorking(customer) {
+  if (!workingData[customer]) {
+    // fallback clone from db
+    const found = rateCardDatabase.find(r => r.account_name === customer);
+    workingData[customer] = found ? JSON.parse(JSON.stringify(found)) : { account_name: customer, service_rates: [] };
+  }
+  return workingData[customer];
+}
+
+function renderStep4() {
+  const container = document.getElementById("step4-table-container");
+  const rateCardSample = getWorking(currentCustomer);
+
+  const rowsHtml = rateCardSample.service_rates.map((s, i) => {
+    const total = (parseFloat(s.rate_value) || 0) * ((parseFloat(s.prebilling?.fte) || 0) + (parseFloat(s.prebilling?.sv) || 0));
+    return `
+      <tr data-index="${i}">
+        <td>${escapeHtml(rateCardSample.account_name)}</td>
+        <td>${escapeHtml(rateCardSample.region)}</td>
+        <td>${escapeHtml(rateCardSample.country)}</td>
+        <td>${escapeHtml(rateCardSample.supplier)}</td>
+        <td>${escapeHtml(rateCardSample.currency)}</td>
+        <td>${escapeHtml(rateCardSample.entity)}</td>
+        <td>${escapeHtml(rateCardSample.payment)}</td>
+        <td>${escapeHtml(rateCardSample.status)}</td>
+        <td contenteditable="true">${escapeHtml(s.category)}</td>
+        <td contenteditable="true">${escapeHtml(s.region)}</td>
+        <td contenteditable="true">${escapeHtml(s.rate_type)}</td>
+        <td contenteditable="true">${escapeHtml(s.rate_value)}</td>
+        <td contenteditable="true">${s.after_hours_multiplier ?? '-'}</td>
+        <td contenteditable="true">${s.weekend_multiplier ?? '-'}</td>
+        <td contenteditable="true">${s.travel_charge ?? '-'}</td>
+        <td>${s.includes_travel ? '✅' : '❌'}</td>
+        <td contenteditable="true">${escapeHtml(s.remarks ?? '')}</td>
+        <td contenteditable="true">${s.prebilling?.fte ?? '-'}</td>
+        <td contenteditable="true">${s.prebilling?.sv ?? '-'}</td>
+        <td class="row-total">${total.toFixed(2)}</td>
+        <td>
+          <button class="btn approve">Approve</button>
+          <button class="btn reject">Reject</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  container.innerHTML = `<table>
+    <thead>
+      <tr>
+        <th>Customer</th><th>Region</th><th>Country</th><th>Supplier</th><th>Currency</th><th>Entity</th><th>Payment</th><th>Status</th>
+        <th>Category</th><th>SR Region</th><th>Rate Type</th><th>Rate Value</th>
+        <th>After Hours</th><th>Weekend</th><th>Travel</th><th>Includes Travel</th>
+        <th>Remarks</th><th>FTE</th><th>Scheduled Visits</th><th>Total</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>${rowsHtml}</tbody>
+  </table>`;
+
+  attachStep4Events();
+  highlightAnomalies();
+}
+
+/* attach approve/reject and contenteditable handlers for current customer */
+function attachStep4Events() {
+  const rows = document.querySelectorAll("#step4-table-container tbody tr");
+  const rateCardSample = getWorking(currentCustomer);
+  rows.forEach(tr => {
+    const idx = parseInt(tr.dataset.index, 10);
+
+    // approve
+    tr.querySelector(".approve").onclick = () => {
+      const updated = readRowAsObject(tr);
+      // push to approved rows map for current customer
+      approvedRowsMap[currentCustomer].push(updated);
+      // remove original from working data
+      rateCardSample.service_rates.splice(idx, 1);
+      // re-render
+      renderStep4();
+      alert(`Row approved and moved to Step 5 preview (Category: ${updated.category}) for ${currentCustomer}.`);
+      persistState();
+    };
+
+    // reject (flag)
+    tr.querySelector(".reject").onclick = () => {
+      const updated = readRowAsObject(tr);
+      tr.classList.add("highlight");
+      alert(`Row rejected for review (Category: ${updated.category}) — ${currentCustomer}.`);
+    };
+
+    // When contenteditable cell loses focus, recalc total
+    tr.querySelectorAll('td[contenteditable="true"]').forEach(cell => {
+      cell.addEventListener('blur', () => {
+        const updated = readRowAsObject(tr);
+        const totalCell = tr.querySelector('.row-total');
+        const total = (parseFloat(updated.rate_value) || 0) * ((parseFloat(updated.prebilling.fte) || 0) + (parseFloat(updated.prebilling.sv) || 0));
+        totalCell.textContent = total.toFixed(2);
+        highlightAnomalies();
+        persistState();
+      });
+    });
+  });
+}
+
+/* read a table row and return object representing the service rate */
+function readRowAsObject(tr) {
+  const cells = tr.children;
+  return {
+    category: cells[8].textContent.trim(),
+    region: cells[9].textContent.trim(),
+    rate_type: cells[10].textContent.trim(),
+    rate_value: parseFloat(cells[11].textContent.trim()) || 0,
+    after_hours_multiplier: parseFloat(cells[12].textContent.trim()) || null,
+    weekend_multiplier: parseFloat(cells[13].textContent.trim()) || null,
+    travel_charge: parseFloat(cells[14].textContent.trim()) || null,
+    includes_travel: cells[15].textContent.includes('✅'),
+    remarks: cells[16].textContent.trim(),
+    prebilling: {
+      fte: parseFloat(cells[17].textContent.trim()) || 0,
+      sv: parseFloat(cells[18].textContent.trim()) || 0
+    }
+  };
+}
+
+/* highlight anomalies for current customer's table */
+function highlightAnomalies() {
+  document.querySelectorAll("#step4-table-container tbody tr").forEach(tr => {
+    tr.classList.remove("highlight");
+    const rate = parseFloat(tr.children[11].textContent) || 0;
+    const total = parseFloat(tr.children[19].textContent) || 0;
+    if (rate <= 0 || total <= 0) tr.classList.add("highlight");
+  });
+}
+
+/* -------------------------
+   STEP 5: Render Before & After preview for current customer
+   ------------------------- */
+function renderStep5() {
+  const beforeTbody = document.querySelector("#beforeRateCard tbody");
+  const afterTbody  = document.querySelector("#afterRateCard tbody");
+  beforeTbody.innerHTML = "";
+  afterTbody.innerHTML = "";
+
+  const approvedRows = approvedRowsMap[currentCustomer] || [];
+
+  // Before: snapshot from approvedRows (initial snapshot is same as after unless admin edits after)
+  approvedRows.forEach(s => {
+    const total = (parseFloat(s.rate_value) || 0) * ((parseFloat(s.prebilling.fte) || 0) + (parseFloat(s.prebilling.sv) || 0));
+    const tr = document.createElement('tr');
+    tr.innerHTML = [
+      currentCustomer,
+      getWorking(currentCustomer).region,
+      getWorking(currentCustomer).country,
+      getWorking(currentCustomer).supplier,
+      getWorking(currentCustomer).currency,
+      getWorking(currentCustomer).entity,
+      getWorking(currentCustomer).payment,
+      getWorking(currentCustomer).status,
+      s.category,
+      s.region,
+      s.rate_type,
+      s.rate_value,
+      s.after_hours_multiplier ?? '-',
+      s.weekend_multiplier ?? '-',
+      s.travel_charge ?? '-',
+      s.includes_travel ? '✅' : '❌',
+      s.remarks ?? '-',
+      s.prebilling.fte,
+      s.prebilling.sv,
+      total.toFixed(2)
+    ].map(cell => `<td>${escapeHtml(String(cell))}</td>`).join('');
+    beforeTbody.appendChild(tr);
+
+    // After row (editable for rate/fte/sv/remarks)
+    const afterTr = document.createElement('tr');
+    afterTr.innerHTML = [
+      `<td>${escapeHtml(currentCustomer)}</td>`,
+      `<td>${escapeHtml(getWorking(currentCustomer).region)}</td>`,
+      `<td>${escapeHtml(getWorking(currentCustomer).country)}</td>`,
+      `<td>${escapeHtml(getWorking(currentCustomer).supplier)}</td>`,
+      `<td>${escapeHtml(getWorking(currentCustomer).currency)}</td>`,
+      `<td>${escapeHtml(getWorking(currentCustomer).entity)}</td>`,
+      `<td>${escapeHtml(getWorking(currentCustomer).payment)}</td>`,
+      `<td>${escapeHtml(getWorking(currentCustomer).status)}</td>`,
+      `<td contenteditable="true">${escapeHtml(s.category)}</td>`,
+      `<td contenteditable="true">${escapeHtml(s.region)}</td>`,
+      `<td contenteditable="true">${escapeHtml(s.rate_type)}</td>`,
+      `<td contenteditable="true">${escapeHtml(s.rate_value)}</td>`,
+      `<td contenteditable="true">${s.after_hours_multiplier ?? '-'}</td>`,
+      `<td contenteditable="true">${s.weekend_multiplier ?? '-'}</td>`,
+      `<td contenteditable="true">${s.travel_charge ?? '-'}</td>`,
+      `<td>${s.includes_travel ? '✅' : '❌'}</td>`,
+      `<td contenteditable="true">${escapeHtml(s.remarks ?? '')}</td>`,
+      `<td contenteditable="true">${s.prebilling.fte}</td>`,
+      `<td contenteditable="true">${s.prebilling.sv}</td>`,
+      `<td class="after-total">${total.toFixed(2)}</td>`
+    ].join('');
+    afterTbody.appendChild(afterTr);
+
+    // recalc after total on edit in after table
+    afterTr.querySelectorAll('td[contenteditable="true"]').forEach(cell => {
+      cell.addEventListener('blur', () => {
+        const cells = afterTr.children;
+        const rate = parseFloat(cells[11].textContent) || 0;
+        const fte = parseFloat(cells[17].textContent) || 0;
+        const sv  = parseFloat(cells[18].textContent) || 0;
+        const tot = rate * (fte + sv);
+        afterTr.querySelector('.after-total').textContent = tot.toFixed(2);
+      });
+    });
+  });
+}
+
+/* Currency consistency validator for Step 5 */
+document.getElementById('validateCurrencyBtn').onclick = () => {
+  const currency = getWorking(currentCustomer).currency;
+  let inconsistent = false;
+  // In our sample each approved row does not specify currency individually; check approved rows' country vs currency mismatch simulation
+  (approvedRowsMap[currentCustomer] || []).forEach(r => {
+    if (r.currency && r.currency !== currency) inconsistent = true;
+  });
+  if (inconsistent) {
+    alert("Currency inconsistency detected! Please review before upload.");
+  } else {
+    alert("Currency check OK (customer currency: " + currency + ").");
+  }
+};
+
+/* -------------------------
+   STEP 5: Merge & Upload -> send to Step 6
+   ------------------------- */
+document.getElementById("mergeUploadBtn").onclick = () => {
+  const approvedRows = approvedRowsMap[currentCustomer] || [];
+  if (approvedRows.length === 0) {
+    alert("No approved rows to merge for " + currentCustomer + ". Approve rows in Step 4 first.");
+    return;
+  }
+
+  // create simulated consolidated file record
+  const now = new Date().toLocaleString();
+  const ref = Math.floor(Math.random() * 1000000);
+  const fileName = `Consolidated_${currentCustomer.replaceAll(' ','_')}_${now.replace(/[,: ]+/g, "_")}.xlsx`;
+  uploadLog.push({ fileName, date: now, uploader: "Admin", ref, status: "Uploaded" });
+
+  // append to Upload Log table
+  const logTbody = document.querySelector("#uploadLogTable tbody");
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${escapeHtml(fileName)}</td><td>${escapeHtml(now)}</td><td>Admin</td><td>${ref}</td><td>Uploaded</td>`;
+  logTbody.appendChild(tr);
+
+  alert("Consolidation & Upload completed for " + currentCustomer + " — sending consolidated data to Review (Step 6).");
+
+  // Prepare review entries from approvedRows (snapshot)
+  const created = approvedRows.map(r => {
+    const total = (parseFloat(r.rate_value) || 0) * ((parseFloat(r.prebilling.fte) || 0) + (parseFloat(r.prebilling.sv) || 0));
+    return {
+      customer: currentCustomer,
+      status: "Pending",
+      comments: "",
+      updatedBy: "-",
+      date: "-",
+      original: JSON.parse(JSON.stringify(r)),
+      total: total.toFixed(2)
+    };
+  });
+
+  // append to reviewData (aggregated across customers)
+  reviewData = reviewData.concat(created);
+
+  // clear approved rows for current customer (they've been submitted)
+  approvedRowsMap[currentCustomer] = [];
+
+  // persist
+  persistState();
+
+  // jump to Step 6
+  document.querySelector('.tab-btn[data-tab="step6"]').click();
+  renderStep6();
+};
+
+/* -------------------------
+   STEP 6: Review Tracker + Chart + Notify SDM
+   ------------------------- */
+function renderStep6() {
+  const tbody = document.querySelector('#reviewTracker tbody');
+  tbody.innerHTML = '';
+
+  if (reviewData.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="muted">No records pending review. Upload consolidated data in Step 5 to send records here.</td></tr>`;
+    drawReviewChart();
+    return;
+  }
+
+  reviewData.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(r.customer)}</td>
+      <td class="status-cell">${escapeHtml(r.status)}</td>
+      <td contenteditable="true" class="comment-cell">${escapeHtml(r.comments)}</td>
+      <td class="updatedBy-cell">${escapeHtml(r.updatedBy)}</td>
+      <td class="date-cell">${escapeHtml(r.date)}</td>
+      <td>
+        <button class="btn approve small">Approve</button>
+        <button class="btn reject small">Reject</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+
+    tr.querySelector('.approve').onclick = () => {
+      r.status = "Approved";
+      r.comments = tr.querySelector('.comment-cell').textContent.trim();
+      r.updatedBy = "Admin";
+      r.date = new Date().toLocaleString();
+      persistState();
+      renderStep6();
+      drawReviewChart();
+    };
+    tr.querySelector('.reject').onclick = () => {
+      r.status = "Rejected";
+      r.comments = tr.querySelector('.comment-cell').textContent.trim();
+      r.updatedBy = "Admin";
+      r.date = new Date().toLocaleString();
+      persistState();
+      renderStep6();
+      drawReviewChart();
+    };
+  });
+
+  drawReviewChart();
+}
+
+/* draw a small pie-like summary (canvas) */
+function drawReviewChart() {
+  const canvas = document.getElementById('reviewSummaryChart');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const approved = reviewData.filter(r => r.status === "Approved").length;
+  const rejected = reviewData.filter(r => r.status === "Rejected").length;
+  const pending = reviewData.filter(r => r.status === "Pending").length;
+  const total = approved + rejected + pending;
+  if (total === 0) {
+    ctx.fillStyle = "#666";
+    ctx.font = "14px Arial";
+    ctx.fillText("No review data", 100, 100);
+    return;
+  }
+
+  const values = [approved, rejected, pending];
+  const colors = ["#28a745","#dc3545","#6c757d"];
+  let start = -0.5 * Math.PI;
+  for (let i=0;i<values.length;i++){
+    const val = values[i];
+    if (val === 0) continue;
+    const slice = (val/total) * 2 * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(150,100);
+    ctx.arc(150,100,80,start,start+slice);
+    ctx.closePath();
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+    start += slice;
+  }
+
+  ctx.font = "12px Arial";
+  ctx.fillStyle = "#000";
+  ctx.fillText(`Approved: ${approved}`, 10, 190);
+  ctx.fillText(`Rejected: ${rejected}`, 110, 190);
+  ctx.fillText(`Pending: ${pending}`, 220, 190);
+}
+
+/* Notify SDM simulated */
+document.getElementById('notifySDM').onclick = () => {
+  const approved = reviewData.filter(r => r.status === "Approved").length;
+  const rejected = reviewData.filter(r => r.status === "Rejected").length;
+  const pending = reviewData.filter(r => r.status === "Pending").length;
+  alert(`SDM NOTIFICATION (simulated)\nApproved: ${approved}\nRejected: ${rejected}\nPending: ${pending}`);
+};
+
+/* -------------------------
+   Utilities, persistence, initial render
+   ------------------------- */
+function escapeHtml(str) {
+  return String(str || '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+}
+
+/* persist state to localStorage */
+function persistState() {
+  try {
+    const state = {
+      workingData,
+      approvedRowsMap,
+      reviewData,
+      uploadLog
+    };
+    localStorage.setItem('billingDashboardState_v1', JSON.stringify(state));
+  } catch(e){ /* ignore */ }
+}
+
+/* Reset current customer's working data to original DB entry */
+document.getElementById('resetSampleBtn').onclick = () => {
+  if (!confirm("Reset this customer's working data to original sample? This will clear that customer's approved rows.")) return;
+  const db = rateCardDatabase.find(r => r.account_name === currentCustomer);
+  workingData[currentCustomer] = JSON.parse(JSON.stringify(db));
+  approvedRowsMap[currentCustomer] = [];
+  renderStep4();
+  persistState();
+  alert(`Working data for ${currentCustomer} reset.`);
+};
+
+/* Compute Totals button (Step 4) */
+document.getElementById('computeTotalsBtn').onclick = () => {
+  document.querySelectorAll("#step4-table-container tbody tr").forEach(tr => {
+    const cells = tr.children;
+    const rate = parseFloat(cells[11].textContent) || 0;
+    const fte = parseFloat(cells[17].textContent) || 0;
+    const sv  = parseFloat(cells[18].textContent) || 0;
+    const tot = rate * (fte + sv);
+    cells[19].textContent = tot.toFixed(2);
+  });
+  highlightAnomalies();
+  alert("Totals recomputed and anomalies highlighted for " + currentCustomer + ".");
+};
+
+/* Export current state as JSON file */
+document.getElementById('downloadStateBtn').onclick = () => {
+  const state = { workingData, approvedRowsMap, reviewData, uploadLog };
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'billing_dashboard_state.json';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+/* Load last saved state from localStorage (if any) */
+document.getElementById('loadStateBtn').onclick = () => {
+  const s = localStorage.getItem('billingDashboardState_v1');
+  if (!s) return alert("No saved state in localStorage.");
+  if (!confirm("Load last saved state from localStorage? This will replace working data in memory.")) return;
+  try {
+    const parsed = JSON.parse(s);
+    Object.assign(workingData, parsed.workingData || {});
+    Object.assign(approvedRowsMap, parsed.approvedRowsMap || {});
+    reviewData = parsed.reviewData || [];
+    uploadLog = parsed.uploadLog || [];
+    renderStep4();
+    alert("Loaded state from localStorage.");
+  } catch(err) {
+    alert("Failed to load state.");
+  }
+};
+
+/* initial render */
+renderStep4();
+renderStep5();
+drawReviewChart();
+/* -------------------------
+   STEP 7: Query Resolution & Resubmission
+------------------------- */
+function renderStep7() {
+  const tbody = document.querySelector('#rejectedQueue tbody');
+  tbody.innerHTML = '';
+
+  // Filter rejected rows from reviewData
+  const rejectedRows = reviewData.filter(r => r.status === "Rejected");
+  if(rejectedRows.length === 0){
+    tbody.innerHTML = `<tr><td colspan="7" class="muted">No rejected records</td></tr>`;
+  }
+
+  rejectedRows.forEach((r,i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.customer}</td>
+      <td>${r.original.category}</td>
+      <td>${r.original.region}</td>
+      <td>${r.comments || '-'}</td>
+      <td>Admin</td>
+      <td>${r.date}</td>
+      <td><button class="btn primary small">Correct</button></td>
+    `;
+    tbody.appendChild(tr);
+
+    // Correction modal
+    tr.querySelector('button').onclick = () => {
+      const modal = document.getElementById('correctionModal');
+      const notes = document.getElementById('correctionNotes');
+      notes.value = r.correction || '';
+      modal.style.display = 'block';
+
+      document.getElementById('submitCorrection').onclick = () => {
+        const note = notes.value.trim();
+        r.correction = note;
+        r.status = "Resubmitted";
+        r.date = new Date().toLocaleString();
+        modal.style.display = 'none';
+        renderStep7();
+        persistState();
+        alert(`Row for ${r.customer} resubmitted with corrections.`);
+      };
+    };
+  });
+
+  drawResubChart();
+}
+
+function drawResubChart() {
+  const canvas = document.getElementById('resubmissionChart');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const rejectedRows = reviewData.filter(r => r.status === "Rejected" || r.status==="Resubmitted");
+  const total = rejectedRows.length;
+  if(total === 0) return;
+
+  let start = -0.5 * Math.PI;
+  const colors = ["#dc3545","#ffc107"];
+  rejectedRows.forEach((r,i)=>{
+    const slice = (1/total)*2*Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2,canvas.height/2);
+    ctx.arc(canvas.width/2,canvas.height/2,80,start,start+slice);
+    ctx.closePath();
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
+    start += slice;
+  });
+
+  ctx.fillStyle="#000";
+  ctx.font="12px Arial";
+  ctx.fillText(`Total Rejected/Resubmitted: ${total}`,10,10);
+}
+
+/* -------------------------
+   STEP 8: Final Approval & Invoice Preparation
+------------------------- */
+function renderStep8() {
+  const tbody = document.querySelector('#invoiceSummaryTable tbody');
+  tbody.innerHTML = '';
+
+  // All approved rows across customers
+  const approvedRows = reviewData.filter(r=>r.status==="Approved" || r.status==="Resubmitted");
+  if(approvedRows.length === 0){
+    tbody.innerHTML = `<tr><td colspan="4" class="muted">No approved records to invoice.</td></tr>`;
+  }
+
+  let totalInvoice = 0;
+  approvedRows.forEach(r=>{
+    const rowTotal = (r.original.rate_value || 0) * ((r.original.prebilling?.fte || 0) + (r.original.prebilling?.sv || 0));
+    totalInvoice += rowTotal;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.customer}</td>
+      <td>${r.original.category}</td>
+      <td>${r.original.region}</td>
+      <td>${rowTotal.toFixed(2)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('cycleStatus').textContent = `Total invoice: ${totalInvoice.toFixed(2)}`;
+}
+
+/* Export CSV for Step 8 */
+document.getElementById('exportCsv').onclick = ()=>{
+  const rows = document.querySelectorAll('#invoiceSummaryTable tbody tr');
+  let csv = "Customer,Category,Region,Total Amount\n";
+  rows.forEach(r=>{
+    csv += Array.from(r.children).map(td=>td.textContent).join(",") + "\n";
+  });
+  const blob = new Blob([csv],{type:"text/csv"});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "invoice_summary.csv";
+  a.click();
+};
+
+/* Close Billing Cycle */
+document.getElementById('closeCycleBtn').onclick = ()=>{
+  if(!confirm("Close billing cycle? This will lock edits.")) return;
+  document.querySelectorAll("button, td[contenteditable]").forEach(e=>e.classList.add("locked"));
+  document.getElementById('cycleStatus').textContent += " — Cycle Closed";
+};
+
+/* -------------------------
+   Ensure rendering Step 7 & 8 when switching tabs
+------------------------- */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const tab = btn.dataset.tab;
+    if(tab==="step7") renderStep7();
+    if(tab==="step8") renderStep8();
+  });
+});
+
+</script>
+</body>
+</html>
