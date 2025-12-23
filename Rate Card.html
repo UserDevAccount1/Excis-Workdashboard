@@ -1244,6 +1244,8 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
     <div class="card" data-type="dedicated">🧑‍💻 Dedicated Services</div>
     <div class="card" data-type="scheduled">📅 Scheduled Services</div>
     <div class="card" data-type="dispatch">🚚 Dispatch Services</div>
+    <div class="card" data-type="dispatch-standby">🕒 Dispatch Stand-By Charges</div>
+
     <div class="card" data-type="projects">🏗️ Projects</div>
   </div>
 
@@ -1251,7 +1253,11 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
   <div class="titlebar">
     <div class="sub small">Manage pricing by customer, region, and service type</div>
     <div class="spacer"></div>
+    <input type="file" id="rcCsvUpload" accept=".csv" />
+    <button class="btn" id="rcNewBtn">＋ New Pre Billing File</button>
     <button class="btn" id="rcNewBtn">＋ New Rate Card</button>
+    
+    
   </div>
 
   <!-- filters -->
@@ -1383,6 +1389,19 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
       (!r||d.region===r)&&(!c||d.currency===c)&&(!s||d.supplier===s)&&(!q||[d.customer,d.country,d.supplier].some(x=>x.toLowerCase().includes(q)))
     );
   }
+  // ================= CSV IMPORT =================
+function parseCSV(text){
+  const lines = text.trim().split(/\r?\n/);
+  const headers = lines[0].split(',').map(h=>h.trim());
+  const rows = lines.slice(1).map(l=>{
+    const vals = l.split(',');
+    const obj = {};
+    headers.forEach((h,i)=>obj[h]=vals[i]?.trim() || '');
+    return obj;
+  });
+  return { headers, rows };
+}
+
 
   const baseCols=()=>`<th>#</th><th>Customer</th><th>Region</th><th>Country</th><th>Supplier</th><th>Currency</th><th>Entity</th><th>Payment</th>`;
   const baseCells=(r,i)=>`<td>${i+1}</td><td>${esc(r.customer)}</td><td>${esc(r.region)}</td><td>${esc(r.country)}</td><td>${esc(r.supplier)}</td><td>${esc(r.currency)}</td><td>${esc(r.entity)}</td><td>${esc(r.payment)}</td>`;
@@ -1426,14 +1445,24 @@ thead tr.rc-band-sub th{background:#243b53;color:#fff;text-align:center;font-wei
     container.innerHTML=`<table><thead><tr>${baseCols()}${bands}<th>Status</th><th>Actions</th></tr><tr><th colspan="8"></th>${subs}<th colspan="2"></th></tr></thead><tbody>${rows}</tbody></table>`;
   }
 
-  function render(){ 
+function render(){ 
   if(ns.currentType==='dedicated') renderDedicated();
+  
   else if(ns.currentType==='scheduled') renderGeneric(ns.scheduledGroups,'scheduled');
   else if(ns.currentType==='dispatch') renderGeneric(ns.dispatchGroups,'dispatch');
   else if(ns.currentType==='projects') renderGeneric(ns.projectGroups,'projects');
   else if(ns.currentType==='service-rate') renderServiceRateCard();
+  else if(ns.currentType==='dispatch-standby') renderDispatchStandBy();   // <-- ADD THIS
   else renderDefault();
+
 }
+cards.forEach(c=>c.onclick=()=>{
+    cards.forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+    ns.currentType=c.dataset.type;
+    render();
+});
+
 
 
 
@@ -1771,6 +1800,83 @@ setTimeout(() => {
 }
 
 
+function renderDispatchStandBy() {
+  const rows = filterData().map((r, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${esc(r.customer)}</td>
+      <td>${esc(r.region)}</td>
+      <td>${esc(r.country)}</td>
+      <td>${esc(r.supplier)}</td>
+      <td>${esc(r.currency)}</td>
+      <td>${esc(r.entity)}</td>
+      <td>${esc(r.payment)}</td>
+      
+      <!-- Dispatch Stand-By Specific -->
+      <td>${esc(r.site_category ?? "-")}</td>
+      <td>${esc(r.site_name ?? "-")}</td>
+      <td>${esc(r.partner_name ?? "-")}</td>
+      <td>${esc(r.po_number ?? "-")}</td>
+      <td>${esc(r.state ?? "-")}</td>
+      <td>${esc(r.city ?? "-")}</td>
+      <td>${esc(r.site_address ?? "-")}</td>
+      <td>${esc(r.zip_code ?? "-")}</td>
+      <td>${esc(r.site_support ?? "-")}</td>
+      <td>${esc(r.standby_monthly_cost ?? "-")}</td>
+      <td>${esc(r.total_cost ?? "-")}</td>
+      <td>${esc(r.tax_percent ?? "-")}</td>
+      <td>${esc(r.tax_cost ?? "-")}</td>
+      <td>${esc(r.total_cost_incl_tax ?? "-")}</td>
+      <td>${esc(r.service_month ?? "-")}</td>
+      <td>${esc(r.remarks ?? "-")}</td>
+
+      <td>${esc(r.status)}</td>
+
+      <td class="actions">
+        <button class="iconbtn rc-view" data-id="${r.id}">👁️</button>
+        <button class="iconbtn rc-edit" data-id="${r.id}">✏️</button>
+        <button class="iconbtn rc-del" data-id="${r.id}">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+
+  container.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Customer</th>
+          <th>Region</th>
+          <th>Country</th>
+          <th>Supplier</th>
+          <th>Currency</th>
+          <th>Entity</th>
+          <th>Payment</th>
+
+          <th>Site Category</th>
+          <th>Site Name</th>
+          <th>Partner Name</th>
+          <th>PO Number</th>
+          <th>State</th>
+          <th>City</th>
+          <th>Site Address</th>
+          <th>Zip Code</th>
+          <th>Site Support</th>
+          <th>Stand-By Monthly Cost</th>
+          <th>Total Cost</th>
+          <th>Tax %</th>
+          <th>Tax Cost</th>
+          <th>Total Cost incl. Tax</th>
+          <th>Service Month</th>
+          <th>Remarks</th>
+
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
 
 
 
