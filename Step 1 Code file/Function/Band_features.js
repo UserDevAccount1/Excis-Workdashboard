@@ -286,7 +286,11 @@ function tmmShowMatrixColumn(tableKey) {
 
 function tmmHideMatrixColumn(tableKey) {
   if (typeof STATE !== 'undefined' && STATE.hiddenColumns) {
+<<<<<<< HEAD
      STATE.hiddenColumns.add(tableKey);
+=======
+    STATE.hiddenColumns.add(tableKey);
+>>>>>>> 31d46aed1071955aaef227630da1dbf488999959
   }
   
   const headerCells = document.querySelectorAll(`#matrixHeader th[data-table="${tableKey}"]`);

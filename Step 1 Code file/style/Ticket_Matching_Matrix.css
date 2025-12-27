@@ -1168,6 +1168,7 @@
     align-items: flex-start;
   }
 }
+<<<<<<< HEAD
 /* ═══════════════════════════════════════════════════════════════════════════
    ENHANCED SEARCH STYLES
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -1713,3 +1714,11 @@
 .tab-content.active { display: block; }
 
 
+=======
+
+
+
+/* Your tab system */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+>>>>>>> 31d46aed1071955aaef227630da1dbf488999959
