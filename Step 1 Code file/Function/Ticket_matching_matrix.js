@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ════
 // TICKET MATCHING MATRIX - Enhanced JavaScript
 // ════
@@ -6,15 +5,6 @@
 // ────
 // GLOBAL STATE
 // ────
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// TICKET MATCHING MATRIX - Enhanced JavaScript
-// ═══════════════════════════════════════════════════════════════════════════
-
-// ─────────────────────────────────────────────────────────────────────────────
-// GLOBAL STATE
-// ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 const STATE = {
   smartAddEnabled: true,
   matrixMode: 'structural', // 'structural' or 'data'
@@ -27,15 +17,9 @@ const STATE = {
   }
 };
 
-<<<<<<< HEAD
 // ────
 // STATIC SAMPLE DATA (HCL ONLY) - Data Preview rows
 // ────
-=======
-// ─────────────────────────────────────────────────────────────────────────────
-// STATIC SAMPLE DATA (HCL ONLY) - Data Preview rows
-// ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 const SAMPLE_DATA_HCL = {
   ticket_data: [
     {
@@ -244,15 +228,9 @@ function normalizeCategoryKey(raw) {
   return v;
 }
 
-<<<<<<< HEAD
 // ────
 // TABLE SCHEMAS - Define which fields exist in each table
 // ────
-=======
-// ─────────────────────────────────────────────────────────────────────────────
-// TABLE SCHEMAS - Define which fields exist in each table
-// ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 const TABLE_SCHEMAS = {
   ticket_data: [
     'request_id', 'ticket_number', 'requester', 'subject', 'customer', 'account',
@@ -299,15 +277,9 @@ const TABLE_SCHEMAS = {
   ]
 };
 
-<<<<<<< HEAD
 // ────
 // FIELD DEFINITIONS - Metadata for all fields
 // ────
-=======
-// ─────────────────────────────────────────────────────────────────────────────
-// FIELD DEFINITIONS - Metadata for all fields
-// ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 const FIELD_DEFINITIONS = {
   request_id: { label: 'Request ID', type: 'TEXT', group: 'BASIC_INFO', required: true, rag: 'GREEN', autoPopTo: ['ticket_data', 'final_ticket'] },
   ticket_number: { label: 'Ticket Number', type: 'TEXT', group: 'BASIC_INFO', required: true, rag: 'GREEN', autoPopTo: ['ticket_data', 'dispatch', 'standby', 'dedicated', 'sv_visit', 'final_ticket'] },
@@ -383,15 +355,9 @@ const FIELD_DEFINITIONS = {
   sla_met: { label: 'SLA Met', type: 'BOOLEAN', group: 'QUALITY', required: false, rag: 'GREEN', autoPopTo: ['final_ticket'] }
 };
 
-<<<<<<< HEAD
 // ────
 // DATA STORE - Holds actual data values
 // ────
-=======
-// ─────────────────────────────────────────────────────────────────────────────
-// DATA STORE - Holds actual data values
-// ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 const DATA_STORE = {
   ticket_data: {},
   rate_card: {},
@@ -403,15 +369,9 @@ const DATA_STORE = {
   final_ticket: {}
 };
 
-<<<<<<< HEAD
 // ────
 // TABLE DISPLAY NAMES
 // ────
-=======
-// ─────────────────────────────────────────────────────────────────────────────
-// TABLE DISPLAY NAMES
-// ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 const TABLE_NAMES = {
   ticket_data: 'Ticket Data',
   rate_card: 'Rate Card',
@@ -423,7 +383,6 @@ const TABLE_NAMES = {
   final_ticket: 'Final Ticket'
 };
 
-<<<<<<< HEAD
 // ---- Export matrix internals to global scope (required for importer) ----
 window.STATE = STATE;
 window.DATA_STORE = DATA_STORE;
@@ -445,13 +404,6 @@ window.showToast = showToast;
 document.addEventListener('DOMContentLoaded', () => {
   initMatrix();
   applyFilters();
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// INITIALIZATION
-// ═══════════════════════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  initMatrix();
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
   initColumnVisibility();
   initSearchHighlight();
   updateStatistics();
@@ -464,15 +416,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (cat) cat.addEventListener('change', () => { if (STATE.matrixMode === 'data') updateMatrixData(); });
 });
 
-<<<<<<< HEAD
 // ────
 // MATRIX INITIALIZATION
 // ────
-=======
-// ─────────────────────────────────────────────────────────────────────────────
-// MATRIX INITIALIZATION
-// ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function initMatrix() {
   renderMatrixHeader();
   renderMatrixBody();
@@ -538,15 +484,9 @@ function getAllUniqueFields() {
   return Array.from(fields).sort();
 }
 
-<<<<<<< HEAD
 // ════
 // COLUMN VISIBILITY
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// COLUMN VISIBILITY
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function initColumnVisibility() {
   const checkboxList = document.getElementById('columnCheckboxList');
   if (!checkboxList) return;
@@ -611,15 +551,9 @@ document.addEventListener('click', (e) => {
   }
 });
 
-<<<<<<< HEAD
 // ════
 // SEARCH HIGHLIGHTING
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// SEARCH HIGHLIGHTING
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function initSearchHighlight() {
   const searchInput = document.getElementById('searchInput');
   if (!searchInput) return;
@@ -677,15 +611,9 @@ function clearSearchHighlight() {
   document.querySelectorAll('.search-match-cell').forEach(el => el.classList.remove('search-match-cell'));
 }
 
-<<<<<<< HEAD
 // ════
 // CELL CHANGE HANDLER & SMART ADD
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// CELL CHANGE HANDLER & SMART ADD
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function handleCellChange(tableKey, field, value) {
   DATA_STORE[tableKey][field] = value;
 
@@ -736,15 +664,9 @@ function smartAddToOtherTables(field, value) {
   }
 }
 
-<<<<<<< HEAD
 // ════
 // TOGGLE FUNCTIONS
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// TOGGLE FUNCTIONS
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function toggleMatrixMode() {
   const toggle = document.getElementById('matrixModeToggle');
   STATE.matrixMode = toggle && toggle.checked ? 'data' : 'structural';
@@ -775,15 +697,9 @@ function toggleAdvancedFilters() {
   }
 }
 
-<<<<<<< HEAD
 // ════
 // FILTERS
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// FILTERS
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function applyFilters() {
   const tableFilter = document.getElementById('tableFilter')?.value || 'SHOW_ALL';
   const fieldGroupFilter = document.getElementById('fieldGroupFilter')?.value || 'ALL';
@@ -928,15 +844,9 @@ function filterBySiteCategory() {
   updateCheckboxes();
 }
 
-<<<<<<< HEAD
 // ════
 // DISPLAY OPTIONS
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// DISPLAY OPTIONS
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function applyHighlighting() {
   const mode = document.getElementById('highlightMode')?.value || 'NONE';
   const rows = document.querySelectorAll('#matrixBody .matrix-row');
@@ -975,15 +885,9 @@ function applyDisplayMode() {
   // Placeholder
 }
 
-<<<<<<< HEAD
 // ════
 // STATISTICS
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// STATISTICS
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function updateStatistics() {
   const allFields = getAllUniqueFields();
   const totalColumns = allFields.length;
@@ -1010,15 +914,9 @@ function updateStatistics() {
   document.getElementById('autoPopulated').textContent = STATE.autoPopulatedCount;
 }
 
-<<<<<<< HEAD
 // ════
 // FINAL TABLE PREVIEW
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// FINAL TABLE PREVIEW
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function updateFinalTablePreview() {
   // If we are in Data Preview mode, show sample data instead
   if (STATE.matrixMode === 'data' && STATE.preview.rows && STATE.preview.rows.length > 0) {
@@ -1059,15 +957,9 @@ function updateFinalTablePreview() {
   preview.innerHTML = html;
 }
 
-<<<<<<< HEAD
 // ════
 // BULK INPUT MODAL
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// BULK INPUT MODAL
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function showBulkInputModal() {
   const modal = document.getElementById('bulkInputModal');
   if (modal) modal.style.display = 'flex';
@@ -1112,15 +1004,9 @@ function processBulkInput() {
   showToast(`Processed ${processed} entries`, 'success');
 }
 
-<<<<<<< HEAD
 // ════
 // TOAST NOTIFICATIONS
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// TOAST NOTIFICATIONS
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function showToast(message, type = 'info') {
   let container = document.querySelector('.tmm-notifications');
   if (!container) {
@@ -1141,15 +1027,9 @@ function showToast(message, type = 'info') {
   }, 3000);
 }
 
-<<<<<<< HEAD
 // ════
 // CONTEXT UPDATES & DATA PREVIEW
 // ════
-=======
-// ═══════════════════════════════════════════════════════════════════════════
-// CONTEXT UPDATES & DATA PREVIEW
-// ═══════════════════════════════════════════════════════════════════════════
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
 function updateMatrixData() {
   console.log('[updateMatrixData] fired');
   
@@ -1294,13 +1174,9 @@ function renderDataPreviewTable(containerId, title, rows) {
   `;
 
   el.innerHTML = html;
-<<<<<<< HEAD
 }
 
 
 
 
 
-=======
-}
->>>>>>> 31d46aed1071955aaef227630da1dbf488999959
