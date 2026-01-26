@@ -27,11 +27,7 @@
     <link href="../public/assets/css/style.css" rel="stylesheet" type="text/css" />
      <link rel="stylesheet" href="./style/Quick_Data_Input.css">
      <link rel="stylesheet" href="./style/Band_Details_Settings.css">
-     <link rel="stylesheet" href="./style/Band_Details_OverviewTab.css">
-     <link rel="stylesheet" href="./style/Band_Details_DedicatedTab.css">
-     <link rel="stylesheet" href="./style/Band_Details_ProjectTab.css">
-     <link rel="stylesheet" href="./style/Band_Details_CalendarTab.css">
-     <link rel="stylesheet" href="./style/Band_Details_VersionTab.css">
+     
 
 
 </head>
@@ -1459,10 +1455,6 @@
           <i class="fas fa-calendar-alt"></i> Calendar
           <span class="tab-badge" id="holiday-count-badge">3</span>
         </button>
-        <button class="modal-tab" data-tab="band-version" id="modal-tab-band-version">
-  <i class="fas fa-code-branch"></i> Band Data Version
-  <span class="tab-badge" id="version-count-badge">6</span>
-</button>
         <button class="modal-tab" data-tab="analytics" id="modal-tab-analytics">
           <i class="fas fa-chart-bar"></i> Analytics
           <span class="tab-badge" id="analytics-badge">New</span>
@@ -1480,1873 +1472,525 @@
     <div class="modal-content-container" id="modal-content-container">
       
       <!-- Overview Tab -->
-<div class="modal-tab-content active" id="overview-tab-content">
-  <div class="overview-header">
-    <h3><i class="fas fa-tachometer-alt"></i> Band Details Dashboard</h3>
-    <div class="overview-actions">
-      <button class="btn btn-primary" id="overview-refresh-btn">
-        <i class="fas fa-sync-alt"></i> Refresh
-      </button>
-      <button class="btn btn-secondary" id="overview-export-btn">
-        <i class="fas fa-download"></i> Export
-      </button>
-    </div>
-  </div>
-  
-  <!-- Customer/Account Selection with Search -->
-  <div class="overview-selection-card">
-    <div class="selection-header">
-      <i class="fas fa-filter"></i>
-      <h4>Data Selection & Search</h4>
-      <span class="selection-badge">Active</span>
-    </div>
-    
-    <!-- Search Box Section -->
-    <div class="search-box-section" id="overview-search-section">
-      <div class="search-box-wrapper">
-        <div class="search-icon">
-          <i class="fas fa-search"></i>
-        </div>
-        <input 
-          type="text" 
-          id="overview-global-search" 
-          class="overview-search-input"
-          placeholder="Search across all overview content (stats, actions, activity)..."
-          aria-label="Search overview content"
-        >
-        <button class="search-clear-btn" id="overview-search-clear" aria-label="Clear search">
-          <i class="fas fa-times"></i>
-        </button>
-        <button class="search-suggestions-btn" id="overview-search-suggestions" aria-label="Show search suggestions">
-          <i class="fas fa-chevron-down"></i>
-        </button>
-      </div>
-      <div class="search-suggestions-container" id="overview-search-suggestions-container">
-        <!-- Suggestions will be populated dynamically -->
-        <div class="suggestion-section">
-          <h5>Quick Suggestions:</h5>
-          <div class="suggestion-tags">
-            <span class="suggestion-tag" data-search="HCL">HCL</span>
-            <span class="suggestion-tag" data-search="ABBVIE">ABBVIE</span>
-            <span class="suggestion-tag" data-search="EUC Support">EUC Support</span>
-            <span class="suggestion-tag" data-search="Dedicated">Dedicated</span>
-            <span class="suggestion-tag" data-search="Project">Project</span>
-            <span class="suggestion-tag" data-search="Band 2">Band 2</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Filter Section -->
-    <div class="selection-filters">
-      <div class="filter-row">
-        <div class="filter-group">
-          <label for="overview-customer-select">Customer</label>
-          <select class="filter-input" id="overview-customer-select">
-            <option value="All customers" selected>All Customers</option>
-            <option value="HCL">HCL</option>
-            <option value="acme">Acme Corp</option>
-            <option value="coforge">COFORGE</option>
-            <option value="cognizant">Cognizant</option>
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label for="overview-account-select">Account</label>
-          <select class="filter-input" id="overview-account-select">
-            <option value="hcl_abbvie" selected>HCL_ABBVIE</option>
-            <option value="hcl_abbvie_dss">HCL_ABBVIE DSS</option>
-            <option value="hcl_abbvie_he">HCL_ABBVIE H&amp;E</option>
-            <option value="hcl_adidas">HCL_ADIDAS</option>
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label for="overview-ticket-select">Ticket (Optional)</label>
-          <select class="filter-input" id="overview-ticket-select">
-            <option value="">Select Ticket</option>
-            <option value="ticket-001">TICKET-001</option>
-            <option value="ticket-002">TICKET-002</option>
-            <option value="ticket-003">TICKET-003</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Quick Stats with Enhanced Features -->
-<div class="overview-stats-grid">
-  <div class="stat-card" id="overview-stat-total-resources" data-stat="total-resources" data-metric="8" data-tooltip="Total number of active technicians across all customers and accounts">
-    <div class="stat-icon">
-      <i class="fas fa-users"></i>
-    </div>
-    <div class="stat-content">
-      <div class="stat-value-wrapper">
-        <span class="stat-value" id="overview-stat-total-value">8</span>
-        <button class="stat-details-btn" aria-label="View details">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-      <div class="stat-label">Total Resources</div>
-      <div class="stat-trend up">
-        <i class="fas fa-arrow-up"></i>
-        <span>+2 this month</span>
-      </div>
-    </div>
-    <div class="stat-tooltip" role="tooltip">
-      Total number of active technicians across all customers and accounts
-      <div class="tooltip-arrow"></div>
-    </div>
-  </div>
-  
-  <div class="stat-card" id="overview-stat-monthly-cost" data-stat="monthly-cost" data-metric="25420" data-currency="EUR" data-tooltip="Total monthly cost across all active resources">
-    <div class="stat-icon">
-      <i class="fas fa-money-bill-wave"></i>
-    </div>
-    <div class="stat-content">
-      <div class="stat-value-wrapper">
-        <div class="currency-selector-wrapper">
-          <span class="stat-value" id="overview-stat-cost-value">€25,420</span>
-          <div class="currency-selector-dropdown">
-            <button class="currency-selector-btn" aria-label="Change currency">
-              <i class="fas fa-exchange-alt"></i>
+      <div class="modal-tab-content active" id="overview-tab-content">
+        <div class="overview-header">
+          <h3><i class="fas fa-tachometer-alt"></i> Band Details Dashboard</h3>
+          <div class="overview-actions">
+            <button class="btn btn-primary" id="overview-refresh-btn">
+              <i class="fas fa-sync-alt"></i> Refresh
             </button>
-            <div class="currency-dropdown-menu">
-              <div class="currency-option" data-currency="EUR" data-symbol="€">EUR - Euro</div>
-              <div class="currency-option" data-currency="USD" data-symbol="$">USD - US Dollar</div>
-              <div class="currency-option" data-currency="GBP" data-symbol="£">GBP - British Pound</div>
-              <div class="currency-option" data-currency="AED" data-symbol="د.إ">AED - UAE Dirham</div>
-              <div class="currency-option" data-currency="AUD" data-symbol="A$">AUD - Australian Dollar</div>
-            </div>
-          </div>
-        </div>
-        <button class="stat-details-btn" aria-label="View details">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-      <div class="stat-label">Monthly Cost</div>
-      <div class="stat-trend down">
-        <i class="fas fa-arrow-down"></i>
-        <span>-5% from last month</span>
-      </div>
-    </div>
-    <div class="stat-tooltip" role="tooltip">
-      Total monthly cost across all active resources
-      <div class="tooltip-arrow"></div>
-    </div>
-  </div>
-  
-  <div class="stat-card" id="overview-stat-utilization" data-stat="utilization" data-metric="92" data-tooltip="Average utilization rate across all technicians">
-    <div class="stat-icon">
-      <i class="fas fa-chart-line"></i>
-    </div>
-    <div class="stat-content">
-      <div class="stat-value-wrapper">
-        <span class="stat-value" id="overview-stat-utilization-value">92%</span>
-        <button class="stat-details-btn" aria-label="View details">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-      <div class="stat-label">Utilization Rate</div>
-      <div class="stat-trend up">
-        <i class="fas fa-arrow-up"></i>
-        <span>+3% this month</span>
-      </div>
-    </div>
-    <div class="stat-tooltip" role="tooltip">
-      Average utilization rate across all technicians (Worked Days / Total Available Days)
-      <div class="tooltip-arrow"></div>
-    </div>
-  </div>
-  
-  <div class="stat-card" id="overview-stat-sla-compliance" data-stat="sla-compliance" data-metric="88" data-tooltip="Overall SLA compliance percentage">
-    <div class="stat-icon">
-      <i class="fas fa-calendar-check"></i>
-    </div>
-    <div class="stat-content">
-      <div class="stat-value-wrapper">
-        <span class="stat-value" id="overview-stat-sla-value">88%</span>
-        <button class="stat-details-btn" aria-label="View details">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-      <div class="stat-label">SLA Compliance</div>
-      <div class="stat-trend neutral">
-        <i class="fas fa-minus"></i>
-        <span>No change</span>
-      </div>
-    </div>
-    <div class="stat-tooltip" role="tooltip">
-      Overall SLA compliance percentage across all active contracts
-      <div class="tooltip-arrow"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Currency Conversion Panel (Hidden by default) -->
-<div class="currency-conversion-panel" id="currency-conversion-panel">
-  <div class="conversion-panel-header">
-    <h4><i class="fas fa-exchange-alt"></i> Currency Conversion</h4>
-    <button class="close-panel-btn" id="close-currency-panel" aria-label="Close">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-  <div class="conversion-content">
-    <div class="conversion-row">
-      <label for="target-currency">Convert to:</label>
-      <select id="target-currency" class="conversion-select">
-        <option value="EUR" selected>EUR - Euro</option>
-        <option value="USD">USD - US Dollar</option>
-        <option value="GBP">GBP - British Pound</option>
-        <option value="AED">AED - UAE Dirham</option>
-        <option value="AUD">AUD - Australian Dollar</option>
-      </select>
-    </div>
-    <div class="conversion-row">
-      <label for="conversion-rate">Exchange Rate:</label>
-      <input type="number" id="conversion-rate" class="conversion-input" value="1.08" step="0.01" min="0">
-      <span class="rate-label">1 EUR = <span id="rate-display">1.08</span> USD</span>
-    </div>
-    <div class="conversion-row">
-      <label>Apply to:</label>
-      <div class="apply-options">
-        <label class="apply-option">
-          <input type="radio" name="apply-to" value="current" checked> Current view only
-        </label>
-        <label class="apply-option">
-          <input type="radio" name="apply-to" value="all"> All data
-        </label>
-      </div>
-    </div>
-    <div class="conversion-actions">
-      <button class="btn btn-secondary" id="cancel-conversion">Cancel</button>
-      <button class="btn btn-primary" id="apply-conversion">Apply Conversion</button>
-    </div>
-  </div>
-</div>
-  
-  <!-- Quick Actions -->
-  <div class="overview-actions-grid">
-    <div class="action-card" data-action="dedicated" onclick="switchModalTab('dedicated')">
-      <div class="action-icon">
-        <i class="fas fa-user-tie"></i>
-      </div>
-      <div class="action-content">
-        <h5>Dedicated Resources</h5>
-        <p>Manage technicians & monthly rates</p>
-        <div class="action-stats">
-          <span class="action-value">5</span>
-          <span class="action-label">Active</span>
-        </div>
-      </div>
-      <div class="action-arrow">
-        <i class="fas fa-arrow-right"></i>
-      </div>
-    </div>
-    
-    <div class="action-card" data-action="project" onclick="switchModalTab('project')">
-      <div class="action-icon">
-        <i class="fas fa-project-diagram"></i>
-      </div>
-      <div class="action-content">
-        <h5>Project Management</h5>
-        <p>Handle project timelines & costs</p>
-        <div class="action-stats">
-          <span class="action-value">3</span>
-          <span class="action-label">Active</span>
-        </div>
-      </div>
-      <div class="action-arrow">
-        <i class="fas fa-arrow-right"></i>
-      </div>
-    </div>
-    
-    <div class="action-card" data-action="calendar" onclick="switchModalTab('calendar')">
-      <div class="action-icon">
-        <i class="fas fa-calendar-alt"></i>
-      </div>
-      <div class="action-content">
-        <h5>Calendar & Holidays</h5>
-        <p>Manage working days & holidays</p>
-        <div class="action-stats">
-          <span class="action-value">3</span>
-          <span class="action-label">This Month</span>
-        </div>
-      </div>
-      <div class="action-arrow">
-        <i class="fas fa-arrow-right"></i>
-      </div>
-    </div>
-    
-    <div class="action-card" data-action="analytics" onclick="switchModalTab('analytics')">
-      <div class="action-icon">
-        <i class="fas fa-chart-bar"></i>
-      </div>
-      <div class="action-content">
-        <h5>Analytics & Reports</h5>
-        <p>View detailed analytics & insights</p>
-        <div class="action-stats">
-          <span class="action-value">12</span>
-          <span class="action-label">Reports</span>
-        </div>
-      </div>
-      <div class="action-arrow">
-        <i class="fas fa-arrow-right"></i>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Recent Activity -->
-  <div class="overview-activity-card">
-    <div class="activity-header">
-      <i class="fas fa-history"></i>
-      <h4>Recent Activity</h4>
-      <button class="btn btn-link" id="view-all-activity-btn">
-        View All <i class="fas fa-arrow-right"></i>
-      </button>
-    </div>
-    
-    <div class="activity-list">
-      <div class="activity-item success">
-        <div class="activity-icon">
-          <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="activity-content">
-          <div class="activity-title">Project "HCL EUC Support" updated</div>
-          <div class="activity-time">Just now</div>
-        </div>
-      </div>
-      
-      <div class="activity-item warning">
-        <div class="activity-icon">
-          <i class="fas fa-exclamation-triangle"></i>
-        </div>
-        <div class="activity-content">
-          <div class="activity-title">2 validation warnings detected</div>
-          <div class="activity-time">5 minutes ago</div>
-        </div>
-      </div>
-      
-      <div class="activity-item info">
-        <div class="activity-icon">
-          <i class="fas fa-info-circle"></i>
-        </div>
-        <div class="activity-content">
-          <div class="activity-title">Currency rates updated</div>
-          <div class="activity-time">1 hour ago</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Dedicated Tab -->
-<div class="modal-tab-content" id="dedicated-tab-content">
-  <!-- Header Controls -->
-  <div class="tab-content-header">
-    <h3><i class="fas fa-user-tie"></i> Dedicated Resources Management</h3>
-    <div class="tab-controls-group">
-      <div id="dedicated-import-actions-group">
-        <button class="btn btn-primary" id="dedicated-import-csv-btn">
-          <i class="fas fa-file-import"></i> Import CSV
-        </button>
-        <button class="btn btn-secondary" id="dedicated-load-data-btn">
-          <i class="fas fa-database"></i> Load Version
-        </button>
-      </div>
-      
-      <div class="search-container" id="dedicated-search-container">
-        <i class="fas fa-search"></i>
-        <input type="text" id="dedicated-search-input" placeholder="Search technician, country, band...">
-        <button class="search-clear-btn" id="dedicated-search-clear">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <!-- Sort Dropdown (Button-based) -->
-      <div id="dedicated-sort-dropdown-container">
-        <button id="dedicated-sort-dropdown-btn">
-          <i class="fas fa-sort-amount-down-alt"></i> Sort By
-          <i class="fas fa-chevron-down"></i>
-        </button>
-        <div id="dedicated-sort-dropdown-menu">
-          <a href="#" class="dedicated-sort-option" data-sort="technician" data-order="asc">Technician Name (A-Z)</a>
-          <a href="#" class="dedicated-sort-option" data-sort="technician" data-order="desc">Technician Name (Z-A)</a>
-          <a href="#" class="dedicated-sort-option" data-sort="country" data-order="asc">Country (A-Z)</a>
-          <a href="#" class="dedicated-sort-option" data-sort="country" data-order="desc">Country (Z-A)</a>
-          <a href="#" class="dedicated-sort-option" data-sort="monthlyRate" data-order="desc">Monthly Rate (High to Low)</a>
-          <a href="#" class="dedicated-sort-option" data-sort="monthlyRate" data-order="asc">Monthly Rate (Low to High)</a>
-          <a href="#" class="dedicated-sort-option" data-sort="workedDays" data-order="desc">Worked Days (High to Low)</a>
-          <a href="#" class="dedicated-sort-option" data-sort="workedDays" data-order="asc">Worked Days (Low to High)</a>
-          <!-- Add these options to the #dedicated-sort-dropdown-menu -->
-<a href="#" class="dedicated-sort-option" data-sort="totalCost" data-order="desc">Total Cost (High to Low)</a>
-<a href="#" class="dedicated-sort-option" data-sort="totalCost" data-order="asc">Total Cost (Low to High)</a>
-<a href="#" class="dedicated-sort-option" data-sort="slaPercentage" data-order="desc">SLA % (High to Low)</a>
-<a href="#" class="dedicated-sort-option" data-sort="slaPercentage" data-order="asc">SLA % (Low to High)</a>
-        </div>
-      </div>
-      
-      <div class="action-buttons" id="dedicated-action-buttons">
-        <button class="btn btn-warning" id="dedicated-recalculate-btn">
-          <i class="fas fa-sync-alt"></i> Recalculate
-        </button>
-        <button class="btn btn-success" id="dedicated-validate-btn">
-          <i class="fas fa-check-circle"></i> Validate
-        </button>
-        <button class="btn btn-primary" id="dedicated-export-btn">
-          <i class="fas fa-download"></i> Export
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Summary Section (Now on Top) -->
-  <div id="dedicated-summary-container">
-    <div class="dedicated-summary-item">
-      <span class="dedicated-summary-label">Total Technicians</span>
-      <span class="dedicated-summary-value" id="dedicated-total-technicians">0</span>
-    </div>
-    <div class="dedicated-summary-item">
-      <span class="dedicated-summary-label">Total Monthly Cost</span>
-      <span class="dedicated-summary-value" id="dedicated-total-monthly-cost">€0.00</span>
-    </div>
-    <div class="dedicated-summary-item">
-      <span class="dedicated-summary-label">Average Utilization</span>
-      <span class="dedicated-summary-value" id="dedicated-avg-utilization">0%</span>
-    </div>
-    <div class="dedicated-summary-item">
-      <span class="dedicated-summary-label">Holiday Impact</span>
-      <span class="dedicated-summary-value" id="dedicated-holiday-impact">€0.00</span>
-    </div>
-  </div>
-  
-  <!-- Filters Section -->
-  <div class="tab-filters-card" id="dedicated-filters-card">
-    <div class="filter-group dedicated-filter-group">
-      <label for="dedicated-customer-filter">Customer</label>
-      <select id="dedicated-customer-filter" class="filter-input">
-        <option value="All customers" selected>All Customers</option>
-        <option value="HCL">HCL</option>
-        <option value="acme">Acme Corp</option>
-      </select>
-    </div>
-    
-    <div class="filter-group dedicated-filter-group">
-      <label for="dedicated-account-filter">Account</label>
-      <select id="dedicated-account-filter" class="filter-input">
-        <option value="hcl_abbvie" selected>HCL_ABBVIE</option>
-        <option value="hcl_abbvie_dss">HCL_ABBVIE DSS</option>
-      </select>
-    </div>
-    
-    <div class="filter-group dedicated-filter-group">
-      <label for="dedicated-ticket-filter">Ticket</label>
-      <select id="dedicated-ticket-filter" class="filter-input">
-        <option value="">Select Ticket</option>
-      </select>
-    </div>
-    
-    <div class="filter-group dedicated-filter-group">
-      <label for="dedicated-currency-filter">Currency</label>
-      <select id="dedicated-currency-filter" class="filter-input">
-        <option value="">All Currencies</option>
-        <option value="EUR">EUR - Euro</option>
-        <option value="USD">USD - US Dollar</option>
-        <option value="GBP">GBP - British Pound</option>
-        <option value="ZAR">ZAR - South African Rand</option>
-        <option value="AED">AED - UAE Dirham</option>
-      </select>
-    </div>
-  </div>
-  
-  <!-- Data Table -->
-<div class="data-table-container" id="dedicated-table-container">
-  <div class="table-wrapper">
-    <table class="data-table" id="dedicated-data-table">
-      <thead>
-        <tr>
-          <th><input type="checkbox" id="dedicated-select-all" class="select-all-checkbox"></th>
-          <th>Technician Name</th>
-          <th>Country</th>
-          <th>Band</th>
-          <th>Variant</th>
-          <th>Monthly Rate</th>
-          <th>Working Days</th>
-          <th>Worked Days</th>
-          <th>Daily Rate</th>
-          <th>Actual Cost</th>
-          <th>Currency</th>
-          <th>Converted Currency</th>
-          <th>Conversion Rate</th>
-          <th>Converted Monthly Rate</th>
-          <th>Converted Daily Rate</th>
-          <th>Converted Actual Cost</th>
-          <th>Holiday Days</th>
-          <th>Adjusted Working Days</th>
-          <th>Adjusted Daily Rate</th>
-          <th>Total Cost (Excel)</th>
-          <!-- NEW COLUMNS ADDED BELOW -->
-          <th>OT Hours</th>
-          <th>OT per Hour Rate</th>
-          <th>OT Hours Cost</th>
-          <th>Weekend OT Hours</th>
-          <th>Weekend Rate</th>
-          <th>Weekend Cost</th>
-          <th>Travel/Extra Cost</th>
-          <th>Tax %</th>
-          <th>Tax Cost</th>
-          <th>Total Cost</th>
-          <th>Currency</th>
-          <th>SLA %</th>
-          <th>SLA Met</th>
-          <th>Reason for SLA not met</th>
-          <th>Attendance Approved</th>
-          <th>Service Month</th>
-          <th>Remarks</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="dedicated-table-body">
-        <!-- Data populated by JavaScript -->
-      </tbody>
-    </table>
-  </div>
-</div>
-</div>
-
-<!-- Version Selection Modal -->
-<div id="dedicated-version-modal-overlay">
-  <div id="dedicated-version-modal">
-    <div id="dedicated-version-modal-header">
-      <h3><i class="fas fa-code-branch"></i> Load Data Version</h3>
-      <button class="modal-close-btn" id="dedicated-close-version-modal">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div id="dedicated-version-modal-content">
-      <div id="dedicated-version-selection-section">
-        <label for="dedicated-version-select">Select Version to Load:</label>
-        <select id="dedicated-version-select" class="version-select-input">
-          <option value="">-- Select a version --</option>
-          <!-- Versions populated dynamically -->
-        </select>
-        
-        <div id="dedicated-version-details">
-          <!-- Version details shown here -->
-        </div>
-      </div>
-      
-      <div id="dedicated-version-preview-section">
-        <h4>Data Preview</h4>
-        <div id="dedicated-version-preview-table">
-          <!-- Preview table shown here -->
-        </div>
-      </div>
-      
-      <div id="dedicated-version-actions-section">
-        <div class="version-setup">
-          <h4>Setup New Version</h4>
-          <div id="dedicated-setup-fields">
-            <div class="dedicated-setup-field">
-              <label for="dedicated-new-version-name">Version Name:</label>
-              <input type="text" id="dedicated-new-version-name" placeholder="e.g., v0.01 Band Rate Card">
-            </div>
-            <div class="dedicated-setup-field">
-              <label for="dedicated-new-version-customer">Customer:</label>
-              <input type="text" id="dedicated-new-version-customer" placeholder="Enter customer name">
-            </div>
-            <div class="dedicated-setup-field">
-              <label for="dedicated-new-version-account">Account:</label>
-              <input type="text" id="dedicated-new-version-account" placeholder="Enter account name">
-            </div>
-            <div class="dedicated-setup-field">
-              <label for="dedicated-new-version-ticket">Ticket (Optional):</label>
-              <input type="text" id="dedicated-new-version-ticket" placeholder="Enter ticket number">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div id="dedicated-version-modal-footer">
-      <button class="btn btn-secondary" id="dedicated-cancel-version-load">Cancel</button>
-      <button class="btn btn-warning" id="dedicated-setup-new-version">Setup New Version</button>
-      <button class="btn btn-success" id="dedicated-confirm-version-load">Load Selected Version</button>
-    </div>
-  </div>
-</div>
-
-<!-- File Upload Modal -->
-<div id="dedicated-upload-modal-overlay">
-  <div id="dedicated-upload-modal">
-    <div id="dedicated-upload-modal-header">
-      <h3><i class="fas fa-file-import"></i> Import CSV File</h3>
-      <button class="modal-close-btn" id="dedicated-close-upload-modal">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div id="dedicated-upload-modal-content">
-      <div id="dedicated-upload-area">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <p>Drag & drop your CSV file here or click to browse</p>
-        <input type="file" id="dedicated-csv-file-input" accept=".csv" hidden>
-        <button class="btn btn-primary" id="dedicated-browse-files-btn">Browse Files</button>
-        <p class="dedicated-upload-hint">Supported format: CSV files only</p>
-      </div>
-      
-      <div id="dedicated-upload-preview" style="display: none;">
-        <h4>File Preview</h4>
-        <div id="dedicated-preview-table">
-          <!-- Preview shown here -->
-        </div>
-      </div>
-      
-      <div id="dedicated-upload-validation" style="display: none;">
-        <h4>Validation Results</h4>
-        <div id="dedicated-validation-results">
-          <!-- Validation results shown here -->
-        </div>
-      </div>
-    </div>
-    
-    <div id="dedicated-upload-modal-footer">
-      <button class="btn btn-secondary" id="dedicated-cancel-upload">Cancel</button>
-      <button class="btn btn-success" id="dedicated-confirm-upload" disabled>Import File</button>
-    </div>
-  </div>
-</div>
-     <!-- Project Tab -->
-<div class="modal-tab-content" id="project-tab-content">
-  <!-- Header Controls -->
-  <div class="tab-content-header">
-    <h3><i class="fas fa-project-diagram"></i> Project Management</h3>
-    <div class="tab-controls-group">
-      <div id="project-import-actions-group">
-        <button class="btn btn-primary" id="project-import-csv-btn">
-          <i class="fas fa-file-import"></i> Import CSV
-        </button>
-        <button class="btn btn-secondary" id="project-load-data-btn">
-          <i class="fas fa-database"></i> Load Version
-        </button>
-      </div>
-      
-      <div class="search-container" id="project-search-container">
-        <i class="fas fa-search"></i>
-        <input type="text" id="project-search-input" placeholder="Search project, technician, country...">
-        <button class="search-clear-btn" id="project-search-clear">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <!-- Sort Dropdown (Button-based) -->
-      <div id="project-sort-dropdown-container">
-        <button id="project-sort-dropdown-btn">
-          <i class="fas fa-sort-amount-down-alt"></i> Sort By
-          <i class="fas fa-chevron-down"></i>
-        </button>
-        <div id="project-sort-dropdown-menu">
-          <a href="#" class="project-sort-option" data-sort="projectName" data-order="asc">Project Name (A-Z)</a>
-          <a href="#" class="project-sort-option" data-sort="projectName" data-order="desc">Project Name (Z-A)</a>
-          <a href="#" class="project-sort-option" data-sort="startDate" data-order="desc">Start Date (Newest)</a>
-          <a href="#" class="project-sort-option" data-sort="startDate" data-order="asc">Start Date (Oldest)</a>
-          <a href="#" class="project-sort-option" data-sort="totalCost" data-order="desc">Total Cost (High to Low)</a>
-          <a href="#" class="project-sort-option" data-sort="totalCost" data-order="asc">Total Cost (Low to High)</a>
-          <a href="#" class="project-sort-option" data-sort="duration" data-order="desc">Duration (Long to Short)</a>
-          <a href="#" class="project-sort-option" data-sort="duration" data-order="asc">Duration (Short to Long)</a>
-        </div>
-      </div>
-      
-      <div class="action-buttons" id="project-action-buttons">
-        <button class="btn btn-warning" id="project-recalculate-btn">
-          <i class="fas fa-sync-alt"></i> Recalculate
-        </button>
-        <button class="btn btn-success" id="project-validate-btn">
-          <i class="fas fa-check-circle"></i> Validate
-        </button>
-        <button class="btn btn-primary" id="project-export-btn">
-          <i class="fas fa-download"></i> Export
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Summary Section (Now on Top) -->
-  <div id="project-summary-container">
-    <div class="project-summary-item">
-      <span class="project-summary-label">Total Projects</span>
-      <span class="project-summary-value" id="project-total-projects">0</span>
-    </div>
-    <div class="project-summary-item">
-      <span class="project-summary-label">Total Project Cost</span>
-      <span class="project-summary-value" id="project-total-cost">€0.00</span>
-    </div>
-    <div class="project-summary-item">
-      <span class="project-summary-label">Average Duration</span>
-      <span class="project-summary-value" id="project-avg-duration">0 days</span>
-    </div>
-    <div class="project-summary-item">
-      <span class="project-summary-label">OT Impact</span>
-      <span class="project-summary-value" id="project-ot-impact">€0.00</span>
-    </div>
-  </div>
-  
-  <!-- Filters Section -->
-  <div id="project-filters-card">
-    <div class="project-filter-group">
-      <label for="project-duration-filter">Duration Type</label>
-      <select id="project-duration-filter" class="project-filter-input">
-        <option value="">All Durations</option>
-        <option value="short">Short Term</option>
-        <option value="long">Long Term</option>
-      </select>
-    </div>
-    
-    <div class="project-filter-group">
-      <label for="project-status-filter">Status</label>
-      <select id="project-status-filter" class="project-filter-input">
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="completed">Completed</option>
-        <option value="upcoming">Upcoming</option>
-      </select>
-    </div>
-    
-    <div class="project-filter-group">
-      <label for="project-currency-filter">Currency</label>
-      <select id="project-currency-filter" class="project-filter-input">
-        <option value="">All Currencies</option>
-        <option value="EUR">EUR - Euro</option>
-        <option value="USD">USD - US Dollar</option>
-        <option value="GBP">GBP - British Pound</option>
-        <option value="ZAR">ZAR - South African Rand</option>
-        <option value="AED">AED - UAE Dirham</option>
-      </select>
-    </div>
-    
-    <div class="project-filter-group">
-      <label for="project-sla-filter">SLA Status</label>
-      <select id="project-sla-filter" class="project-filter-input">
-        <option value="">All SLA</option>
-        <option value="met">SLA Met</option>
-        <option value="not-met">SLA Not Met</option>
-        <option value="partial">Partially Met</option>
-      </select>
-    </div>
-  </div>
-  
-  <!-- Data Table -->
-  <div class="data-table-container" id="project-table-container">
-    <div class="table-wrapper">
-      <table class="data-table" id="project-data-table">
-        <thead>
-          <tr>
-            <th><input type="checkbox" id="project-select-all" class="select-all-checkbox"></th>
-            <th>Project Name</th>
-            <th>Technician</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Project Duration</th>
-            <th>Project Months</th>
-            <th>Country</th>
-            <th>Band</th>
-            <th>Monthly Rate</th>
-            <th>Estimated Total Cost</th>
-            <th>Converted Currency</th>
-            <th>Conversion Rate</th>
-            <th>Converted Monthly Rate</th>
-            <th>Converted Daily Rate</th>
-            <th>OT Rate per Hour</th>
-            <th>OT Cost</th>
-            <th>Weekend OT Hours</th>
-            <th>Weekend OT Rate</th>
-            <th>Weekend OT Cost</th>
-            <th>Travel/Extra Cost</th>
-            <th>Tax %</th>
-            <th>Tax Cost</th>
-            <th>Total Cost (Calculated)</th>
-            <th>SLA %</th>
-            <th>SLA Met</th>
-            <th>Service Month</th>
-            <th>Remarks</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="project-table-body">
-          <!-- Data populated by JavaScript -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- Version Selection Modal -->
-<div id="project-version-modal-overlay">
-  <div id="project-version-modal">
-    <div id="project-version-modal-header">
-      <h3><i class="fas fa-code-branch"></i> Load Project Data Version</h3>
-      <button class="modal-close-btn" id="project-close-version-modal">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div id="project-version-modal-content">
-      <div id="project-version-selection-section">
-        <label for="project-version-select">Select Version to Load:</label>
-        <select id="project-version-select" class="project-version-select-input">
-          <option value="">-- Select a version --</option>
-          <!-- Versions populated dynamically -->
-        </select>
-        
-        <div id="project-version-details">
-          <!-- Version details shown here -->
-        </div>
-      </div>
-      
-      <div id="project-version-preview-section">
-        <h4>Data Preview</h4>
-        <div id="project-version-preview-table">
-          <!-- Preview table shown here -->
-        </div>
-      </div>
-      
-      <div id="project-version-actions-section">
-        <div class="version-setup">
-          <h4>Setup New Version</h4>
-          <div id="project-setup-fields">
-            <div class="project-setup-field">
-              <label for="project-new-version-name">Version Name:</label>
-              <input type="text" id="project-new-version-name" placeholder="e.g., v0.01 Project Rate Card">
-            </div>
-            <div class="project-setup-field">
-              <label for="project-new-version-client">Client:</label>
-              <input type="text" id="project-new-version-client" placeholder="Enter client name">
-            </div>
-            <div class="project-setup-field">
-              <label for="project-new-version-account">Account:</label>
-              <input type="text" id="project-new-version-account" placeholder="Enter account name">
-            </div>
-            <div class="project-setup-field">
-              <label for="project-new-version-project">Project (Optional):</label>
-              <input type="text" id="project-new-version-project" placeholder="Enter project ID">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div id="project-version-modal-footer">
-      <button class="btn btn-secondary" id="project-cancel-version-load">Cancel</button>
-      <button class="btn btn-warning" id="project-setup-new-version">Setup New Version</button>
-      <button class="btn btn-success" id="project-confirm-version-load">Load Selected Version</button>
-    </div>
-  </div>
-</div>
-
-<!-- File Upload Modal -->
-<div id="project-upload-modal-overlay">
-  <div id="project-upload-modal">
-    <div id="project-upload-modal-header">
-      <h3><i class="fas fa-file-import"></i> Import Project CSV File</h3>
-      <button class="modal-close-btn" id="project-close-upload-modal">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div id="project-upload-modal-content">
-      <div id="project-upload-area">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <p>Drag & drop your Project CSV file here or click to browse</p>
-        <input type="file" id="project-csv-file-input" accept=".csv" hidden>
-        <button class="btn btn-primary" id="project-browse-files-btn">Browse Files</button>
-        <p class="project-upload-hint">Supported format: CSV files only</p>
-      </div>
-      
-      <div id="project-upload-preview" style="display: none;">
-        <h4>File Preview</h4>
-        <div id="project-preview-table">
-          <!-- Preview shown here -->
-        </div>
-      </div>
-      
-      <div id="project-upload-validation" style="display: none;">
-        <h4>Validation Results</h4>
-        <div id="project-validation-results">
-          <!-- Validation results shown here -->
-        </div>
-      </div>
-    </div>
-    
-    <div id="project-upload-modal-footer">
-      <button class="btn btn-secondary" id="project-cancel-upload">Cancel</button>
-      <button class="btn btn-success" id="project-confirm-upload" disabled>Import File</button>
-    </div>
-  </div>
-</div>
-
-     
-<!-- Calendar Tab -->
-<div class="modal-tab-content" id="calendar-tab-content">
-  <!-- Header Controls -->
-  <div class="tab-content-header">
-    <h3><i class="fas fa-calendar-alt"></i> Holiday & Working Days Calendar</h3>
-    <div class="tab-controls-group">
-      <!-- Navigation Section -->
-      <div id="calendar-navigation">
-        <div class="nav-group">
-          <button class="btn btn-secondary" id="calendar-prev-month-btn">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <span id="calendar-current-month">December 2025</span>
-          <button class="btn btn-secondary" id="calendar-next-month-btn">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-        
-        <div class="nav-group">
-          <div id="calendar-view-switcher">
-            <button id="calendar-month-view-btn" class="active" data-view="month">
-              <i class="fas fa-calendar-alt"></i> Month
-            </button>
-            <button id="calendar-week-view-btn" data-view="week">
-              <i class="fas fa-calendar-week"></i> Week
-            </button>
-            <button id="calendar-list-view-btn" data-view="list">
-              <i class="fas fa-list"></i> List
+            <button class="btn btn-secondary" id="overview-export-btn">
+              <i class="fas fa-download"></i> Export
             </button>
           </div>
         </div>
         
-       <!-- Date Picker Group -->
-        <div class="nav-date-group">
-          <input type="month" id="calendar-date-picker" value="2025-12">
-        </div>
-      </div>
-      
-      <!-- Filters Section -->
-      <div id="calendar-filters">
-        <select id="calendar-technician-filter" class="filter-select-input">
-          <option value="">All Technicians</option>
-          <!-- Populated dynamically -->
-        </select>
-        <select id="calendar-country-filter" class="filter-select-input">
-          <option value="">All Countries</option>
-          <!-- Populated dynamically -->
-        </select>
-      </div>
-      
-      <!-- Action Buttons -->
-      <div class="action-buttons" id="calendar-action-buttons">
-        <button class="btn btn-primary" id="calendar-add-holiday-btn">
-          <i class="fas fa-plus"></i> Add Holiday
-        </button>
-        <button class="btn btn-success" id="calendar-sync-btn">
-          <i class="fas fa-sync-alt"></i> Sync Holidays
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Calendar Container (Month View) -->
-  <div id="calendar-container" class="calendar-view" data-view="month">
-    <div id="calendar-header-row">
-      <div class="calendar-day-header">Mon</div>
-      <div class="calendar-day-header">Tue</div>
-      <div class="calendar-day-header">Wed</div>
-      <div class="calendar-day-header">Thu</div>
-      <div class="calendar-day-header">Fri</div>
-      <div class="calendar-day-header">Sat</div>
-      <div class="calendar-day-header">Sun</div>
-    </div>
-    
-    <div id="calendar-grid-container">
-      <!-- Calendar days populated by JavaScript -->
-    </div>
-  </div>
-  
-  <!-- Week View -->
-  <div id="calendar-week-container" class="calendar-view" data-view="week" style="display: none;">
-    <div id="calendar-week-grid">
-      <!-- Week view populated by JavaScript -->
-    </div>
-  </div>
-  
-  <!-- List View -->
-  <div id="calendar-list-container" class="calendar-view" data-view="list" style="display: none;">
-    <div id="calendar-list-content">
-      <!-- List view populated by JavaScript -->
-    </div>
-  </div>
-  
-  <!-- Calendar Legend -->
-  <div id="calendar-legend">
-    <div class="legend-item">
-      <div class="legend-color working-day"></div>
-      <span>Working Day</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-color holiday"></div>
-      <span>Holiday</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-color partial-work"></div>
-      <span>Partial Work</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-color weekend"></div>
-      <span>Weekend</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-color today"></div>
-      <span>Today</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-color selected"></div>
-      <span>Selected</span>
-    </div>
-  </div>
-  
-  <!-- Holiday Details -->
-  <div id="holiday-details-container">
-    <div id="holiday-details-header">
-      <h4><i class="fas fa-info-circle"></i> Holiday Details</h4>
-      <button class="btn btn-secondary btn-sm" id="clear-selection-btn">
-        <i class="fas fa-times"></i> Clear Selection
-      </button>
-    </div>
-    <div id="holiday-details-content">
-      <p class="calendar-empty-message">Select a day or holiday to view details</p>
-    </div>
-  </div>
-</div>
-
-<!-- Context Menu -->
-<div id="calendar-context-menu">
-  <div class="context-menu-item" data-action="mark-working">
-    <i class="fas fa-briefcase"></i> Mark as Working Day
-  </div>
-  <div class="context-menu-item" data-action="mark-holiday">
-    <i class="fas fa-umbrella-beach"></i> Mark as Holiday
-  </div>
-  <div class="context-menu-item" data-action="mark-partial">
-    <i class="fas fa-clock"></i> Mark as Partial Work
-  </div>
-  <div class="context-menu-divider"></div>
-  <div class="context-menu-item" data-action="add-technician">
-    <i class="fas fa-user-plus"></i> Add Technician
-  </div>
-  <div class="context-menu-item" data-action="remove-technician">
-    <i class="fas fa-user-minus"></i> Remove Technician
-  </div>
-  <div class="context-menu-divider"></div>
-  <div class="context-menu-item" data-action="view-details">
-    <i class="fas fa-info-circle"></i> View Details
-  </div>
-  <div class="context-menu-item" data-action="edit-holiday">
-    <i class="fas fa-edit"></i> Edit Holiday
-  </div>
-  <div class="context-menu-item" data-action="delete-holiday">
-    <i class="fas fa-trash"></i> Delete Holiday
-  </div>
-</div>
-
-<!-- Add Holiday Modal -->
-<div id="add-holiday-modal-overlay">
-  <div id="add-holiday-modal">
-    <div id="add-holiday-modal-header">
-      <h3><i class="fas fa-calendar-plus"></i> Add Holiday / Working Day</h3>
-      <button class="modal-close-btn" id="close-holiday-modal">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div id="add-holiday-modal-content">
-      <div class="holiday-form-group">
-        <label for="holiday-name">Holiday Name / Description</label>
-        <input type="text" id="holiday-name" placeholder="e.g., Christmas Day, Public Holiday">
-      </div>
-      
-      <div class="holiday-form-group">
-        <label for="holiday-type">Day Type</label>
-        <select id="holiday-type">
-          <option value="holiday">Holiday</option>
-          <option value="working">Working Day</option>
-          <option value="partial">Partial Work Day</option>
-          <option value="weekend">Weekend (Override)</option>
-        </select>
-      </div>
-      
-      <div class="holiday-form-group">
-        <label for="holiday-start-date">Date Range</label>
-        <div id="holiday-date-range">
-          <input type="date" id="holiday-start-date" value="2025-12-25">
-          <span>to</span>
-          <input type="date" id="holiday-end-date" value="2025-12-25">
-        </div>
-      </div>
-      
-      <div class="holiday-form-group">
-        <label for="holiday-technician-select">Apply to Technicians</label>
-        <select id="holiday-technician-select" multiple>
-          <option value="all">All Technicians</option>
-          <!-- Populated dynamically -->
-        </select>
-        <small style="color: #7d7d8a; font-size: 11px;">Hold Ctrl/Cmd to select multiple technicians</small>
-      </div>
-      
-      <div class="holiday-form-group">
-        <label for="holiday-country">Country (Optional)</label>
-        <select id="holiday-country">
-          <option value="">All Countries</option>
-          <option value="Germany">Germany</option>
-          <option value="UK">United Kingdom</option>
-          <option value="France">France</option>
-          <option value="Spain">Spain</option>
-          <option value="Italy">Italy</option>
-          <option value="UAE">United Arab Emirates</option>
-        </select>
-      </div>
-      
-      <div class="holiday-form-group">
-        <label for="holiday-notes">Additional Notes</label>
-        <textarea id="holiday-notes" placeholder="Any additional information about this holiday..."></textarea>
-      </div>
-    </div>
-    
-    <div id="add-holiday-modal-footer">
-      <button class="btn btn-secondary" id="cancel-holiday">Cancel</button>
-      <button class="btn btn-success" id="save-holiday">Save Holiday</button>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-<!-- Band Data Version Tab -->
-<div class="modal-tab-content" id="band-version-tab-content">
-  <!-- Header Controls -->
-  <div class="tab-content-header">
-    <h3><i class="fas fa-code-branch"></i> Band Data Version Management</h3>
-    <div class="tab-controls-group">
-      <!-- Filters Section -->
-      <div id="version-filters">
-        <input type="text" id="version-search-input" class="filter-input" placeholder="Search by customer, filename, or version ID...">
-        <select id="version-type-filter" class="filter-select-input">
-          <option value="">All Data Types</option>
-          <option value="Dedicated">Dedicated</option>
-          <option value="Project">Project</option>
-        </select>
-        <select id="version-customer-filter" class="filter-select-input">
-          <option value="">All Customers</option>
-          <option value="HCL">HCL</option>
-          <option value="Acme Corp">Acme Corp</option>
-          <option value="Tech Solutions">Tech Solutions</option>
-          <option value="Global Innovations">Global Innovations</option>
-        </select>
-        <select id="version-status-filter" class="filter-select-input">
-          <option value="">All Status</option>
-          <option value="processed">✅ Processed</option>
-          <option value="processing">⏳ Processing</option>
-          <option value="failed">❌ Failed</option>
-        </select>
-      </div>
-      
-      <!-- Action Buttons -->
-      <div class="action-buttons" id="version-action-buttons">
-        <div class="toggle-group">
-          <span class="toggle-label">Show Comparison</span>
-          <label class="switch">
-            <input type="checkbox" id="version-comparison-toggle">
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <button class="btn btn-primary" id="version-upload-btn">
-          <i class="fas fa-upload"></i> Upload New Version
-        </button>
-        <button class="btn btn-secondary" id="version-refresh-btn">
-          <i class="fas fa-redo"></i> Refresh
-        </button>
-        <button class="btn btn-outline" id="version-export-btn">
-          <i class="fas fa-download"></i> Export List
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Bulk Actions -->
-  <div class="bulk-actions-container" id="version-bulk-actions">
-    <div class="bulk-selection-info">
-      <span id="selected-count">0</span> versions selected
-    </div>
-    <div class="bulk-action-buttons">
-      <button class="btn btn-secondary btn-sm" id="bulk-compare-btn" disabled>
-        <i class="fas fa-code-compare"></i> Compare Selected
-      </button>
-      <button class="btn btn-danger btn-sm" id="bulk-delete-btn" disabled>
-        <i class="fas fa-trash"></i> Delete Selected
-      </button>
-      <button class="btn btn-outline btn-sm" id="clear-selection-btn">
-        Clear Selection
-      </button>
-    </div>
-  </div>
-  
-  <!-- Version Management Table -->
-  <div class="version-table-container">
-    <div class="table-responsive">
-      <table id="version-management-table">
-        <thead>
-          <tr>
-            <th class="select-column">
-              <input type="checkbox" id="select-all-versions">
-            </th>
-            <th>Version ID</th>
-            <th>Customer</th>
-            <th>Account</th>
-            <th>File Name</th>
-            <th>Ticket #</th>
-            <th>Upload Date/Time</th>
-            <th>Load Date/Time</th>
-            <th>Data Type</th>
-            <th>File Size</th>
-            <th>Records</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="version-table-body">
-          <!-- Will be populated by JavaScript -->
-        </tbody>
-      </table>
-    </div>
-    
-    <!-- No Results Message -->
-    <div class="no-results-message" id="no-versions-message">
-      <i class="fas fa-database fa-3x"></i>
-      <h4>No Versions Found</h4>
-      <p>Upload your first CSV file to get started.</p>
-      <button class="btn btn-primary" id="first-upload-btn">
-        <i class="fas fa-upload"></i> Upload Your First Version
-      </button>
-    </div>
-  </div>
-  
-  <!-- Pagination Controls -->
-  <div class="pagination-container" id="version-pagination">
-    <div class="pagination-info">
-      Showing <span id="pagination-start">1</span>-<span id="pagination-end">10</span> of <span id="pagination-total">0</span> versions
-    </div>
-    <div class="pagination-controls">
-      <button class="pagination-btn" id="pagination-first" disabled>
-        <i class="fas fa-angle-double-left"></i>
-      </button>
-      <button class="pagination-btn" id="pagination-prev" disabled>
-        <i class="fas fa-angle-left"></i>
-      </button>
-      <div class="pagination-pages" id="pagination-pages"></div>
-      <button class="pagination-btn" id="pagination-next" disabled>
-        <i class="fas fa-angle-right"></i>
-      </button>
-      <button class="pagination-btn" id="pagination-last" disabled>
-        <i class="fas fa-angle-double-right"></i>
-      </button>
-    </div>
-    <div class="pagination-size">
-      <label>Show:</label>
-      <select id="page-size-select" class="pagination-select">
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-      </select>
-    </div>
-  </div>
-</div>
-
-<!-- Version Details Modal -->
-<div id="version-details-modal-overlay" class="modal-overlay hidden">
-  <div id="version-details-modal" class="modal wide-modal">
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <h3>
-          <i class="fas fa-folder"></i>
-          <span id="detail-modal-title">Version Details</span>
-        </h3>
-        <div class="version-header-badges">
-          <div class="version-badge" id="detail-modal-version-id">VER-001</div>
-          <div class="data-type-badge dedicated" id="detail-modal-data-type">Dedicated</div>
-          <div class="status-badge processed" id="detail-modal-status">✅ Processed</div>
-        </div>
-      </div>
-      <button class="modal-close-btn" id="close-details-modal">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div class="modal-content">
-      <!-- Tab Navigation -->
-      <div class="details-tabs">
-        <div class="tab-nav">
-          <button class="tab-btn active" data-tab="data-tab">
-            <i class="fas fa-table"></i> Data Table
-          </button>
-          <button class="tab-btn" data-tab="calculations-tab">
-            <i class="fas fa-calculator"></i> Calculation Details
-          </button>
-          <button class="tab-btn" data-tab="metadata-tab">
-            <i class="fas fa-info-circle"></i> Metadata & History
-          </button>
-        </div>
-      </div>
-      
-      <!-- Tab Content -->
-      <div class="tab-content active" id="data-tab">
-        <!-- Data View Controls -->
-        <div class="data-view-controls">
-          <div class="view-toggle-group">
-            <div class="toggle-group">
-              <span class="toggle-label">Show Comparison</span>
-              <label class="switch">
-                <input type="checkbox" id="detail-comparison-toggle">
-                <span class="slider round"></span>
-              </label>
+        <!-- Customer/Account Selection -->
+        <div class="overview-selection-card">
+          <div class="selection-header">
+            <i class="fas fa-filter"></i>
+            <h4>Data Selection</h4>
+            <span class="selection-badge">Active</span>
+          </div>
+          
+          <div class="selection-filters">
+            <div class="filter-row">
+              <div class="filter-group">
+                <label for="overview-customer-select">Customer</label>
+                <select class="filter-input" id="overview-customer-select">
+                  <option value="All customers" selected>All Customers</option>
+                  <option value="HCL">HCL</option>
+                  <option value="acme">Acme Corp</option>
+                  <option value="coforge">COFORGE</option>
+                  <option value="cognizant">Cognizant</option>
+                </select>
+              </div>
+              
+              <div class="filter-group">
+                <label for="overview-account-select">Account</label>
+                <select class="filter-input" id="overview-account-select">
+                  <option value="hcl_abbvie" selected>HCL_ABBVIE</option>
+                  <option value="hcl_abbvie_dss">HCL_ABBVIE DSS</option>
+                  <option value="hcl_abbvie_he">HCL_ABBVIE H&amp;E</option>
+                  <option value="hcl_adidas">HCL_ADIDAS</option>
+                </select>
+              </div>
+              
+              <div class="filter-group">
+                <label for="overview-ticket-select">Ticket (Optional)</label>
+                <select class="filter-input" id="overview-ticket-select">
+                  <option value="">Select Ticket</option>
+                  <option value="ticket-001">TICKET-001</option>
+                  <option value="ticket-002">TICKET-002</option>
+                  <option value="ticket-003">TICKET-003</option>
+                </select>
+              </div>
             </div>
-            <div class="view-options">
-              <select id="data-view-select" class="view-select">
-                <option value="original">Original Data Only</option>
-                <option value="calculated">Calculated Data Only</option>
-                <option value="side-by-side">Side-by-Side Comparison</option>
+          </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="overview-stats-grid">
+          <div class="stat-card" id="overview-stat-total-resources">
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="overview-stat-total-value">8</div>
+              <div class="stat-label">Total Resources</div>
+              <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i>
+                <span>+2 this month</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card" id="overview-stat-monthly-cost">
+            <div class="stat-icon">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="overview-stat-cost-value">€25,420</div>
+              <div class="stat-label">Monthly Cost</div>
+              <div class="stat-trend down">
+                <i class="fas fa-arrow-down"></i>
+                <span>-5% from last month</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card" id="overview-stat-utilization">
+            <div class="stat-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="overview-stat-utilization-value">92%</div>
+              <div class="stat-label">Utilization Rate</div>
+              <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i>
+                <span>+3% this month</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card" id="overview-stat-sla-compliance">
+            <div class="stat-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="overview-stat-sla-value">88%</div>
+              <div class="stat-label">SLA Compliance</div>
+              <div class="stat-trend neutral">
+                <i class="fas fa-minus"></i>
+                <span>No change</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="overview-actions-grid">
+          <div class="action-card" data-action="dedicated" onclick="switchModalTab('dedicated')">
+            <div class="action-icon">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="action-content">
+              <h5>Dedicated Resources</h5>
+              <p>Manage technicians & monthly rates</p>
+              <div class="action-stats">
+                <span class="action-value">5</span>
+                <span class="action-label">Active</span>
+              </div>
+            </div>
+            <div class="action-arrow">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </div>
+          
+          <div class="action-card" data-action="project" onclick="switchModalTab('project')">
+            <div class="action-icon">
+              <i class="fas fa-project-diagram"></i>
+            </div>
+            <div class="action-content">
+              <h5>Project Management</h5>
+              <p>Handle project timelines & costs</p>
+              <div class="action-stats">
+                <span class="action-value">3</span>
+                <span class="action-label">Active</span>
+              </div>
+            </div>
+            <div class="action-arrow">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </div>
+          
+          <div class="action-card" data-action="calendar" onclick="switchModalTab('calendar')">
+            <div class="action-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="action-content">
+              <h5>Calendar & Holidays</h5>
+              <p>Manage working days & holidays</p>
+              <div class="action-stats">
+                <span class="action-value">3</span>
+                <span class="action-label">This Month</span>
+              </div>
+            </div>
+            <div class="action-arrow">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </div>
+          
+          <div class="action-card" data-action="analytics" onclick="switchModalTab('analytics')">
+            <div class="action-icon">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="action-content">
+              <h5>Analytics & Reports</h5>
+              <p>View detailed analytics & insights</p>
+              <div class="action-stats">
+                <span class="action-value">12</span>
+                <span class="action-label">Reports</span>
+              </div>
+            </div>
+            <div class="action-arrow">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="overview-activity-card">
+          <div class="activity-header">
+            <i class="fas fa-history"></i>
+            <h4>Recent Activity</h4>
+            <button class="btn btn-link" id="view-all-activity-btn">
+              View All <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+          
+          <div class="activity-list">
+            <div class="activity-item success">
+              <div class="activity-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="activity-content">
+                <div class="activity-title">Project "HCL EUC Support" updated</div>
+                <div class="activity-time">Just now</div>
+              </div>
+            </div>
+            
+            <div class="activity-item warning">
+              <div class="activity-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="activity-content">
+                <div class="activity-title">2 validation warnings detected</div>
+                <div class="activity-time">5 minutes ago</div>
+              </div>
+            </div>
+            
+            <div class="activity-item info">
+              <div class="activity-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="activity-content">
+                <div class="activity-title">Currency rates updated</div>
+                <div class="activity-time">1 hour ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dedicated Tab -->
+      <div class="modal-tab-content" id="dedicated-tab-content">
+        <div class="tab-content-header">
+          <h3><i class="fas fa-user-tie"></i> Dedicated Resources Management</h3>
+          <div class="tab-controls-group">
+            <div class="search-container">
+              <i class="fas fa-search"></i>
+              <input type="text" id="dedicated-search-input" placeholder="Search technician, country, band...">
+              <button class="search-clear-btn" id="dedicated-search-clear">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <div class="sort-container">
+              <select id="dedicated-sort-select" class="sort-select-input">
+                <option value="technician">Sort by: Technician</option>
+                <option value="country">Sort by: Country</option>
+                <option value="monthlyRate">Sort by: Monthly Rate</option>
+                <option value="workedDays">Sort by: Worked Days</option>
               </select>
-              <button class="btn btn-secondary btn-sm" id="filter-changes-btn">
-                <i class="fas fa-filter"></i> Show Only Changes
+              <button class="sort-order-btn" id="dedicated-sort-order-btn" data-order="asc">
+                <i class="fas fa-sort-amount-down"></i>
+              </button>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="btn btn-warning" id="dedicated-recalculate-btn">
+                <i class="fas fa-sync-alt"></i> Recalculate
+              </button>
+              <button class="btn btn-success" id="dedicated-validate-btn">
+                <i class="fas fa-check-circle"></i> Validate
+              </button>
+              <button class="btn btn-primary" id="dedicated-export-btn">
+                <i class="fas fa-download"></i> Export
               </button>
             </div>
           </div>
-          <div class="data-actions">
-            <button class="btn btn-secondary" id="download-original-btn">
-              <i class="fas fa-download"></i> Original CSV
-            </button>
-            <button class="btn btn-secondary" id="download-calculated-btn">
-              <i class="fas fa-download"></i> Calculated CSV
-            </button>
-            <button class="btn btn-primary" id="full-screen-data-btn">
-              <i class="fas fa-expand"></i> Full Screen
-            </button>
-          </div>
         </div>
         
-        <!-- Data Table Container -->
-        <div class="data-table-container" id="detail-data-container">
-          <!-- Data will be loaded here -->
-        </div>
-      </div>
-      
-      <div class="tab-content" id="calculations-tab">
-        <div class="calculations-content">
-          <div class="section-header">
-            <h4><i class="fas fa-calculator"></i> Applied Calculations</h4>
-            <p class="section-subtitle">Summary of all calculations applied to this version</p>
-          </div>
-          
-          <div class="calculations-list" id="calculations-list">
-            <!-- Calculations will be populated here -->
-          </div>
-          
-          <div class="calculation-stats">
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-exchange-alt"></i>
-              </div>
-              <div class="stat-content">
-                <h5>Exchange Rate Adjustments</h5>
-                <p id="exchange-rate-count">3 currencies converted</p>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-calendar-alt"></i>
-              </div>
-              <div class="stat-content">
-                <h5>Holiday Adjustments</h5>
-                <p id="holiday-count">2 holidays applied</p>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-percentage"></i>
-              </div>
-              <div class="stat-content">
-                <h5>Tax Calculations</h5>
-                <p id="tax-count">All rows calculated</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="tab-content" id="metadata-tab">
-        <div class="metadata-content">
-          <div class="metadata-grid">
-            <div class="metadata-section">
-              <h5><i class="fas fa-file-alt"></i> File Information</h5>
-              <div class="metadata-item">
-                <label>File Name:</label>
-                <span id="meta-filename">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>File Size:</label>
-                <span id="meta-filesize">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Records:</label>
-                <span id="meta-recordcount">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>File Format:</label>
-                <span id="meta-format">-</span>
-              </div>
-            </div>
-            
-            <div class="metadata-section">
-              <h5><i class="fas fa-building"></i> Customer Information</h5>
-              <div class="metadata-item">
-                <label>Customer:</label>
-                <span id="meta-customer">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Account:</label>
-                <span id="meta-account">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Data Type:</label>
-                <span id="meta-datatype">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Ticket #:</label>
-                <span id="meta-ticket">-</span>
-              </div>
-            </div>
-            
-            <div class="metadata-section">
-              <h5><i class="fas fa-calendar-alt"></i> Timeline</h5>
-              <div class="metadata-item">
-                <label>Upload Date:</label>
-                <span id="meta-uploaddate">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Load Date:</label>
-                <span id="meta-loaddate">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Processing Time:</label>
-                <span id="meta-processingtime">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Last Accessed:</label>
-                <span id="meta-lastaccessed">-</span>
-              </div>
-            </div>
-            
-            <div class="metadata-section">
-              <h5><i class="fas fa-cogs"></i> Processing Information</h5>
-              <div class="metadata-item">
-                <label>Processing Status:</label>
-                <span id="meta-processstatus">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Calculations Applied:</label>
-                <span id="meta-calccount">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Rows Modified:</label>
-                <span id="meta-modifiedrows">-</span>
-              </div>
-              <div class="metadata-item">
-                <label>Validation Errors:</label>
-                <span id="meta-errors">0</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="processing-log">
-            <h5><i class="fas fa-clipboard-list"></i> Processing Log</h5>
-            <div class="log-entries" id="processing-log-entries">
-              <!-- Log entries will be populated here -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="modal-footer">
-      <div class="footer-left">
-        <button class="btn btn-primary" id="compare-version-btn">
-          <i class="fas fa-code-compare"></i> Compare with Another Version
-        </button>
-        <button class="btn btn-success" id="restore-version-btn">
-          <i class="fas fa-history"></i> Restore This Version
-        </button>
-      </div>
-      <div class="footer-right">
-        <button class="btn btn-secondary" id="close-details-btn">Close</button>
-        <button class="btn btn-danger" id="delete-version-btn">
-          <i class="fas fa-trash"></i> Delete This Version
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Compare Versions Modal -->
-<div id="compare-versions-modal-overlay" class="modal-overlay hidden">
-  <div id="compare-versions-modal" class="modal extra-wide-modal">
-    <div class="modal-header">
-      <h3><i class="fas fa-code-compare"></i> Compare Data Versions</h3>
-      <button class="modal-close-btn" id="close-compare-modal">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div class="modal-content">
-      <div class="compare-controls">
-        <div class="compare-selectors">
-          <div class="compare-selector">
-            <label>Version A (Base)</label>
-            <select id="compare-version-a" class="form-control">
-              <option value="">Select Version A</option>
-              <!-- Populated dynamically -->
-            </select>
-            <div class="version-info" id="version-a-info">
-              <!-- Version info will appear here -->
-            </div>
-          </div>
-          <div class="compare-swap">
-            <button class="btn btn-secondary" id="swap-versions-btn">
-              <i class="fas fa-exchange-alt"></i> Swap
-            </button>
-          </div>
-          <div class="compare-selector">
-            <label>Version B (Compare)</label>
-            <select id="compare-version-b" class="form-control">
-              <option value="">Select Version B</option>
-              <!-- Populated dynamically -->
-            </select>
-            <div class="version-info" id="version-b-info">
-              <!-- Version info will appear here -->
-            </div>
-          </div>
-        </div>
-        
-        <div class="compare-options">
-          <div class="options-group">
-            <label>Comparison Mode:</label>
-            <select id="compare-mode" class="form-control">
-              <option value="side-by-side">Side-by-Side View</option>
-              <option value="unified">Unified Diff View</option>
-              <option value="summary">Summary View</option>
+        <!-- Dedicated Filters -->
+        <div class="tab-filters-card">
+          <div class="filter-group">
+            <label for="dedicated-customer-filter">Customer</label>
+            <select id="dedicated-customer-filter" class="filter-input">
+              <option value="All customers" selected>All Customers</option>
+              <option value="HCL">HCL</option>
+              <option value="acme">Acme Corp</option>
             </select>
           </div>
-          <div class="options-group">
-            <label>Options:</label>
-            <div class="checkbox-group">
-              <label class="checkbox-label">
-                <input type="checkbox" id="compare-show-differences" checked>
-                <span class="checkbox-custom"></span>
-                Show only differences
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" id="compare-highlight-changes" checked>
-                <span class="checkbox-custom"></span>
-                Highlight changes
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" id="compare-ignore-formatting">
-                <span class="checkbox-custom"></span>
-                Ignore formatting
-              </label>
-            </div>
+          
+          <div class="filter-group">
+            <label for="dedicated-account-filter">Account</label>
+            <select id="dedicated-account-filter" class="filter-input">
+              <option value="hcl_abbvie" selected>HCL_ABBVIE</option>
+              <option value="hcl_abbvie_dss">HCL_ABBVIE DSS</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="dedicated-ticket-filter">Ticket</label>
+            <select id="dedicated-ticket-filter" class="filter-input">
+              <option value="">Select Ticket</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Dedicated Table -->
+        <div class="data-table-container">
+          <div class="table-wrapper">
+            <table class="data-table" id="dedicated-data-table">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" id="dedicated-select-all" class="select-all-checkbox"></th>
+                  <th>Technician Name</th>
+                  <th>Country</th>
+                  <th>Band</th>
+                  <th>Variant</th>
+                  <th>Monthly Rate</th>
+                  <th>Working Days</th>
+                  <th>Worked Days</th>
+                  <th>Daily Rate</th>
+                  <th>Actual Cost</th>
+                  <th>Currency</th>
+                  <th>Holiday Days</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dedicated-table-body">
+                <!-- Data populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Dedicated Summary -->
+        <div class="table-summary-container">
+          <div class="summary-item">
+            <span class="summary-label">Total Technicians</span>
+            <span class="summary-value" id="dedicated-total-technicians">5</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Total Monthly Cost</span>
+            <span class="summary-value" id="dedicated-total-monthly-cost">€25,420.00</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Average Utilization</span>
+            <span class="summary-value" id="dedicated-avg-utilization">92%</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Holiday Impact</span>
+            <span class="summary-value" id="dedicated-holiday-impact">€1,150.00</span>
           </div>
         </div>
       </div>
-      
-      <div class="compare-results" id="compare-results">
-        <div class="comparison-placeholder">
-          <i class="fas fa-code-compare fa-3x"></i>
-          <p>Select two versions to compare them side by side</p>
-          <small>Both versions must be of the same data type (Dedicated or Project)</small>
-        </div>
-      </div>
-    </div>
-    
-    <div class="modal-footer">
-      <div class="footer-left">
-        <div class="comparison-stats" id="comparison-stats">
-          <!-- Stats will appear here -->
-        </div>
-      </div>
-      <div class="footer-right">
-        <button class="btn btn-secondary" id="cancel-compare">Cancel</button>
-        <button class="btn btn-primary" id="run-compare" disabled>
-          <i class="fas fa-play"></i> Run Comparison
-        </button>
-        <button class="btn btn-success" id="export-comparison" disabled>
-          <i class="fas fa-download"></i> Export Report
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Upload Version Modal -->
-<div id="upload-version-modal-overlay" class="modal-overlay hidden">
-  <div id="upload-version-modal" class="modal">
-    <div class="modal-header">
-      <h3><i class="fas fa-upload"></i> Upload New Data Version</h3>
-      <button class="modal-close-btn" id="close-upload-modal">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div class="modal-content">
-      <!-- Form Steps Indicator -->
-      <div class="form-steps">
-        <div class="step active" data-step="1">
-          <div class="step-number">1</div>
-          <div class="step-label">Basic Info</div>
-        </div>
-        <div class="step" data-step="2">
-          <div class="step-number">2</div>
-          <div class="step-label">Upload File</div>
-        </div>
-        <div class="step" data-step="3">
-          <div class="step-number">3</div>
-          <div class="step-label">Review</div>
-        </div>
-      </div>
-      
-      <!-- Step 1: Basic Information -->
-      <div class="form-step active" id="step-1">
-        <div class="upload-form-group">
-          <label for="upload-customer">Customer <span class="required">*</span></label>
-          <select id="upload-customer" class="form-control" required>
-            <option value="">Select Customer</option>
-            <option value="HCL">HCL</option>
-            <option value="Acme Corp">Acme Corp</option>
-            <option value="Tech Solutions">Tech Solutions</option>
-            <option value="Global Innovations">Global Innovations</option>
-          </select>
-        </div>
-        
-        <div class="upload-form-group">
-          <label for="upload-account">Account <span class="required">*</span></label>
-          <select id="upload-account" class="form-control" required>
-            <option value="">Select Account</option>
-            <option value="HCL_ABBVIE">HCL_ABBVIE</option>
-            <option value="HCL_ABBVIE_DSS">HCL_ABBVIE_DSS</option>
-            <option value="ACME_PROJECTS">ACME_PROJECTS</option>
-            <option value="TECH_SUPPORT">TECH_SUPPORT</option>
-            <option value="GLOBAL_INNOVATIONS_RND">GLOBAL_INNOVATIONS_RND</option>
-          </select>
-        </div>
-        
-        <div class="upload-form-group">
-          <label for="upload-data-type">Data Type <span class="required">*</span></label>
-          <select id="upload-data-type" class="form-control" required>
-            <option value="">Select Data Type</option>
-            <option value="Dedicated">Dedicated</option>
-            <option value="Project">Project</option>
-          </select>
-        </div>
-        
-        <div class="upload-form-group">
-          <label for="upload-ticket">Ticket Number (Optional)</label>
-          <input type="text" id="upload-ticket" class="form-control" placeholder="e.g., TKT-12345, SR-789">
-        </div>
-        
-        <div class="upload-form-group">
-          <label for="upload-description">Description (Optional)</label>
-          <textarea id="upload-description" class="form-control" 
-                    rows="3" placeholder="Brief description of this version..."></textarea>
-        </div>
-      </div>
-      
-      <!-- Step 2: File Upload -->
-      <div class="form-step" id="step-2">
-        <div class="upload-form-group">
-          <label for="upload-file">Upload CSV File <span class="required">*</span></label>
-          <div class="file-upload-area" id="file-upload-area">
-            <i class="fas fa-file-csv fa-3x"></i>
-            <p>Drag & drop your CSV file here or click to browse</p>
-            <p class="file-types">Maximum file size: 10MB</p>
-            <input type="file" id="upload-file" accept=".csv" hidden>
-            <button class="btn btn-secondary" id="browse-file-btn">
-              <i class="fas fa-folder-open"></i> Browse Files
-            </button>
-            <div class="file-info" id="file-info">
-              <!-- File info will appear here -->
+      <!-- Project Tab -->
+      <div class="modal-tab-content" id="project-tab-content">
+        <div class="tab-content-header">
+          <h3><i class="fas fa-project-diagram"></i> Project Management</h3>
+          <div class="tab-controls-group">
+            <div class="search-container">
+              <i class="fas fa-search"></i>
+              <input type="text" id="project-search-input" placeholder="Search project, technician, country...">
+              <button class="search-clear-btn" id="project-search-clear">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <div class="sort-container">
+              <select id="project-sort-select" class="sort-select-input">
+                <option value="projectName">Sort by: Project Name</option>
+                <option value="startDate">Sort by: Start Date</option>
+                <option value="endDate">Sort by: End Date</option>
+                <option value="totalCost">Sort by: Total Cost</option>
+              </select>
+              <button class="sort-order-btn" id="project-sort-order-btn" data-order="asc">
+                <i class="fas fa-sort-amount-down"></i>
+              </button>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="btn btn-warning" id="project-recalculate-btn">
+                <i class="fas fa-sync-alt"></i> Recalculate
+              </button>
+              <button class="btn btn-success" id="project-validate-btn">
+                <i class="fas fa-check-circle"></i> Validate
+              </button>
+              <button class="btn btn-primary" id="project-export-btn">
+                <i class="fas fa-download"></i> Export
+              </button>
             </div>
           </div>
         </div>
         
-        <div class="file-validation" id="file-validation">
-          <h5><i class="fas fa-clipboard-check"></i> File Validation</h5>
-          <div class="validation-checks">
-            <div class="validation-item" id="val-format">
-              <i class="fas fa-check-circle"></i>
-              <span>CSV Format</span>
-            </div>
-            <div class="validation-item" id="val-size">
-              <i class="fas fa-check-circle"></i>
-              <span>File Size (≤10MB)</span>
-            </div>
-            <div class="validation-item" id="val-headers">
-              <i class="fas fa-question-circle"></i>
-              <span>Required Headers</span>
-            </div>
-            <div class="validation-item" id="val-data">
-              <i class="fas fa-question-circle"></i>
-              <span>Data Integrity</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Step 3: Review & Confirm -->
-      <div class="form-step" id="step-3">
-        <div class="review-summary">
-          <h5><i class="fas fa-clipboard-list"></i> Upload Summary</h5>
-          <div class="summary-grid">
-            <div class="summary-item">
-              <label>Customer:</label>
-              <span id="review-customer">-</span>
-            </div>
-            <div class="summary-item">
-              <label>Account:</label>
-              <span id="review-account">-</span>
-            </div>
-            <div class="summary-item">
-              <label>Data Type:</label>
-              <span id="review-datatype">-</span>
-            </div>
-            <div class="summary-item">
-              <label>Ticket #:</label>
-              <span id="review-ticket">-</span>
-            </div>
-            <div class="summary-item">
-              <label>File Name:</label>
-              <span id="review-filename">-</span>
-            </div>
-            <div class="summary-item">
-              <label>File Size:</label>
-              <span id="review-filesize">-</span>
-            </div>
-            <div class="summary-item">
-              <label>Records:</label>
-              <span id="review-recordcount">-</span>
-            </div>
-            <div class="summary-item full-width">
-              <label>Description:</label>
-              <span id="review-description">-</span>
-            </div>
+        <!-- Project Table -->
+        <div class="data-table-container">
+          <div class="table-wrapper">
+            <table class="data-table" id="project-data-table">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" id="project-select-all" class="select-all-checkbox"></th>
+                  <th>Project Name</th>
+                  <th>Technician</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Duration</th>
+                  <th>Country</th>
+                  <th>Band</th>
+                  <th>Monthly Rate</th>
+                  <th>Working Days</th>
+                  <th>Worked Days</th>
+                  <th>Daily Rate</th>
+                  <th>Actual Monthly</th>
+                  <th>OT Hours</th>
+                  <th>OT Cost</th>
+                  <th>Total Cost</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="project-table-body">
+                <!-- Data populated by JavaScript -->
+              </tbody>
+            </table>
           </div>
         </div>
         
-        <div class="data-preview" id="data-preview">
-          <h5><i class="fas fa-eye"></i> Data Preview (First 5 rows)</h5>
-          <div class="preview-table-container">
-            <!-- Preview table will be loaded here -->
+        <!-- Project Summary -->
+        <div class="table-summary-container">
+          <div class="summary-item">
+            <span class="summary-label">Total Projects</span>
+            <span class="summary-value" id="project-total-projects">3</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Total Project Cost</span>
+            <span class="summary-value" id="project-total-cost">€15,280.00</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Average Duration</span>
+            <span class="summary-value" id="project-avg-duration">31 days</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">OT Impact</span>
+            <span class="summary-value" id="project-ot-impact">€425.00</span>
           </div>
         </div>
       </div>
-      
-      <!-- Processing Step (Hidden) -->
-      <div class="form-step" id="step-processing">
-        <div class="processing-indicator">
-          <div class="spinner"></div>
-          <h4>Processing Upload</h4>
-          <p id="processing-message">Validating and processing your file...</p>
-          <div class="progress-bar">
-            <div class="progress-fill" id="upload-progress"></div>
-          </div>
-          <div class="processing-details" id="processing-details">
-            <!-- Processing details will appear here -->
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="modal-footer">
-      <div class="footer-left">
-        <button class="btn btn-secondary" id="prev-step-btn" disabled>
-          <i class="fas fa-arrow-left"></i> Previous
-        </button>
-      </div>
-      <div class="footer-right">
-        <button class="btn btn-secondary" id="cancel-upload">Cancel</button>
-        <button class="btn btn-primary" id="next-step-btn">
-          Next <i class="fas fa-arrow-right"></i>
-        </button>
-        <button class="btn btn-success" id="confirm-upload" disabled>
-          <i class="fas fa-upload"></i> Upload Version
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Delete Confirmation Modal -->
-<div id="delete-version-modal-overlay" class="modal-overlay hidden">
-  <div id="delete-version-modal" class="modal">
-    <div class="modal-header">
-      <h3><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h3>
-      <button class="modal-close-btn" id="close-delete-modal">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div class="modal-content">
-      <div class="warning-message">
-        <i class="fas fa-trash-alt fa-3x"></i>
-        <h4>Are you sure you want to delete this version?</h4>
-        <div class="delete-details">
-          <p><strong>Version:</strong> <span id="delete-version-id">VER-001</span></p>
-          <p><strong>File:</strong> <span id="delete-filename">example.csv</span></p>
-          <p><strong>Customer:</strong> <span id="delete-customer">HCL</span></p>
-          <p><strong>Records:</strong> <span id="delete-record-count">0</span> records</p>
-          <p><strong>Upload Date:</strong> <span id="delete-upload-date">-</span></p>
+      <!-- Calendar Tab -->
+      <div class="modal-tab-content" id="calendar-tab-content">
+        <div class="tab-content-header">
+          <h3><i class="fas fa-calendar-alt"></i> Holiday & Working Days Calendar</h3>
+          <div class="tab-controls-group">
+            <div class="calendar-navigation">
+              <button class="btn btn-secondary" id="calendar-prev-month-btn">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <span id="calendar-current-month">December 2025</span>
+              <button class="btn btn-secondary" id="calendar-next-month-btn">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+            
+            <div class="calendar-filters">
+              <select id="calendar-technician-filter" class="filter-select-input">
+                <option value="">All Technicians</option>
+              </select>
+              <select id="calendar-country-filter" class="filter-select-input">
+                <option value="">All Countries</option>
+              </select>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="btn btn-primary" id="calendar-add-holiday-btn">
+                <i class="fas fa-plus"></i> Add Holiday
+              </button>
+              <button class="btn btn-success" id="calendar-sync-btn">
+                <i class="fas fa-sync-alt"></i> Sync Holidays
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="warning-box">
-          <i class="fas fa-exclamation-circle"></i>
-          <p>This action cannot be undone. All data associated with this version will be permanently deleted.</p>
+        
+        <!-- Calendar Container -->
+        <div class="calendar-container">
+          <div class="calendar-header-row">
+            <div class="calendar-day-header">Mon</div>
+            <div class="calendar-day-header">Tue</div>
+            <div class="calendar-day-header">Wed</div>
+            <div class="calendar-day-header">Thu</div>
+            <div class="calendar-day-header">Fri</div>
+            <div class="calendar-day-header">Sat</div>
+            <div class="calendar-day-header">Sun</div>
+          </div>
+          
+          <div class="calendar-grid" id="calendar-grid-container">
+            <!-- Calendar days populated by JavaScript -->
+          </div>
+        </div>
+        
+        <!-- Calendar Legend -->
+        <div class="calendar-legend">
+          <div class="legend-item">
+            <div class="legend-color working-day"></div>
+            <span>Working Day</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color holiday"></div>
+            <span>Holiday</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color partial-work"></div>
+            <span>Partial Work</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color weekend"></div>
+            <span>Weekend</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color today"></div>
+            <span>Today</span>
+          </div>
+        </div>
+        
+        <!-- Holiday Details -->
+        <div class="holiday-details-container" id="holiday-details-container">
+          <!-- Holiday details shown here -->
         </div>
       </div>
-    </div>
-    
-    <div class="modal-footer">
-      <button class="btn btn-secondary" id="cancel-delete">Cancel</button>
-      <button class="btn btn-danger" id="confirm-delete">
-        <i class="fas fa-trash"></i> Delete Permanently
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Success Notification -->
-<div id="upload-success-notification" class="notification hidden">
-  <div class="notification-content success">
-    <i class="fas fa-check-circle"></i>
-    <div class="notification-text">
-      <h5>Version Uploaded Successfully!</h5>
-      <p>Version <strong id="success-version-id">VER-001</strong> has been uploaded and processed.</p>
-    </div>
-    <button class="notification-close" id="close-notification">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-</div>
 
       <!-- Analytics Tab -->
       <div class="modal-tab-content" id="analytics-tab-content">
@@ -3700,7 +2344,9 @@
       </div>
       
       <div class="footer-actions">
-        
+        <button class="btn btn-secondary" id="modal-sync-excel-btn">
+          <i class="fas fa-file-excel"></i> Sync with Excel
+        </button>
         <button class="btn btn-warning" id="modal-recalculate-all-btn">
           <i class="fas fa-calculator"></i> Recalculate All
         </button>
@@ -5036,11 +3682,6 @@
     <script src="../public/assets/vendor/global/global.min.js"></script>
     <script src="../public/assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
     <script src="./Function/Band_Details_Settings.js"></script>
-    <script src="./Function/Band_Details_OverviewTab.js"></script>
-    <script src="./Function/Band_Details_DedicatedTab.js"></script>
-    <script src="./Function/Band_Details_ProjectTab.js"></script>
-    <script src="./Function/Band_Details_CalendarTab.js"></script>
-    <script src="./Function/Band_Details_VersionTab.js"></script>
 
 
 

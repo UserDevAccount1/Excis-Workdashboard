@@ -1490,116 +1490,1544 @@
             <!-- Validation Results Tab -->
             <div class="tab-content active" id="validationTab">
                 <div class="results-header">
-                    <h3><i class="fas fa-clipboard-check"></i> Validation Results</h3>
-                    <div class="results-actions">
-                        <div class="view-toggle">
-                            <button class="view-btn active" data-view="table">
-                                <i class="fas fa-table"></i> Table
-                            </button>
-                            <button class="view-btn" data-view="form">
-                                <i class="fas fa-file-alt"></i> Form
-                            </button>
-                        </div>
-                        <div class="table-controls">
-                            <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" id="tableSearch" placeholder="Search tickets...">
-                            </div>
-                            <button class="btn-icon-sm" id="columnToggleBtn" title="Columns">
-                                <i class="fas fa-columns"></i>
-                            </button>
-                            <button class="btn-icon-sm" title="Export Results">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            <button class="btn-icon-sm" title="Print">
-                                <i class="fas fa-print"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
                 
-                <div class="validation-summary">
-                    <div class="summary-item success">
-                        <div class="summary-value" id="validCount">0</div>
-                        <div class="summary-label">Valid Tickets</div>
-                    </div>
-                    <div class="summary-item warning">
-                        <div class="summary-value" id="warningCount">0</div>
-                        <div class="summary-label">Warnings</div>
-                    </div>
-                    <div class="summary-item error">
-                        <div class="summary-value" id="errorCount">0</div>
-                        <div class="summary-label">Errors</div>
-                    </div>
-                    <div class="summary-item total">
-                        <div class="summary-value" id="totalCount">0</div>
-                        <div class="summary-label">Total Tickets</div>
-                    </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+    --primary: #3498db;
+    --success: #2ecc71;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --light: #ecf0f1;
+    --dark: #2c3e50;
+    --gray: #7f8c8d;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.header {
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.header h1 {
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-success {
+    background-color: var(--success);
+    color: white;
+}
+
+.btn-warning {
+    background-color: var(--warning);
+    color: white;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    background: var(--light);
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card.success { border-top: 4px solid var(--success); }
+.card.warning { border-top: 4px solid var(--warning); }
+.card.danger { border-top: 4px solid var(--danger); }
+.card.info { border-top: 4px solid var(--primary); }
+
+.card-value {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.card-label {
+    color: var(--gray);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.table-container {
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.table-tools {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.search-box {
+    flex: 1;
+    max-width: 400px;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+}
+
+.tool-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.view-toggle {
+    display: flex;
+    background: #f1f1f1;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.view-toggle-btn {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.view-toggle-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.config-window,
+.view-window {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+    z-index: 1000;
+    width: 80%;
+    max-width: 900px;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: none;
+}
+
+.view-window {
+    max-width: 700px;
+}
+
+.config-overlay,
+.view-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+}
+
+.config-header,
+.view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 20px 20px 0 20px;
+}
+
+.config-header h3,
+.view-header h3 {
+    color: var(--dark);
+}
+
+.column-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.column-group h4 {
+    color: var(--primary);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--light);
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.sort-icon {
+    margin-left: 8px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: all 0.3s;
+    font-size: 12px;
+}
+
+.sort-icon:hover {
+    opacity: 1;
+    color: var(--primary);
+}
+
+.sort-icon.active {
+    opacity: 1;
+    color: var(--primary);
+}
+
+.sort-icons-container {
+    display: inline-flex;
+    flex-direction: column;
+    margin-left: 8px;
+    gap: 2px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.data-table th {
+    background-color: var(--dark);
+    color: white;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    cursor: pointer;
+    user-select: none;
+}
+
+.data-table th:hover {
+    background-color: #34495e;
+}
+
+.data-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.data-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.data-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.data-table tr:nth-child(even):hover {
+    background-color: #f1f3f4;
+}
+
+.action-icons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.action-icon {
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-size: 16px;
+}
+
+.action-icon:hover {
+    background: #f1f1f1;
+    transform: scale(1.1);
+}
+
+.action-icon.edit:hover {
+    color: #3498db;
+}
+
+.action-icon.assign:hover {
+    color: #2ecc71;
+}
+
+.action-icon.view:hover {
+    color: #9b59b6;
+}
+
+.form-view-container {
+    display: none;
+    padding: 20px;
+}
+
+.ticket-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.ticket-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s;
+    border: 1px solid #eee;
+}
+
+.ticket-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.ticket-card-header {
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    color: white;
+    padding: 15px;
+}
+
+.ticket-card-header h4 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+}
+
+.priority-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.priority-P3 { background: #f39c12; }
+.priority-P4 { background: #3498db; }
+.priority-NBD { background: #2ecc71; }
+
+.ticket-card-body {
+    padding: 15px;
+}
+
+.ticket-field {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ticket-field-label {
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 12px;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ticket-field-value {
+    color: #555;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+.ticket-card-footer {
+    padding: 15px;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.view-details-container {
+    padding: 20px;
+}
+
+.detail-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    align-items: start;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--dark);
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    color: #555;
+    word-break: break-word;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--light);
+    border-radius: 5px;
+}
+
+.pagination-info {
+    color: var(--dark);
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.pagination-btn {
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.pagination-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    background: #e3f2fd;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-right: 5px;
+    font-size: 12px;
+    color: var(--dark);
+}
+
+.filter-tag i {
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 10px;
+}
+
+.filter-tag i:hover {
+    color: var(--danger);
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .controls {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .table-tools {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        max-width: 100%;
+    }
+    
+    .column-groups {
+        grid-template-columns: 1fr;
+    }
+    
+    .config-window,
+    .view-window {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .detail-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    
+    .ticket-cards {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- test-->
+    <div class="test">
+        <h1><i class="fas fa-clipboard-check"></i> Ticket Validation </h1>
+        <div class="controls">
+            <button class="btn btn-primary" id="toggleConfig">
+                <i class="fas fa-cog"></i> Configure Columns
+            </button>
+            <button class="btn btn-success" id="exportBtn">
+                <i class="fas fa-download"></i> Export Results
+            </button>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+        <div class="card success">
+            <i class="fas fa-check-circle fa-2x"></i>
+            <div class="card-value" id="validCount">0</div>
+            <div class="card-label">Valid Tickets</div>
+        </div>
+        <div class="card warning">
+            <i class="fas fa-exclamation-triangle fa-2x"></i>
+            <div class="card-value" id="warningCount">0</div>
+            <div class="card-label">Warnings</div>
+        </div>
+        <div class="card danger">
+            <i class="fas fa-times-circle fa-2x"></i>
+            <div class="card-value" id="errorCount">0</div>
+            <div class="card-label">Errors</div>
+        </div>
+        <div class="card info">
+            <i class="fas fa-clipboard-list fa-2x"></i>
+            <div class="card-value" id="totalCount">0</div>
+            <div class="card-label">Total Tickets</div>
+        </div>
+    </div>
+
+    <!-- Floating Configuration Window -->
+    <div class="config-overlay" id="configOverlay"></div>
+    <div class="config-window" id="configWindow">
+        <div class="config-header">
+            <h3><i class="fas fa-sliders-h"></i> Column Configuration</h3>
+            <button class="btn btn-outline" id="closeConfigWindow">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+        <div class="column-groups" id="columnGroups">
+            <!-- Groups will be populated by JavaScript -->
+        </div>
+        <div style="text-align: center; margin-top: 20px; padding: 20px; border-top: 1px solid #eee;">
+            <button class="btn btn-primary" id="applyConfig">
+                <i class="fas fa-check"></i> Apply Configuration
+            </button>
+            <button class="btn btn-outline" id="selectAllCols" style="color: var(--dark); margin-left: 10px;">
+                <i class="fas fa-check-square"></i> Select All
+            </button>
+            <button class="btn btn-outline" id="deselectAllCols" style="color: var(--dark); margin-left: 10px;">
+                <i class="fas fa-square"></i> Deselect All
+            </button>
+        </div>
+    </div>
+
+    <!-- View Details Window -->
+    <div class="view-overlay" id="viewOverlay"></div>
+    <div class="view-window" id="viewWindow">
+        <div class="view-header">
+            <h3><i class="fas fa-eye"></i> Ticket Details</h3>
+            <button class="btn btn-outline" id="closeViewWindow">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+        <div class="view-details-container" id="viewDetailsContainer">
+            <!-- Details will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="table-container" id="tableView">
+        <div class="table-tools">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search across all columns...">
+            </div>
+            <div class="tool-buttons">
+                <div class="view-toggle">
+                    <button class="view-toggle-btn active" id="tableViewBtn">
+                        <i class="fas fa-table"></i> Table View
+                    </button>
+                    <button class="view-toggle-btn" id="formViewBtn">
+                        <i class="fas fa-th-large"></i> Form View
+                    </button>
                 </div>
-                
-                <!-- Table View -->
-                <div class="data-view active" id="tableView">
-                    <div class="table-container-wrapper">
-                        <div class="table-container">
-                            <table class="validation-table" id="ticketDataTable">
-                                <thead id="tableHeader">
-                                    <!-- Dynamic headers will be inserted here -->
-                                </thead>
-                                <tbody id="tableBody">
-                                    <!-- Dynamic data will be inserted here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <!-- Pagination -->
-                    <div class="pagination-controls" id="paginationControls">
-                        <div class="pagination-info">
-                            Showing <span id="startRow">0</span>-<span id="endRow">0</span> of <span id="totalRows">0</span> tickets
-                        </div>
-                        <div class="pagination-buttons">
-                            <button class="pagination-btn" id="firstPage" disabled>
-                                <i class="fas fa-angle-double-left"></i>
-                            </button>
-                            <button class="pagination-btn" id="prevPage" disabled>
-                                <i class="fas fa-angle-left"></i>
-                            </button>
-                            <div class="page-numbers" id="pageNumbers"></div>
-                            <button class="pagination-btn" id="nextPage" disabled>
-                                <i class="fas fa-angle-right"></i>
-                            </button>
-                            <button class="pagination-btn" id="lastPage" disabled>
-                                <i class="fas fa-angle-double-right"></i>
-                            </button>
-                        </div>
-                        <div class="rows-per-page">
-                            <select id="rowsPerPage">
-                                <option value="10">10 rows</option>
-                                <option value="25" selected>25 rows</option>
-                                <option value="50">50 rows</option>
-                                <option value="100">100 rows</option>
-                            </select>
-                        </div>
-                    </div>
+                <div id="activeFilters"></div>
+                <button class="btn btn-outline" id="filterBtn" style="color: var(--dark);">
+                    <i class="fas fa-filter"></i> Filter by Priority
+                </button>
+                <div style="display: flex; align-items: center;">
+                    <label for="rowsPerPage" style="margin-right: 10px;">Show:</label>
+                    <select id="rowsPerPage" style="padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+                        <option value="10">10</option>
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="all">All</option>
+                    </select>
                 </div>
+            </div>
+        </div>
+
+        <!-- Table View -->
+        <div id="tableDisplay">
+            <table class="data-table" id="ticketTable">
+                <thead id="tableHeader"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Form View -->
+        <div class="form-view-container" id="formViewContainer">
+            <div class="ticket-cards" id="ticketCards">
+                <!-- Cards will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <div class="pagination-info" id="paginationInfo"></div>
+            <div class="pagination-controls" id="paginationControls"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Enhanced sample data with new columns
+const sampleData = [
+    {
+        "Request ID": 557829,
+        "CUSTOMER REFERENCE": "SCTASK1388670/WO0041397",
+        "Requester": "Mattel_support",
+        "Subject": "Yogyakarta || Indonesia || HCL_Mattel || ETA: 25/07/2025 14:30 || P3 || Dispatch engineer for ASOL for Failover Testing and IDF cleanup",
+        "Site": "Common Site",
+        "Priority": "P3",
+        "Assigned Technician": "Priyanka Achari",
+        "Request Status": "Resolved",
+        "Worklog Type": "Resolution",
+        "Created Time (UK time)": "2025-07-18 06:14:00",
+        "Country": "Indonesia",
+        "CITY OR TOWN": "Yogyakarta",
+        "FIELD ENGINEERS RESOLVER": "Isnaini Sholikin",
+        "Total Revenue": 77.07,
+        "currency": "USD",
+        "Total labor Cost": 33,
+        "Profit": 44.07,
+        "Margin in %": 57,
+        "PO Number": "PO001",
+        "Customer": "Mattel",
+        "Account": "ACC-MAT-001"
+    },
+    {
+        "Request ID": 558285,
+        "CUSTOMER REFERENCE": "INC0544159",
+        "Requester": "Vemula Alekhya",
+        "Subject": "Tocancip?­ || Colombia || HCL_Dormakaba || ETA: 22/07/2025 || NBD || Adobe Reader does not work",
+        "Site": "Colombia",
+        "Priority": "NBD",
+        "Assigned Technician": "Frederick Baclay",
+        "Request Status": "Resolved",
+        "Worklog Type": "Resolution",
+        "Created Time (UK time)": "2025-07-21 21:53:00",
+        "Country": "Colombia",
+        "CITY OR TOWN": "Tocancip?­",
+        "FIELD ENGINEERS RESOLVER": "Jurgen Steven Ruiz",
+        "Total Revenue": 341.74,
+        "currency": "USD",
+        "Total labor Cost": 286,
+        "Profit": 55.74,
+        "Margin in %": 16,
+        "PO Number": "PO002",
+        "Customer": "Dormakaba",
+        "Account": "ACC-DOR-002"
+    },
+    {
+        "Request ID": 558060,
+        "CUSTOMER REFERENCE": "SCTASK0348361",
+        "Requester": "Tushar Kapse",
+        "Subject": "Jurong Island || SINGAPORE || HCL_Huntsman || ETA: [22/07/2025] [23/07/2025] 09:00 || NBD || Computer Refresh task",
+        "Site": "Common Site",
+        "Priority": "NBD",
+        "Assigned Technician": "Priyanka Achari",
+        "Request Status": "Resolved",
+        "Worklog Type": "Resolution",
+        "Created Time (UK time)": "2025-07-21 05:03:00",
+        "Country": "SINGAPORE",
+        "CITY OR TOWN": "Jurong Island",
+        "FIELD ENGINEERS RESOLVER": "Ram, Sainy Naveen Kumar",
+        "Total Revenue": 536,
+        "currency": "USD",
+        "Total labor Cost": 356,
+        "Profit": 180,
+        "Margin in %": 34,
+        "PO Number": "PO003",
+        "Customer": "Huntsman",
+        "Account": "ACC-HUN-003"
+    },
+    {
+        "Request ID": 557830,
+        "CUSTOMER REFERENCE": "SCTASK1388662/WO0041396",
+        "Requester": "Mattel_support",
+        "Subject": "Yogyakarta || Indonesia || HCL_Mattel || ETA: 25/07/2025 9:00 || P3 || Dispatch Engineer for AYOG site on Friday- 25th July for Network Failover Testing and IDF cleanup",
+        "Site": "Common Site",
+        "Priority": "P4",
+        "Assigned Technician": "Priyanka Achari",
+        "Request Status": "Resolved",
+        "Worklog Type": "Resolution",
+        "Created Time (UK time)": "2025-07-18 06:19:00",
+        "Country": "Indonesia",
+        "CITY OR TOWN": "Yogyakarta",
+        "FIELD ENGINEERS RESOLVER": "Isnaini Sholikin",
+        "Total Revenue": 102.76,
+        "currency": "USD",
+        "Total labor Cost": 35,
+        "Profit": 67.76,
+        "Margin in %": 66,
+        "PO Number": "PO004",
+        "Customer": "Mattel",
+        "Account": "ACC-MAT-004"
+    },
+    {
+        "Request ID": 557971,
+        "CUSTOMER REFERENCE": "INC00575907",
+        "Requester": "Sakshi Dube",
+        "Subject": "Budapest || HUNGARY || HCL_Signify || ETA: 22/07/2025 09:00 || P3 || UUTW: Unable to login laptop - NA",
+        "Site": "Budapest",
+        "Priority": "P3",
+        "Assigned Technician": "Cedric Rahasinaivo",
+        "Request Status": "Resolved",
+        "Worklog Type": "Resolution",
+        "Created Time (UK time)": "2025-07-18 17:23:00",
+        "Country": "HUNGARY",
+        "CITY OR TOWN": "Budapest",
+        "FIELD ENGINEERS RESOLVER": "Gabor GARAI",
+        "Total Revenue": 126.8,
+        "currency": "EUR",
+        "Total labor Cost": 80,
+        "Profit": 46.8,
+        "Margin in %": 37,
+        "PO Number": "PO005",
+        "Customer": "Signify",
+        "Account": "ACC-SIG-005"
+    }
+];
+
+// Updated column groups with new columns
+const columnGroups = {
+    "Basic Information": [
+        "Request ID",
+        "CUSTOMER REFERENCE", 
+        "Requester",
+        "Subject",
+        "Site",
+        "Priority",
+        "Assigned Technician",
+        "Request Status",
+        "PO Number",
+        "Customer",
+        "Account"
+    ],
+    "Time Details": [
+        "Created Time (UK time)",
+        "Time Spent Starttime (UK time)",
+        "Time Spent Endtime (UK time)",
+        "Time Spent",
+        "Completed Time (UK time)",
+        "Resolved Time (UK time)"
+    ],
+    "Location Details": [
+        "REGION OF THE COUNTRY",
+        "Country",
+        "CITY OR TOWN",
+        "States"
+    ],
+    "Engineer Details": [
+        "FIELD ENGINEERS RESOLVER",
+        "Engineer details",
+        "Worklog Type"
+    ],
+    "Financial Information": [
+        "Total Revenue",
+        "currency",
+        "Total labor Cost",
+        "Profit",
+        "Margin in %",
+        "1st Hour Revenue Rate",
+        "Revenue rate"
+    ],
+    "Additional Information": [
+        "External PO NUMBER",
+        "Vendor PO",
+        "PRE Visit",
+        "POST Visit",
+        "Comments"
+    ]
+};
+
+// App state
+let visibleColumns = [...columnGroups["Basic Information"]];
+let allColumns = [];
+let currentSort = { column: null, direction: null };
+let activeFilters = {};
+let filteredData = [...sampleData];
+let currentPage = 1;
+let rowsPerPage = 25;
+let currentView = 'table'; // 'table' or 'form'
+
+// Initialize all columns
+Object.values(columnGroups).forEach(group => {
+    group.forEach(col => {
+        if (!allColumns.includes(col)) allColumns.push(col);
+    });
+});
+allColumns.push("Action");
+visibleColumns.push("Action");
+
+// Update summary counts
+function updateSummary() {
+    document.getElementById('validCount').textContent = sampleData.length;
+    document.getElementById('warningCount').textContent = Math.floor(sampleData.length * 0.1);
+    document.getElementById('errorCount').textContent = Math.floor(sampleData.length * 0.05);
+    document.getElementById('totalCount').textContent = sampleData.length;
+}
+
+// Render column configuration window
+function renderColumnConfig() {
+    const container = document.getElementById('columnGroups');
+    container.innerHTML = '';
+    
+    for (const [groupName, columns] of Object.entries(columnGroups)) {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'column-group';
+        
+        const groupHeader = document.createElement('h4');
+        groupHeader.textContent = `${groupName} (${columns.length})`;
+        groupDiv.appendChild(groupHeader);
+        
+        const checkboxGrid = document.createElement('div');
+        checkboxGrid.className = 'checkbox-grid';
+        
+        columns.forEach(column => {
+            const checkboxItem = document.createElement('div');
+            checkboxItem.className = 'checkbox-item';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `col-${column.replace(/\s+/g, '-')}`;
+            checkbox.checked = visibleColumns.includes(column);
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked && !visibleColumns.includes(column)) {
+                    visibleColumns.push(column);
+                } else if (!checkbox.checked) {
+                    visibleColumns = visibleColumns.filter(col => col !== column);
+                }
+            });
+            
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = column;
+            
+            checkboxItem.appendChild(checkbox);
+            checkboxItem.appendChild(label);
+            checkboxGrid.appendChild(checkboxItem);
+        });
+        
+        groupDiv.appendChild(checkboxGrid);
+        container.appendChild(groupDiv);
+    }
+}
+
+// Render active filters
+function renderActiveFilters() {
+    const container = document.getElementById('activeFilters');
+    container.innerHTML = '';
+    
+    Object.entries(activeFilters).forEach(([key, value]) => {
+        if (value) {
+            const tag = document.createElement('span');
+            tag.className = 'filter-tag';
+            tag.innerHTML = `${key}: ${value} <i class="fas fa-times" onclick="removeFilter('${key}')"></i>`;
+            container.appendChild(tag);
+        }
+    });
+}
+
+// Remove filter
+function removeFilter(key) {
+    delete activeFilters[key];
+    applyFilters();
+}
+
+// Apply all filters
+function applyFilters() {
+    filteredData = sampleData.filter(row => {
+        return Object.entries(activeFilters).every(([key, value]) => {
+            if (!value) return true;
+            return String(row[key]).toLowerCase().includes(value.toLowerCase());
+        });
+    });
+    
+    renderActiveFilters();
+    currentPage = 1;
+    if (currentView === 'table') {
+        renderTableView();
+    } else {
+        renderFormView();
+    }
+}
+
+// Sort data
+function sortData(column) {
+    if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort.column = column;
+        currentSort.direction = 'asc';
+    }
+    
+    filteredData.sort((a, b) => {
+        let aVal = a[column];
+        let bVal = b[column];
+        
+        if (aVal === undefined || bVal === undefined) return 0;
+        
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return currentSort.direction === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+        
+        aVal = String(aVal);
+        bVal = String(bVal);
+        
+        const comparison = aVal.localeCompare(bVal, undefined, { numeric: true, sensitivity: 'base' });
+        return currentSort.direction === 'asc' ? comparison : -comparison;
+    });
+    
+    if (currentView === 'table') {
+        renderTableView();
+    } else {
+        renderFormView();
+    }
+}
+
+// Show ticket details in floating window
+function showTicketDetails(requestId) {
+    const ticket = sampleData.find(t => t['Request ID'] === requestId);
+    if (!ticket) return;
+    
+    const container = document.getElementById('viewDetailsContainer');
+    container.innerHTML = '';
+    
+    // Create details view
+    Object.entries(ticket).forEach(([key, value]) => {
+        const row = document.createElement('div');
+        row.className = 'detail-row';
+        
+        const label = document.createElement('div');
+        label.className = 'detail-label';
+        label.textContent = key;
+        
+        const val = document.createElement('div');
+        val.className = 'detail-value';
+        
+        // Format special columns
+        if (['Profit', 'Total Revenue', 'Total labor Cost'].includes(key)) {
+            value = typeof value === 'number' ? value.toFixed(2) : value;
+        }
+        if (key === 'Margin in %') {
+            value = typeof value === 'number' ? `${value}%` : value;
+        }
+        
+        val.textContent = value || 'N/A';
+        
+        row.appendChild(label);
+        row.appendChild(val);
+        container.appendChild(row);
+    });
+    
+    // Show the window
+    document.getElementById('viewOverlay').style.display = 'block';
+    document.getElementById('viewWindow').style.display = 'block';
+}
+
+// Render table view
+function renderTableView() {
+    const header = document.getElementById('tableHeader');
+    const body = document.getElementById('tableBody');
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    // Apply search filter
+    let displayData = filteredData.filter(row => {
+        return visibleColumns.some(column => {
+            if (column === 'Action') return false;
+            const value = row[column];
+            return value && String(value).toLowerCase().includes(searchTerm);
+        });
+    });
+    
+    // Pagination
+    const totalPages = Math.ceil(displayData.length / rowsPerPage);
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = Math.min(startIndex + rowsPerPage, displayData.length);
+    const pageData = displayData.slice(startIndex, endIndex);
+    
+    // Render header with sort icons
+    header.innerHTML = '';
+    const headerRow = document.createElement('tr');
+    
+    visibleColumns.forEach(column => {
+        const th = document.createElement('th');
+        
+        if (column === 'Action') {
+            th.textContent = column;
+            th.style.width = '120px';
+            th.style.cursor = 'default';
+        } else {
+            th.textContent = column;
+            
+            // Add sort icons container
+            const sortContainer = document.createElement('span');
+            sortContainer.className = 'sort-icons-container';
+            
+            // Ascending icon
+            const ascIcon = document.createElement('i');
+            ascIcon.className = `fas fa-caret-up sort-icon ${currentSort.column === column && currentSort.direction === 'asc' ? 'active' : ''}`;
+            ascIcon.title = 'Sort ascending';
+            ascIcon.onclick = (e) => {
+                e.stopPropagation();
+                sortData(column);
+            };
+            
+            // Descending icon
+            const descIcon = document.createElement('i');
+            descIcon.className = `fas fa-caret-down sort-icon ${currentSort.column === column && currentSort.direction === 'desc' ? 'active' : ''}`;
+            descIcon.title = 'Sort descending';
+            descIcon.onclick = (e) => {
+                e.stopPropagation();
+                currentSort.column = column;
+                currentSort.direction = 'desc';
+                sortData(column);
+            };
+            
+            sortContainer.appendChild(ascIcon);
+            sortContainer.appendChild(descIcon);
+            th.appendChild(sortContainer);
+            
+            // Click on header also sorts
+            th.onclick = (e) => {
+                if (!e.target.classList.contains('sort-icon')) {
+                    sortData(column);
+                }
+            };
+        }
+        
+        headerRow.appendChild(th);
+    });
+    
+    header.appendChild(headerRow);
+    
+    // Render body
+    body.innerHTML = '';
+    pageData.forEach((row) => {
+        const tr = document.createElement('tr');
+        
+        visibleColumns.forEach(column => {
+            const td = document.createElement('td');
+            
+            if (column === 'Action') {
+                td.className = 'action-icons';
+                td.innerHTML = `
+                    <button class="action-icon edit" title="Edit" onclick="editTicket(${row['Request ID']})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-icon assign" title="Assign Rate Card" onclick="assignRateCard(${row['Request ID']})">
+                        <i class="fas fa-tag"></i>
+                    </button>
+                    <button class="action-icon view" title="View Details" onclick="showTicketDetails(${row['Request ID']})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                `;
+            } else {
+                let value = row[column] || '';
                 
-                <!-- Form View -->
-                <div class="data-view" id="formView">
-                    <div class="form-navigation">
-                        <button class="form-nav-btn" id="prevTicket" disabled>
-                            <i class="fas fa-chevron-left"></i> Previous
-                        </button>
-                        <div class="form-counter">
-                            Ticket <span id="currentTicketIndex">0</span> of <span id="totalTicketsForm">0</span>
-                        </div>
-                        <button class="form-nav-btn" id="nextTicket" disabled>
-                            Next <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="ticket-form" id="ticketForm">
-                        <!-- Dynamic form will be inserted here -->
-                    </div>
+                // Format special columns
+                if (['Profit', 'Total Revenue', 'Total labor Cost'].includes(column)) {
+                    value = typeof value === 'number' ? value.toFixed(2) : value;
+                }
+                if (column === 'Margin in %') {
+                    value = typeof value === 'number' ? `${value}%` : value;
+                }
+                
+                td.textContent = value;
+                
+                // Add tooltip for long text
+                if (String(value).length > 50) {
+                    td.title = value;
+                    td.style.maxWidth = '300px';
+                    td.style.overflow = 'hidden';
+                    td.style.textOverflow = 'ellipsis';
+                    td.style.whiteSpace = 'nowrap';
+                }
+            }
+            
+            tr.appendChild(td);
+        });
+        
+        body.appendChild(tr);
+    });
+    
+    // Update pagination info
+    document.getElementById('paginationInfo').textContent = 
+        `Showing ${startIndex + 1} to ${endIndex} of ${displayData.length} entries`;
+    
+    renderPaginationControls(totalPages);
+}
+
+// Render form view
+function renderFormView() {
+    const container = document.getElementById('ticketCards');
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    // Apply search filter
+    let displayData = filteredData.filter(row => {
+        return visibleColumns.some(column => {
+            if (column === 'Action') return false;
+            const value = row[column];
+            return value && String(value).toLowerCase().includes(searchTerm);
+        });
+    });
+    
+    // Pagination
+    const totalPages = Math.ceil(displayData.length / rowsPerPage);
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = Math.min(startIndex + rowsPerPage, displayData.length);
+    const pageData = displayData.slice(startIndex, endIndex);
+    
+    container.innerHTML = '';
+    
+    pageData.forEach((ticket) => {
+        const card = document.createElement('div');
+        card.className = 'ticket-card';
+        
+        // Header with Priority badge
+        const header = document.createElement('div');
+        header.className = 'ticket-card-header';
+        header.innerHTML = `
+            <h4>
+                <span>Ticket #${ticket['Request ID']}</span>
+                <span class="priority-badge priority-${ticket['Priority']}">${ticket['Priority']}</span>
+            </h4>
+        `;
+        
+        // Body with selected columns
+        const body = document.createElement('div');
+        body.className = 'ticket-card-body';
+        
+        visibleColumns.forEach(column => {
+            if (column === 'Action') return;
+            
+            const value = ticket[column];
+            if (value === undefined) return;
+            
+            const field = document.createElement('div');
+            field.className = 'ticket-field';
+            
+            const label = document.createElement('div');
+            label.className = 'ticket-field-label';
+            label.textContent = column;
+            
+            const val = document.createElement('div');
+            val.className = 'ticket-field-value';
+            
+            // Format special columns
+            let displayValue = value;
+            if (['Profit', 'Total Revenue', 'Total labor Cost'].includes(column)) {
+                displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+            }
+            if (column === 'Margin in %') {
+                displayValue = typeof value === 'number' ? `${value}%` : value;
+            }
+            
+            val.textContent = displayValue;
+            
+            field.appendChild(label);
+            field.appendChild(val);
+            body.appendChild(field);
+        });
+        
+        // Footer with action buttons
+        const footer = document.createElement('div');
+        footer.className = 'ticket-card-footer';
+        footer.innerHTML = `
+            <button class="action-icon edit" title="Edit" onclick="editTicket(${ticket['Request ID']})">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="action-icon assign" title="Assign Rate Card" onclick="assignRateCard(${ticket['Request ID']})">
+                <i class="fas fa-tag"></i>
+            </button>
+            <button class="action-icon view" title="View Details" onclick="showTicketDetails(${ticket['Request ID']})">
+                <i class="fas fa-eye"></i>
+            </button>
+        `;
+        
+        card.appendChild(header);
+        card.appendChild(body);
+        card.appendChild(footer);
+        container.appendChild(card);
+    });
+    
+    // Update pagination info
+    document.getElementById('paginationInfo').textContent = 
+        `Showing ${startIndex + 1} to ${endIndex} of ${displayData.length} entries`;
+    
+    renderPaginationControls(totalPages);
+}
+
+// Render pagination controls
+function renderPaginationControls(totalPages) {
+    const controls = document.getElementById('paginationControls');
+    controls.innerHTML = '';
+    
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'pagination-btn';
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderFormView();
+            }
+        }
+    });
+    controls.appendChild(prevBtn);
+    
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage + 1 < maxPagesToShow) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+        pageBtn.textContent = i;
+        pageBtn.addEventListener('click', () => {
+            currentPage = i;
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderFormView();
+            }
+        });
+        controls.appendChild(pageBtn);
+    }
+    
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'pagination-btn';
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderFormView();
+            }
+        }
+    });
+    controls.appendChild(nextBtn);
+}
+
+// Switch between table and form views
+function switchView(view) {
+    currentView = view;
+    currentPage = 1;
+    
+    const tableViewBtn = document.getElementById('tableViewBtn');
+    const formViewBtn = document.getElementById('formViewBtn');
+    const tableDisplay = document.getElementById('tableDisplay');
+    const formViewContainer = document.getElementById('formViewContainer');
+    
+    if (view === 'table') {
+        tableViewBtn.classList.add('active');
+        formViewBtn.classList.remove('active');
+        tableDisplay.style.display = 'block';
+        formViewContainer.style.display = 'none';
+        renderTableView();
+    } else {
+        tableViewBtn.classList.remove('active');
+        formViewBtn.classList.add('active');
+        tableDisplay.style.display = 'none';
+        formViewContainer.style.display = 'block';
+        renderFormView();
+    }
+}
+
+// Ticket action functions
+function editTicket(requestId) {
+    alert(`Editing ticket ${requestId} - This would open an edit form in a real application.`);
+}
+
+function assignRateCard(requestId) {
+    const ticket = sampleData.find(t => t['Request ID'] === requestId);
+    if (ticket) {
+        const rate = prompt(`Assign rate card for Ticket ${requestId}\nCurrent rate: ${ticket['Revenue rate'] || 'Not set'}\nEnter new rate:`, ticket['Revenue rate'] || '');
+        if (rate !== null) {
+            alert(`Rate card assigned: ${rate} for ticket ${requestId}`);
+        }
+    }
+}
+
+// Initialize application
+document.addEventListener('DOMContentLoaded', () => {
+    updateSummary();
+    renderColumnConfig();
+    renderTableView();
+    
+    // Toggle configuration window
+    document.getElementById('toggleConfig').addEventListener('click', () => {
+        document.getElementById('configOverlay').style.display = 'block';
+        document.getElementById('configWindow').style.display = 'block';
+    });
+    
+    document.getElementById('closeConfigWindow').addEventListener('click', () => {
+        document.getElementById('configOverlay').style.display = 'none';
+        document.getElementById('configWindow').style.display = 'none';
+    });
+    
+    document.getElementById('configOverlay').addEventListener('click', () => {
+        document.getElementById('configOverlay').style.display = 'none';
+        document.getElementById('configWindow').style.display = 'none';
+    });
+    
+    // Close view window
+    document.getElementById('closeViewWindow').addEventListener('click', () => {
+        document.getElementById('viewOverlay').style.display = 'none';
+        document.getElementById('viewWindow').style.display = 'none';
+    });
+    
+    document.getElementById('viewOverlay').addEventListener('click', () => {
+        document.getElementById('viewOverlay').style.display = 'none';
+        document.getElementById('viewWindow').style.display = 'none';
+    });
+    
+    // Apply configuration
+    document.getElementById('applyConfig').addEventListener('click', () => {
+        // Ensure Action column is always included
+        if (!visibleColumns.includes('Action')) {
+            visibleColumns.push('Action');
+        }
+        if (currentView === 'table') {
+            renderTableView();
+        } else {
+            renderFormView();
+        }
+        document.getElementById('configOverlay').style.display = 'none';
+        document.getElementById('configWindow').style.display = 'none';
+    });
+    
+    // Select/Deselect all columns
+    document.getElementById('selectAllCols').addEventListener('click', () => {
+        visibleColumns = [...allColumns.filter(col => col !== 'Action')];
+        renderColumnConfig();
+    });
+    
+    document.getElementById('deselectAllCols').addEventListener('click', () => {
+        visibleColumns = [];
+        renderColumnConfig();
+    });
+    
+    // Export button
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        alert('Export functionality would download data as CSV/Excel in a real application.');
+    });
+    
+    // Search input
+    document.getElementById('searchInput').addEventListener('input', () => {
+        currentPage = 1;
+        if (currentView === 'table') {
+            renderTableView();
+        } else {
+            renderFormView();
+        }
+    });
+    
+    // Rows per page selector
+    document.getElementById('rowsPerPage').addEventListener('change', (e) => {
+        if (e.target.value === 'all') {
+            rowsPerPage = filteredData.length;
+        } else {
+            rowsPerPage = parseInt(e.target.value);
+        }
+        currentPage = 1;
+        if (currentView === 'table') {
+            renderTableView();
+        } else {
+            renderFormView();
+        }
+    });
+    
+    // Filter by Priority button
+    document.getElementById('filterBtn').addEventListener('click', () => {
+        const priorities = ['P3', 'P4', 'NBD'];
+        const selectedPriority = prompt(`Filter by Priority:\nAvailable: ${priorities.join(', ')}\nEnter priority or leave empty to clear:`, activeFilters.Priority || '');
+        
+        if (selectedPriority !== null) {
+            if (selectedPriority === '') {
+                delete activeFilters.Priority;
+            } else {
+                activeFilters.Priority = selectedPriority;
+            }
+            applyFilters();
+        }
+    });
+    
+    // View toggle buttons
+    document.getElementById('tableViewBtn').addEventListener('click', () => {
+        switchView('table');
+    });
+    
+    document.getElementById('formViewBtn').addEventListener('click', () => {
+        switchView('form');
+    });
+});
+</script>
+</body>
+</html>
                 </div>
             </div>
             

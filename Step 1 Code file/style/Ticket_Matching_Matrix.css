@@ -174,7 +174,7 @@
 
 #tmm .control-input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--primary); 
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -1713,3 +1713,10 @@
 .tab-content.active { display: block; }
 
 
+
+
+.step-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}

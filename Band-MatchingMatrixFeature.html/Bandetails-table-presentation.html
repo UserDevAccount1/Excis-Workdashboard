@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Distribution System - Enhanced Matching Matrix with Band Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --border-radius: 10px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s ease;
+            --band-blue: #102a43;
+            --band-light-blue: #243b53;
+            --panel-width: 50%;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e3e8f0 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body.panel-open {
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            transition: var(--transition);
+        }
+
+        .container.shifted {
+            transform: translateX(calc(-1 * var(--panel-width) / 2));
+            filter: brightness(0.95);
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+        }
+
+        .header h1 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 i {
+            color: var(--primary);
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-input {
+            padding: 10px 15px;
+            border: 2px solid var(--gray-light);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        select.control-input {
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Matrix Container */
+        .matrix-container {
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            overflow: auto;
+            max-height: 700px;
+            background: white;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 2000px;
+        }
+
+        .matrix-table th {
+            background: var(--dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            min-width: 180px;
+            border-right: 1px solid var(--gray);
+        }
+
+        .matrix-table th:first-child {
+            position: sticky;
+            left: 0;
+            background: var(--dark);
+            z-index: 20;
+            min-width: 250px;
+        }
+
+        .matrix-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--gray-light);
+            border-right: 1px solid var(--gray-light);
+            background: white;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .matrix-table td:first-child {
+            position: sticky;
+            left: 0;
+            background: var(--light);
+            font-weight: 500;
+            z-index: 5;
+            min-width: 250px;
+        }
+
+        .matrix-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .matrix-table tr:hover td:first-child {
+            background: #e2e8f0;
+        }
+
+        /* Cell Styles - ALL EDITABLE */
+        .cell-input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .cell-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+            background: #f8fafc;
+        }
+
+        .cell-input.non-existent {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+            opacity: 0.7;
+        }
+
+        .cell-input.non-existent:focus {
+            background: #fef2f2;
+            border-color: #f87171;
+        }
+
+        .cell-check {
+            color: var(--success);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .cell-cross {
+            color: var(--danger);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .cell-data-input {
+            width: 100%;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            background: white;
+            color: var(--dark);
+            font-size: 0.9rem;
+            padding: 6px 8px;
+            transition: var(--transition);
+        }
+
+        .cell-data-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+            background: #f8fafc;
+        }
+
+        /* Highlighting */
+        .highlight-column {
+            background: #d1fae5 !important;
+        }
+
+        .highlight-duplicate {
+            background: #fef3c7 !important;
+            border: 1px solid #f59e0b !important;
+        }
+
+        .highlight-match {
+            background: #e0f2fe !important;
+            border: 1px solid var(--info) !important;
+        }
+
+        .highlight-smart-add {
+            animation: pulse 0.5s ease;
+            background: #f0f9ff !important;
+        }
+
+        .highlight-required {
+            background: linear-gradient(45deg, #fef3c7, #fde68a) !important;
+            border-left: 3px solid var(--warning) !important;
+        }
+
+        .highlight-final-table {
+            background: linear-gradient(45deg, #d1fae5, #a7f3d0) !important;
+            border-left: 3px solid var(--success) !important;
+        }
+
+        .highlight-band-table {
+            background: linear-gradient(45deg, #e0f2fe, #bae6fd) !important;
+            border-left: 3px solid var(--primary) !important;
+        }
+
+        .highlight-selected-row {
+            background: linear-gradient(45deg, #e0e7ff, #c7d2fe) !important;
+            border-left: 3px solid var(--secondary) !important;
+        }
+
+        @keyframes pulse {
+            0% { background: white; }
+            50% { background: #dbeafe; }
+            100% { background: #f0f9ff; }
+        }
+
+        /* Matrix Stats */
+        .matrix-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 6px;
+            min-width: 100px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            text-align: center;
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        /* Expand Button */
+        .expand-btn {
+            background: transparent;
+            border: none;
+            color: var(--secondary);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .expand-btn:hover {
+            background: rgba(124, 58, 237, 0.1);
+            transform: scale(1.05);
+        }
+
+        .cell-with-band {
+            position: relative;
+        }
+
+        .matrix-cell-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .cell-value {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Side Panel Styles */
+        .panel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .panel-overlay.active {
+            display: block;
+        }
+
+        .side-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--panel-width);
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-panel.active {
+            transform: translateX(0);
+        }
+
+        .panel-header {
+            padding: 25px;
+            border-bottom: 2px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--dark);
+            color: white;
+        }
+
+        .panel-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .panel-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .panel-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .panel-footer {
+            padding: 20px;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            background: var(--light);
+        }
+
+        /* Band Details Table Styles */
+        .band-table-container {
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .band-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .band-table th {
+            background: var(--band-blue);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid var(--gray);
+        }
+
+        .band-table td {
+            padding: 10px;
+            border: 1px solid var(--gray-light);
+            text-align: center;
+        }
+
+        .band-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .band-group-header {
+            background: var(--band-light-blue) !important;
+            font-size: 1.1rem;
+        }
+
+        .band-sub-header {
+            background: var(--primary) !important;
+        }
+
+        /* Editable band cells */
+        .band-cell-editable {
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .band-cell-editable:hover {
+            background: #f0f9ff !important;
+            border-color: var(--primary);
+        }
+
+        .band-input {
+            width: 100%;
+            padding: 4px 8px;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Band Actions */
+        .band-actions {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+
+        .band-action-btn {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .band-action-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .band-action-btn.save {
+            background: var(--success);
+        }
+
+        .band-action-btn.cancel {
+            background: var(--danger);
+        }
+
+        .band-action-btn.add {
+            background: var(--secondary);
+        }
+
+        /* Band Form */
+        .band-form {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--gray-light);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            :root {
+                --panel-width: 70%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --panel-width: 90%;
+            }
+            
+            .controls-panel {
+                grid-template-columns: 1fr;
+            }
+           
+            .matrix-stats {
+                justify-content: center;
+            }
+           
+            .band-actions {
+                justify-content: center;
+            }
+        }
+
+        /* Export Buttons */
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .export-btn {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .export-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .export-btn.excel {
+            background: var(--success);
+        }
+
+        .export-btn.pdf {
+            background: var(--danger);
+        }
+
+        .export-btn.band {
+            background: var(--secondary);
+        }
+
+        /* Sample Data Panel */
+        .sample-data-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .sample-data-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            background: var(--info);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-table"></i> Enhanced Matching Matrix - Ticket Distribution System</h1>
+            <p class="subtitle">8-Table Real-Time Auto-Population with Band Details Panel</p>
+            <p style="color: var(--gray); font-size: 0.95rem;">
+                Click on any band cell to view/edit band details. Click outside panel or press ESC to close.
+            </p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput"
+                   placeholder="Search customer name or record... (Press Enter to search)">
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="controls-panel">
+            <div class="control-group">
+                <label class="control-label"><i class="fas fa-table"></i> Table Filter</label>
+                <select class="control-input" id="tableFilter" onchange="applyFilters()">
+                    <option value="SHOW_ALL">Show All Tables</option>
+                    <option value="DISPATCH">Dispatch Only</option>
+                    <option value="DEDICATED">Dedicated Only</option>
+                    <option value="SV_VISIT">SV Visit Only</option>
+                    <option value="PROJECT">Project Only</option>
+                    <option value="BAND_TABLES">Tables with Band Details</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label"><i class="fas fa-eye"></i> Display Options</label>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <label><input type="checkbox" id="showBandOnly" onchange="applyFilters()"> Show Band Tables Only</label>
+                    <label><input type="checkbox" id="showDataView" checked onchange="toggleDataView()"> Data View</label>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <button class="control-input" style="background:var(--primary);color:white;cursor:pointer;" onclick="resetFilters()">
+                    <i class="fas fa-sync"></i> Reset All Filters
+                </button>
+                <button class="control-input" style="background:var(--secondary);color:white;cursor:pointer;margin-top:10px;" onclick="openAllBandDetails()">
+                    <i class="fas fa-layer-group"></i> View All Band Structures
+                </button>
+            </div>
+        </div>
+
+        <!-- Matrix Container -->
+        <div class="matrix-container">
+            <table class="matrix-table" id="matrixTable">
+                <thead>
+                    <tr id="matrixHeader">
+                        <!-- Header will be populated by JavaScript -->
+                    </tr>
+                </thead>
+                <tbody id="matrixBody">
+                    <!-- Matrix rows will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Matrix Statistics -->
+        <div class="matrix-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalColumns">0</div>
+                <div class="stat-label">Total Columns</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="commonColumns">0</div>
+                <div class="stat-label">Common Fields</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="bandTablesCount">4</div>
+                <div class="stat-label">Band Tables</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="selectedRecord">0</div>
+                <div class="stat-label">Selected Record</div>
+            </div>
+        </div>
+
+        <!-- Sample Data Input Section -->
+        <div class="sample-data-panel">
+            <div class="sample-data-header">
+                <h3><i class="fas fa-database"></i> Sample Data & Band Management</h3>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="loadSampleData('hcl')">
+                        <i class="fas fa-building"></i> Load HCL Data
+                    </button>
+                    <button class="action-btn" onclick="loadSampleData('fresenius')">
+                        <i class="fas fa-hospital"></i> Load Fresenius Data
+                    </button>
+                    <button class="action-btn" onclick="generateBandData()">
+                        <i class="fas fa-magic"></i> Generate Band Data
+                    </button>
+                    <button class="action-btn" onclick="clearAllData()">
+                        <i class="fas fa-trash"></i> Clear All Data
+                    </button>
+                </div>
+            </div>
+           
+            <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="control-group">
+                    <label class="control-label"><i class="fas fa-users"></i> Customer</label>
+                    <select class="control-input" id="customerSelect" onchange="updateMatrixData()">
+                        <option value="hcl">HCL Technologies</option>
+                        <option value="fresenius">Fresenius Medical</option>
+                        <option value="acme">Acme Corporation</option>
+                    </select>
+                </div>
+               
+                <div class="control-group">
+                    <label class="control-label"><i class="fas fa-bolt"></i> Band Mode</label>
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="bandModeToggle" checked onchange="toggleBandMode()">
+                        <span>Active</span>
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label"><i class="fas fa-table"></i> Test Band Table</label>
+                    <select class="control-input" id="testBandTable" onchange="testBandTable()">
+                        <option value="">Select table to test...</option>
+                        <option value="dispatch">Dispatch Services</option>
+                        <option value="dedicated">Dedicated Services</option>
+                        <option value="sv">Scheduled Visits</option>
+                        <option value="project">Project Work</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side Panel Overlay -->
+    <div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+
+    <!-- Side Panel -->
+    <div class="side-panel" id="sidePanel">
+        <div class="panel-header">
+            <h3><i class="fas fa-layer-group"></i> <span id="panelTitle">Band Details</span></h3>
+            <button class="panel-close" onclick="closePanel()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="panel-content" id="panelContent">
+            <!-- Panel content will be loaded here -->
+        </div>
+        <div class="panel-footer">
+            <button class="band-action-btn save" onclick="saveBandChanges()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <button class="band-action-btn" onclick="closePanel()">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Complete System Data Structure
+        const systemData = {
+            tables: [
+                {
+                    id: 1,
+                    name: "Ticket Data Built-up",
+                    key: "ticket",
+                    description: "Primary service ticket entry point",
+                    color: "#2563eb",
+                    icon: "fa-clipboard-list",
+                    hasBandDetails: false,
+                    columns: [
+                        { name: "Site Category", type: "dropdown", required: true, group: "basic" },
+                        { name: "Customer Name", type: "text", required: true, group: "basic" },
+                        { name: "Partner Name", type: "text", required: true, group: "basic" },
+                        { name: "Customer Ticket Number", type: "text", required: true, group: "basic" },
+                        { name: "PO number", type: "text", required: false, group: "basic" },
+                        { name: "Country", type: "text", required: true, group: "geographic" },
+                        { name: "City", type: "text", required: true, group: "geographic" },
+                        { name: "Site Address", type: "text", required: false, group: "geographic" },
+                        { name: "Activity Details", type: "text", required: true, group: "service" },
+                        { name: "Ticket Priority", type: "dropdown", required: true, group: "service" },
+                        { name: "Technician Name", type: "text", required: true, group: "technician" },
+                        { name: "Total Hours", type: "number", required: true, group: "technician" },
+                        { name: "Currency", type: "dropdown", required: true, group: "financial" },
+                        { name: "Total Cost", type: "currency", required: true, group: "financial" }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "Service Rate Card",
+                    key: "rate",
+                    description: "Master rate reference for all services",
+                    color: "#7c3aed",
+                    icon: "fa-credit-card",
+                    hasBandDetails: false,
+                    columns: [
+                        { name: "Customer", type: "text", required: true, group: "basic" },
+                        { name: "Region", type: "text", required: true, group: "geographic" },
+                        { name: "Country", type: "text", required: true, group: "geographic" },
+                        { name: "Currency", type: "dropdown", required: true, group: "financial" },
+                        { name: "Rate Type", type: "dropdown", required: true, group: "financial" },
+                        { name: "Rate Value", type: "currency", required: true, group: "financial" }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: "Dispatch Table",
+                    key: "dispatch",
+                    description: "For on-demand service dispatches",
+                    color: "#10b981",
+                    icon: "fa-truck-fast",
+                    hasBandDetails: true,
+                    bandType: "dispatch",
+                    columns: [
+                        { name: "Site Category", type: "dropdown", required: true, group: "basic" },
+                        { name: "Customer Name", type: "text", required: true, group: "basic" },
+                        { name: "Partner Name", type: "text", required: true, group: "basic" },
+                        { name: "Customer Ticket Number", type: "text", required: true, group: "basic" },
+                        { name: "PO number", type: "text", required: false, group: "basic" },
+                        { name: "Country", type: "text", required: true, group: "geographic" },
+                        { name: "City", type: "text", required: true, group: "geographic" },
+                        { name: "Site Address", type: "text", required: false, group: "geographic" },
+                        { name: "Activity Details", type: "text", required: true, group: "service" },
+                        { name: "Dispatch Category", type: "dropdown", required: true, group: "service" },
+                        { name: "Ticket Priority", type: "dropdown", required: true, group: "service" },
+                        { name: "Technician Name", type: "text", required: true, group: "technician" },
+                        { name: "Total Hours", type: "number", required: true, group: "technician" },
+                        { name: "Currency", type: "dropdown", required: true, group: "financial" },
+                        { name: "Regular Rate", type: "currency", required: false, group: "financial" },
+                        { name: "Total Cost", type: "currency", required: true, group: "financial" }
+                    ]
+                },
+                {
+                    id: 4,
+                    name: "Dispatch Stand By Charges",
+                    key: "standby",
+                    description: "For standby time billing",
+                    color: "#f59e0b",
+                    icon: "fa-clock",
+                    hasBandDetails: false,
+                    columns: [
+                        { name: "Site Category", type: "dropdown", required: true, group: "basic" },
+                        { name: "Customer Name", type: "text", required: true, group: "basic" },
+                        { name: "Partner Name", type: "text", required: true, group: "basic" },
+                        { name: "Country", type: "text", required: true, group: "geographic" },
+                        { name: "City", type: "text", required: true, group: "geographic" },
+                        { name: "Site Address", type: "text", required: false, group: "geographic" },
+                        { name: "Standby Hours", type: "number", required: true, group: "technician" },
+                        { name: "Standby Rate", type: "currency", required: true, group: "financial" },
+                        { name: "Total Standby Cost", type: "currency", required: true, group: "financial" },
+                        { name: "Currency", type: "dropdown", required: true, group: "financial" }
+                    ]
+                },
+                {
+                    id: 5,
+                    name: "Dedicated Table",
+                    key: "dedicated",
+                    description: "For monthly dedicated resources",
+                    color: "#ef4444",
+                    icon: "fa-user-tie",
+                    hasBandDetails: true,
+                    bandType: "dedicated",
+                    columns: [
+                        { name: "Site Category", type: "dropdown", required: true, group: "basic" },
+                        { name: "Customer Name", type: "text", required: true, group: "basic" },
+                        { name: "Partner Name", type: "text", required: true, group: "basic" },
+                        { name: "Country", type: "text", required: true, group: "geographic" },
+                        { name: "City", type: "text", required: true, group: "geographic" },
+                        { name: "Site Address", type: "text", required: false, group: "geographic" },
+                        { name: "PO number", type: "text", required: false, group: "basic" },
+                        { name: "Technician Name", type: "text", required: true, group: "technician" },
+                        { name: "Band", type: "dropdown", required: true, group: "band_details" },
+                        { name: "Variant", type: "dropdown", required: true, group: "band_details" },
+                        { name: "Monthly rate", type: "currency", required: true, group: "financial" },
+                        { name: "Currency", type: "dropdown", required: true, group: "financial" }
+                    ]
+                },
+                {
+                    id: 6,
+                    name: "SV, Full & Half Day Visit",
+                    key: "sv",
+                    description: "For scheduled visits with flat rates",
+                    color: "#3b82f6",
+                    icon: "fa-calendar-check",
+                    hasBandDetails: true,
+                    bandType: "scheduled",
+                    columns: [
+                        { name: "Site Category", type: "dropdown", required: true, group: "basic" },
+                        { name: "Customer Name", type: "text", required: true, group: "basic" },
+                        { name: "Partner Name", type: "text", required: true, group: "basic" },
+                        { name: "Customer Ticket Number", type: "text", required: true, group: "basic" },
+                        { name: "PO number", type: "text", required: false, group: "basic" },
+                        { name: "Country", type: "text", required: true, group: "geographic" },
+                        { name: "City", type: "text", required: true, group: "geographic" },
+                        { name: "Site Address", type: "text", required: false, group: "geographic" },
+                        { name: "Activity Details", type: "text", required: true, group: "service" },
+                        { name: "Ticket Priority", type: "dropdown", required: true, group: "service" },
+                        { name: "Technician Name", type: "text", required: true, group: "technician" },
+                        { name: "Total Hours", type: "number", required: true, group: "technician" },
+                        { name: "Category", type: "dropdown", required: true, group: "service" },
+                        { name: "Half Day Rate", type: "currency", required: false, group: "financial" },
+                        { name: "Full Day Rate", type: "currency", required: false, group: "financial" },
+                        { name: "Total Cost", type: "currency", required: true, group: "financial" },
+                        { name: "Currency", type: "dropdown", required: true, group: "financial" }
+                    ]
+                },
+                {
+                    id: 7,
+                    name: "Project Work Table",
+                    key: "project",
+                    description: "For project-based engagements",
+                    color: "#8b5cf6",
+                    icon: "fa-project-diagram",
+                    hasBandDetails: true,
+                    bandType: "project",
+                    columns: [
+                        { name: "Site Category", type: "dropdown", required: true, group: "basic" },
+                        { name: "Customer Name", type: "text", required: true, group: "basic" },
+                        { name: "Partner Name", type: "text", required: true, group: "basic" },
+                        { name: "Country", type: "text", required: true, group: "geographic" },
+                        { name: "City", type: "text", required: true, group: "geographic" },
+                        { name: "Site Address", type: "text", required: false, group: "geographic" },
+                        { name: "PO number", type: "text", required: false, group: "basic" },
+                        { name: "Project Start Date", type: "date", required: true, group: "service" },
+                        { name: "Project End Date", type: "date", required: true, group: "service" },
+                        { name: "Estimated Hours", type: "number", required: true, group: "technician" },
+                        { name: "Actual Hours", type: "number", required: true, group: "technician" },
+                        { name: "Project Rate", type: "currency", required: true, group: "financial" },
+                        { name: "Estimated Cost", type: "currency", required: true, group: "financial" },
+                        { name: "Actual Cost", type: "currency", required: true, group: "financial" },
+                        { name: "Currency", type: "dropdown", required: true, group: "financial" }
+                    ]
+                }
+            ],
+
+            // Band Details Data Structure
+            bandDetails: {
+                // Dispatch Services Bands
+                dispatch: {
+                    title: "Dispatch Services Band Details",
+                    description: "Pricing for on-demand, incident-based or installation/move/add/change (IMAC) support",
+                    groups: [
+                        {
+                            name: "Dispatch Ticket (Incident)",
+                            bands: [
+                                { name: "4 hour", description: "4-hour response", sla: "4 hours" },
+                                { name: "SBD", description: "Same Business Day", sla: "Same Day" },
+                                { name: "NBD", description: "Next Business Day", sla: "Next Day" },
+                                { name: "2 BD", description: "2 Business Days", sla: "2 Days" },
+                                { name: "3 BD", description: "3 Business Days", sla: "3 Days" },
+                                { name: "Additional Hour", description: "Additional hour rate", sla: "Hourly" }
+                            ]
+                        },
+                        {
+                            name: "Dispatch Ticket (IMAC)",
+                            bands: [
+                                { name: "2 BD", description: "IMAC Work", sla: "2 Days" },
+                                { name: "3 BD", description: "IMAC Work", sla: "3 Days" },
+                                { name: "4 BD", description: "IMAC Work", sla: "4 Days" }
+                            ]
+                        }
+                    ]
+                },
+
+                // Dedicated Services Bands
+                dedicated: {
+                    title: "Dedicated Services Band Details",
+                    description: "Monthly dedicated resource pricing, typically for Full-Time Equivalent (FTE) engineers",
+                    groups: [
+                        {
+                            name: "Band Structure: With/Without Benefits",
+                            bands: [
+                                { name: "Band 0", withBenefits: "$26,000", withoutBenefits: "$23,000" },
+                                { name: "Band 1", withBenefits: "$28,000", withoutBenefits: "$25,000" },
+                                { name: "Band 2", withBenefits: "$30,000", withoutBenefits: "$27,000" },
+                                { name: "Band 3", withBenefits: "$32,000", withoutBenefits: "$29,000" },
+                                { name: "Band 4", withBenefits: "$34,000", withoutBenefits: "$31,000" }
+                            ]
+                        }
+                    ]
+                },
+
+                // Scheduled Services Bands (SV Visit)
+                scheduled: {
+                    title: "Scheduled Services Band Details",
+                    description: "Pricing for planned, time-boxed visits (e.g., full-day or half-day consultations)",
+                    groups: [
+                        {
+                            name: "Full Day Visit (8hrs)",
+                            bands: [
+                                { name: "Band 0", price: "$300", duration: "8 hours", maxHours: "8" },
+                                { name: "Band 1", price: "$320", duration: "8 hours", maxHours: "8" },
+                                { name: "Band 2", price: "$350", duration: "8 hours", maxHours: "8" }
+                            ]
+                        },
+                        {
+                            name: "1/2 Day Visit (4hrs)",
+                            bands: [
+                                { name: "Band 0", price: "$180", duration: "4 hours", maxHours: "4" },
+                                { name: "Band 1", price: "$200", duration: "4 hours", maxHours: "4" },
+                                { name: "Band 2", price: "$220", duration: "4 hours", maxHours: "4" }
+                            ]
+                        }
+                    ]
+                },
+
+                // Project Work Bands
+                project: {
+                    title: "Project Work Band Details",
+                    description: "Pricing for project-based engagements, differentiated by duration",
+                    groups: [
+                        {
+                            name: "Short Term (Up to 3 months)",
+                            bands: [
+                                { name: "Band 0", price: "$5,000", minTerm: "1 month", maxTerm: "3 months" },
+                                { name: "Band 1", price: "$5,500", minTerm: "1 month", maxTerm: "3 months" },
+                                { name: "Band 2", price: "$6,000", minTerm: "1 month", maxTerm: "3 months" },
+                                { name: "Band 3", price: "$6,500", minTerm: "1 month", maxTerm: "3 months" },
+                                { name: "Band 4", price: "$7,000", minTerm: "1 month", maxTerm: "3 months" }
+                            ]
+                        },
+                        {
+                            name: "Long Term (more than 3 months)",
+                            bands: [
+                                { name: "Band 0", price: "$4,500", minTerm: "4 months", maxTerm: "12 months" },
+                                { name: "Band 1", price: "$5,000", minTerm: "4 months", maxTerm: "12 months" },
+                                { name: "Band 2", price: "$5,500", minTerm: "4 months", maxTerm: "12 months" },
+                                { name: "Band 3", price: "$6,000", minTerm: "4 months", maxTerm: "12 months" },
+                                { name: "Band 4", price: "$6,500", minTerm: "4 months", maxTerm: "12 months" }
+                            ]
+                        }
+                    ]
+                }
+            },
+
+            // Sample Data
+            sampleData: {
+                hcl: {
+                    dispatch: [
+                        {
+                            "Customer Name": "HCL Technologies",
+                            "Site Category": "Dispatch",
+                            "Dispatch Category": "Incident",
+                            "Total Cost": "$350"
+                        }
+                    ],
+                    dedicated: [
+                        {
+                            "Customer Name": "HCL Technologies",
+                            "Site Category": "Dedicated",
+                            "Band": "Band 2",
+                            "Variant": "With Benefits",
+                            "Monthly rate": "$30,000"
+                        }
+                    ],
+                    sv: [
+                        {
+                            "Customer Name": "HCL Technologies",
+                            "Site Category": "SV Visit",
+                            "Category": "Full Day",
+                            "Full Day Rate": "$300"
+                        }
+                    ],
+                    project: [
+                        {
+                            "Customer Name": "HCL Technologies",
+                            "Site Category": "Project",
+                            "Project Rate": "$5,500",
+                            "Duration": "Short Term"
+                        }
+                    ]
+                },
+                fresenius: {
+                    dispatch: [
+                        {
+                            "Customer Name": "Fresenius Medical",
+                            "Site Category": "Dispatch",
+                            "Dispatch Category": "IMAC",
+                            "Total Cost": "$800"
+                        }
+                    ],
+                    dedicated: [
+                        {
+                            "Customer Name": "Fresenius Medical",
+                            "Site Category": "Dedicated",
+                            "Band": "Band 3",
+                            "Variant": "Without Benefits",
+                            "Monthly rate": "$29,000"
+                        }
+                    ],
+                    sv: [
+                        {
+                            "Customer Name": "Fresenius Medical",
+                            "Site Category": "SV Visit",
+                            "Category": "Half Day",
+                            "Half Day Rate": "$200"
+                        }
+                    ],
+                    project: [
+                        {
+                            "Customer Name": "Fresenius Medical",
+                            "Site Category": "Project",
+                            "Project Rate": "$6,000",
+                            "Duration": "Long Term"
+                        }
+                    ]
+                }
+            }
+        };
+
+        // Application State
+        const state = {
+            currentCustomer: "hcl",
+            isDataView: true,
+            selectedRow: null,
+            selectedTable: null,
+            bandModeActive: true,
+            editedBands: {},
+            currentEditingCell: null
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMatrix();
+            setupEventListeners();
+            loadSampleData('hcl');
+            updateStats();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // ESC key to close panel
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePanel();
+                }
+            });
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchRecords(this.value);
+                }
+            });
+        }
+
+        // Initialize the matrix
+        function initializeMatrix() {
+            renderMatrixHeader();
+            renderMatrixBody();
+        }
+
+        // Render matrix header
+        function renderMatrixHeader() {
+            const header = document.getElementById('matrixHeader');
+            header.innerHTML = `
+                <th style="min-width: 250px;">
+                    <i class="fas fa-columns"></i> Field Name
+                    <br><span style="font-size: 0.7rem; font-weight: normal;">Click band cells to expand details</span>
+                </th>
+            `;
+           
+            systemData.tables.forEach(table => {
+                const bandIcon = table.hasBandDetails ? '<i class="fas fa-layer-group" style="margin-left: 5px; color: var(--secondary);"></i>' : '';
+                header.innerHTML += `
+                    <th style="background: ${table.color};">
+                        <i class="fas ${table.icon}"></i> ${table.name}
+                        ${bandIcon}
+                        <br><span style="font-size: 0.7rem; font-weight: normal;">${table.hasBandDetails ? 'Click to expand' : ''}</span>
+                    </th>
+                `;
+            });
+        }
+
+        // Render matrix body
+        function renderMatrixBody() {
+            const body = document.getElementById('matrixBody');
+            body.innerHTML = '';
+
+            // Get all fields from all tables
+            const allFields = new Set();
+            systemData.tables.forEach(table => {
+                table.columns.forEach(col => {
+                    allFields.add(col.name);
+                });
+            });
+
+            // Render each field
+            Array.from(allFields).forEach(fieldName => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-field', fieldName);
+
+                // Field name cell
+                const nameCell = document.createElement('td');
+                nameCell.innerHTML = `<strong>${fieldName}</strong>`;
+                row.appendChild(nameCell);
+
+                // Table cells
+                systemData.tables.forEach(table => {
+                    const cell = document.createElement('td');
+                    const hasField = table.columns.some(col => col.name === fieldName);
+                    
+                    if (state.isDataView) {
+                        if (table.hasBandDetails && state.bandModeActive) {
+                            // Check if this is a band-related field
+                            if (isBandField(fieldName, table.key)) {
+                                const data = getFieldData(fieldName, table.key);
+                                cell.innerHTML = `
+                                    <div class="matrix-cell-content">
+                                        <div class="cell-value">
+                                            <input type="text"
+                                                   class="cell-input"
+                                                   value="${data || ''}"
+                                                   data-field="${fieldName}"
+                                                   data-table="${table.key}"
+                                                   placeholder="Click to view band details..."
+                                                   readonly
+                                                   onclick="openBandDetails('${table.key}', '${fieldName}')">
+                                        </div>
+                                        <button class="expand-btn" onclick="openBandDetails('${table.key}', '${fieldName}')">
+                                            <i class="fas fa-expand"></i>
+                                        </button>
+                                    </div>
+                                `;
+                                cell.classList.add('cell-with-band');
+                            } else {
+                                const data = getFieldData(fieldName, table.key);
+                                const inputClass = hasField ? 'cell-input' : 'cell-input non-existent';
+                                cell.innerHTML = `
+                                    <input type="text"
+                                           class="${inputClass}"
+                                           value="${data || ''}"
+                                           data-field="${fieldName}"
+                                           data-table="${table.key}"
+                                           placeholder="${hasField ? 'Enter value...' : 'Field not in table'}">
+                                `;
+                            }
+                        } else {
+                            const data = getFieldData(fieldName, table.key);
+                            const inputClass = hasField ? 'cell-input' : 'cell-input non-existent';
+                            cell.innerHTML = `
+                                <input type="text"
+                                       class="${inputClass}"
+                                       value="${data || ''}"
+                                       data-field="${fieldName}"
+                                       data-table="${table.key}"
+                                       placeholder="${hasField ? 'Enter value...' : 'Field not in table'}">
+                            `;
+                        }
+                    } else {
+                        // Structural view
+                        cell.innerHTML = hasField ? 
+                            '<div class="cell-check">✔</div>' : 
+                            '<div class="cell-cross">✖</div>';
+                        cell.className = hasField ? 'cell-check' : 'cell-cross';
+                    }
+                    
+                    cell.setAttribute('data-table', table.key);
+                    cell.setAttribute('data-has-field', hasField);
+                    
+                    // Add click handler for band tables
+                    if (table.hasBandDetails && state.bandModeActive) {
+                        cell.style.cursor = 'pointer';
+                        cell.onclick = function(e) {
+                            if (!e.target.classList.contains('cell-input')) {
+                                openBandDetails(table.key);
+                            }
+                        };
+                    }
+                    
+                    row.appendChild(cell);
+                });
+
+                body.appendChild(row);
+            });
+        }
+
+        // Check if field is band-related
+        function isBandField(fieldName, tableKey) {
+            const bandFields = {
+                'dispatch': ['Dispatch Category', 'Total Cost'],
+                'dedicated': ['Band', 'Variant', 'Monthly rate'],
+                'sv': ['Category', 'Half Day Rate', 'Full Day Rate', 'Total Cost'],
+                'project': ['Project Rate', 'Estimated Cost', 'Actual Cost']
+            };
+            return bandFields[tableKey]?.includes(fieldName) || false;
+        }
+
+        // Get field data
+        function getFieldData(fieldName, tableKey) {
+            const customerData = systemData.sampleData[state.currentCustomer];
+            if (!customerData || !customerData[tableKey]) return '';
+            
+            // For band tables, get the first record
+            const tableData = customerData[tableKey];
+            if (Array.isArray(tableData) && tableData.length > 0) {
+                return tableData[0][fieldName] || '';
+            }
+            
+            return '';
+        }
+
+        // Open band details panel
+        function openBandDetails(tableKey, fieldName = null) {
+            const table = systemData.tables.find(t => t.key === tableKey);
+            if (!table || !table.hasBandDetails) return;
+            
+            // Highlight the selected table column
+            highlightSelectedTable(tableKey);
+            
+            // Set panel title
+            const customerName = state.currentCustomer === 'hcl' ? 'HCL Technologies' : 'Fresenius Medical';
+            document.getElementById('panelTitle').textContent = 
+                `${systemData.bandDetails[table.bandType].title} - ${customerName}`;
+            
+            // Load panel content
+            const panelContent = document.getElementById('panelContent');
+            panelContent.innerHTML = renderBandDetails(table.bandType);
+            
+            // Show panel
+            document.getElementById('panelOverlay').classList.add('active');
+            document.getElementById('sidePanel').classList.add('active');
+            document.getElementById('mainContainer').classList.add('shifted');
+            document.body.classList.add('panel-open');
+            
+            // Update stats
+            document.getElementById('selectedRecord').textContent = 
+                `${customerName} - ${table.name}`;
+        }
+
+        // Render band details based on type
+        function renderBandDetails(bandType) {
+            const bandData = systemData.bandDetails[bandType];
+            let html = `
+                <div style="margin-bottom: 20px;">
+                    <p style="color: var(--gray); margin-bottom: 15px;">${bandData.description}</p>
+                </div>
+                
+                <div class="band-actions">
+                    <button class="band-action-btn add" onclick="addNewBand('${bandType}')">
+                        <i class="fas fa-plus"></i> Add New Band
+                    </button>
+                    <button class="band-action-btn" onclick="editAllBands('${bandType}')">
+                        <i class="fas fa-edit"></i> Edit All Bands
+                    </button>
+                    <button class="band-action-btn" onclick="exportBandData('${bandType}')">
+                        <i class="fas fa-download"></i> Export Band Data
+                    </button>
+                </div>
+            `;
+            
+            // Render each group
+            bandData.groups.forEach(group => {
+                html += renderBandGroup(group, bandType);
+            });
+            
+            return html;
+        }
+
+        // Render a band group
+        function renderBandGroup(group, bandType) {
+            let html = `
+                <div class="band-table-container">
+                    <table class="band-table">
+                        <thead>
+                            <tr class="band-group-header">
+                                <th colspan="${Object.keys(group.bands[0]).length}">${group.name}</th>
+                            </tr>
+                            <tr class="band-sub-header">
+            `;
+            
+            // Headers
+            Object.keys(group.bands[0]).forEach(key => {
+                html += `<th>${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}</th>`;
+            });
+            
+            html += `<th>Actions</th></tr></thead><tbody>`;
+            
+            // Rows
+            group.bands.forEach((band, index) => {
+                html += `<tr data-band-index="${index}" data-group="${group.name}">`;
+                
+                Object.entries(band).forEach(([key, value]) => {
+                    html += `
+                        <td class="band-cell-editable" 
+                            onclick="editBandCell(this, '${bandType}', '${group.name}', ${index}, '${key}')"
+                            data-value="${value}">
+                            ${value}
+                        </td>
+                    `;
+                });
+                
+                html += `
+                    <td>
+                        <button class="expand-btn" onclick="editBand('${bandType}', '${group.name}', ${index})" style="margin-right:5px;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="expand-btn" onclick="deleteBand('${bandType}', '${group.name}', ${index})" style="color:var(--danger);">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            });
+            
+            html += `</tbody></table></div>`;
+            return html;
+        }
+
+        // Edit band cell
+        function editBandCell(cell, bandType, groupName, bandIndex, key) {
+            const currentValue = cell.getAttribute('data-value');
+            cell.innerHTML = `
+                <input type="text" 
+                       class="band-input" 
+                       value="${currentValue}"
+                       onblur="saveBandCell(this, '${bandType}', '${groupName}', ${bandIndex}, '${key}')"
+                       onkeypress="if(event.key === 'Enter') this.blur()"
+                       autofocus>
+            `;
+            cell.querySelector('.band-input').focus();
+        }
+
+        // Save band cell
+        function saveBandCell(input, bandType, groupName, bandIndex, key) {
+            const newValue = input.value;
+            const cell = input.parentElement;
+            
+            // Update data
+            const bandData = systemData.bandDetails[bandType];
+            const group = bandData.groups.find(g => g.name === groupName);
+            if (group && group.bands[bandIndex]) {
+                group.bands[bandIndex][key] = newValue;
+            }
+            
+            // Update display
+            cell.setAttribute('data-value', newValue);
+            cell.innerHTML = newValue;
+            
+            // Update matrix if needed
+            updateMatrixFromBandData(bandType, key, newValue);
+        }
+
+        // Edit band
+        function editBand(bandType, groupName, bandIndex) {
+            const bandData = systemData.bandDetails[bandType];
+            const group = bandData.groups.find(g => g.name === groupName);
+            const band = group.bands[bandIndex];
+            
+            const newName = prompt('Enter new band name:', band.name);
+            if (newName) {
+                band.name = newName;
+                closePanel();
+                openBandDetails(getTableKeyFromBandType(bandType));
+            }
+        }
+
+        // Delete band
+        function deleteBand(bandType, groupName, bandIndex) {
+            if (confirm('Are you sure you want to delete this band?')) {
+                const bandData = systemData.bandDetails[bandType];
+                const group = bandData.groups.find(g => g.name === groupName);
+                if (group) {
+                    group.bands.splice(bandIndex, 1);
+                    closePanel();
+                    openBandDetails(getTableKeyFromBandType(bandType));
+                }
+            }
+        }
+
+        // Add new band
+        function addNewBand(bandType) {
+            const bandData = systemData.bandDetails[bandType];
+            
+            if (bandType === 'dedicated') {
+                // For dedicated bands
+                const newBand = {
+                    name: `Band ${bandData.groups[0].bands.length}`,
+                    withBenefits: "$0",
+                    withoutBenefits: "$0"
+                };
+                bandData.groups[0].bands.push(newBand);
+            } else if (bandType === 'dispatch') {
+                // For dispatch bands - ask which group
+                const groupName = prompt('Enter group name (Incident or IMAC):', 'Incident');
+                const group = bandData.groups.find(g => g.name.includes(groupName));
+                if (group) {
+                    const newBand = {
+                        name: prompt('Enter band name (e.g., 4 hour, SBD):', 'New Band'),
+                        description: prompt('Enter description:', 'New Description'),
+                        sla: prompt('Enter SLA:', 'New SLA')
+                    };
+                    group.bands.push(newBand);
+                }
+            } else if (bandType === 'scheduled') {
+                // For scheduled bands
+                const groupName = prompt('Enter group name (Full Day or Half Day):', 'Full Day');
+                const group = bandData.groups.find(g => g.name.includes(groupName));
+                if (group) {
+                    const newBand = {
+                        name: `Band ${group.bands.length}`,
+                        price: "$0",
+                        duration: groupName.includes('Full') ? "8 hours" : "4 hours",
+                        maxHours: groupName.includes('Full') ? "8" : "4"
+                    };
+                    group.bands.push(newBand);
+                }
+            } else if (bandType === 'project') {
+                // For project bands
+                const groupName = prompt('Enter group name (Short Term or Long Term):', 'Short Term');
+                const group = bandData.groups.find(g => g.name.includes(groupName));
+                if (group) {
+                    const newBand = {
+                        name: `Band ${group.bands.length}`,
+                        price: "$0",
+                        minTerm: groupName.includes('Short') ? "1 month" : "4 months",
+                        maxTerm: groupName.includes('Short') ? "3 months" : "12 months"
+                    };
+                    group.bands.push(newBand);
+                }
+            }
+            
+            closePanel();
+            openBandDetails(getTableKeyFromBandType(bandType));
+        }
+
+        // Edit all bands
+        function editAllBands(bandType) {
+            const bandData = systemData.bandDetails[bandType];
+            const newData = prompt('Enter JSON for all bands:', JSON.stringify(bandData, null, 2));
+            if (newData) {
+                try {
+                    const parsedData = JSON.parse(newData);
+                    systemData.bandDetails[bandType] = parsedData;
+                    closePanel();
+                    openBandDetails(getTableKeyFromBandType(bandType));
+                } catch (e) {
+                    alert('Invalid JSON format');
+                }
+            }
+        }
+
+        // Export band data
+        function exportBandData(bandType) {
+            const bandData = systemData.bandDetails[bandType];
+            const dataStr = JSON.stringify(bandData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = `${bandType}_band_data.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        // Update matrix from band data
+        function updateMatrixFromBandData(bandType, key, value) {
+            const tableKey = getTableKeyFromBandType(bandType);
+            const customerData = systemData.sampleData[state.currentCustomer];
+            
+            if (customerData && customerData[tableKey]) {
+                // Update the first record (for demo)
+                if (customerData[tableKey][0]) {
+                    // Map band field names to table field names
+                    const fieldMap = {
+                        'price': bandType === 'dedicated' ? 'Monthly rate' : 
+                                 bandType === 'scheduled' ? (key.includes('Full') ? 'Full Day Rate' : 'Half Day Rate') :
+                                 bandType === 'project' ? 'Project Rate' : 'Total Cost',
+                        'name': 'Band',
+                        'withBenefits': 'Monthly rate',
+                        'withoutBenefits': 'Monthly rate'
+                    };
+                    
+                    const tableField = fieldMap[key] || key;
+                    customerData[tableKey][0][tableField] = value;
+                    
+                    // Update matrix display
+                    renderMatrixBody();
+                }
+            }
+        }
+
+        // Get table key from band type
+        function getTableKeyFromBandType(bandType) {
+            const map = {
+                'dispatch': 'dispatch',
+                'dedicated': 'dedicated',
+                'scheduled': 'sv',
+                'project': 'project'
+            };
+            return map[bandType] || bandType;
+        }
+
+        // Close panel
+        function closePanel() {
+            document.getElementById('panelOverlay').classList.remove('active');
+            document.getElementById('sidePanel').classList.remove('active');
+            document.getElementById('mainContainer').classList.remove('shifted');
+            document.body.classList.remove('panel-open');
+            
+            // Clear highlights
+            document.querySelectorAll('.highlight-selected-row').forEach(el => {
+                el.classList.remove('highlight-selected-row');
+            });
+            
+            document.getElementById('selectedRecord').textContent = '0';
+        }
+
+        // Highlight selected table
+        function highlightSelectedTable(tableKey) {
+            // Clear previous highlights
+            document.querySelectorAll('.highlight-selected-row').forEach(el => {
+                el.classList.remove('highlight-selected-row');
+            });
+            
+            // Highlight column for the selected table
+            const tableIndex = systemData.tables.findIndex(t => t.key === tableKey) + 1;
+            const cells = document.querySelectorAll(`td:nth-child(${tableIndex + 1})`);
+            cells.forEach(cell => {
+                cell.classList.add('highlight-selected-row');
+            });
+        }
+
+        // Save band changes
+        function saveBandChanges() {
+            // In a real app, this would save to server/database
+            alert('Band changes saved successfully!');
+            closePanel();
+        }
+
+        // Toggle data view
+        function toggleDataView() {
+            state.isDataView = document.getElementById('showDataView').checked;
+            renderMatrixBody();
+        }
+
+        // Toggle band mode
+        function toggleBandMode() {
+            state.bandModeActive = document.getElementById('bandModeToggle').checked;
+            renderMatrixBody();
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const filter = document.getElementById('tableFilter').value;
+            const showBandOnly = document.getElementById('showBandOnly').checked;
+            
+            // Show/hide rows based on filter
+            const rows = document.querySelectorAll('#matrixBody tr');
+            rows.forEach(row => {
+                let showRow = true;
+                
+                if (filter !== 'SHOW_ALL') {
+                    const tableKeys = {
+                        'DISPATCH': 'dispatch',
+                        'DEDICATED': 'dedicated',
+                        'SV_VISIT': 'sv',
+                        'PROJECT': 'project',
+                        'BAND_TABLES': ['dispatch', 'dedicated', 'sv', 'project']
+                    };
+                    
+                    const target = tableKeys[filter];
+                    if (Array.isArray(target)) {
+                        // Check if row has any band table fields
+                        const hasBandField = Array.from(row.querySelectorAll('td:not(:first-child)'))
+                            .some((cell, index) => {
+                                if (index > 0) {
+                                    const tableKey = systemData.tables[index - 1].key;
+                                    return target.includes(tableKey) && cell.getAttribute('data-has-field') === 'true';
+                                }
+                                return false;
+                            });
+                        showRow = hasBandField;
+                    } else {
+                        // Check specific table
+                        const tableIndex = systemData.tables.findIndex(t => t.key === target) + 1;
+                        const cell = row.querySelector(`td:nth-child(${tableIndex + 1})`);
+                        showRow = cell && cell.getAttribute('data-has-field') === 'true';
+                    }
+                }
+                
+                if (showBandOnly) {
+                    // Check if row has any band table fields
+                    const hasBandField = Array.from(row.querySelectorAll('td:not(:first-child)'))
+                        .some((cell, index) => {
+                            if (index > 0) {
+                                const table = systemData.tables[index - 1];
+                                return table.hasBandDetails && cell.getAttribute('data-has-field') === 'true';
+                            }
+                            return false;
+                        });
+                    showRow = showRow && hasBandField;
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+            
+            updateStats();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('tableFilter').value = 'SHOW_ALL';
+            document.getElementById('showBandOnly').checked = false;
+            applyFilters();
+        }
+
+        // Load sample data
+        function loadSampleData(customer) {
+            state.currentCustomer = customer;
+            document.getElementById('customerSelect').value = customer;
+            renderMatrixBody();
+            updateStats();
+            
+            // Show notification
+            const customerName = customer === 'hcl' ? 'HCL Technologies' : 
+                               customer === 'fresenius' ? 'Fresenius Medical' : 'Acme Corporation';
+            showNotification(`Loaded ${customerName} data`, 'success');
+        }
+
+        // Generate band data
+        function generateBandData() {
+            // Generate random band data for demonstration
+            const bandTypes = ['dispatch', 'dedicated', 'scheduled', 'project'];
+            bandTypes.forEach(bandType => {
+                const bandData = systemData.bandDetails[bandType];
+                bandData.groups.forEach(group => {
+                    group.bands.forEach(band => {
+                        if (bandType === 'dedicated') {
+                            band.withBenefits = `$${(Math.floor(Math.random() * 10) + 25) * 1000}`;
+                            band.withoutBenefits = `$${(Math.floor(Math.random() * 10) + 22) * 1000}`;
+                        } else if (bandType === 'dispatch') {
+                            band.description = 'Generated band';
+                        } else if (bandType === 'scheduled' || bandType === 'project') {
+                            band.price = `$${(Math.floor(Math.random() * 10) + 1) * 100}`;
+                        }
+                    });
+                });
+            });
+            
+            showNotification('Generated random band data for all tables', 'success');
+            
+            // If panel is open, refresh it
+            if (document.getElementById('sidePanel').classList.contains('active')) {
+                const panelTitle = document.getElementById('panelTitle').textContent;
+                const bandTypeMatch = panelTitle.match(/Dispatch|Dedicated|Scheduled|Project/);
+                if (bandTypeMatch) {
+                    const bandType = bandTypeMatch[0].toLowerCase();
+                    closePanel();
+                    openBandDetails(getTableKeyFromBandType(bandType));
+                }
+            }
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                // Clear sample data
+                Object.keys(systemData.sampleData).forEach(customer => {
+                    Object.keys(systemData.sampleData[customer]).forEach(table => {
+                        systemData.sampleData[customer][table] = [];
+                    });
+                });
+                
+                // Reset to default band data
+                systemData.bandDetails = JSON.parse(JSON.stringify({
+                    dispatch: {
+                        title: "Dispatch Services Band Details",
+                        description: "Pricing for on-demand, incident-based or IMAC support",
+                        groups: [{
+                            name: "Dispatch Ticket (Incident)",
+                            bands: [
+                                { name: "4 hour", description: "4-hour response", sla: "4 hours" },
+                                { name: "SBD", description: "Same Business Day", sla: "Same Day" },
+                                { name: "NBD", description: "Next Business Day", sla: "Next Day" },
+                                { name: "2 BD", description: "2 Business Days", sla: "2 Days" },
+                                { name: "3 BD", description: "3 Business Days", sla: "3 Days" },
+                                { name: "Additional Hour", description: "Additional hour rate", sla: "Hourly" }
+                            ]
+                        }, {
+                            name: "Dispatch Ticket (IMAC)",
+                            bands: [
+                                { name: "2 BD", description: "IMAC Work", sla: "2 Days" },
+                                { name: "3 BD", description: "IMAC Work", sla: "3 Days" },
+                                { name: "4 BD", description: "IMAC Work", sla: "4 Days" }
+                            ]
+                        }]
+                    },
+                    dedicated: {
+                        title: "Dedicated Services Band Details",
+                        description: "Monthly dedicated resource pricing",
+                        groups: [{
+                            name: "Band Structure: With/Without Benefits",
+                            bands: [
+                                { name: "Band 0", withBenefits: "$26,000", withoutBenefits: "$23,000" },
+                                { name: "Band 1", withBenefits: "$28,000", withoutBenefits: "$25,000" },
+                                { name: "Band 2", withBenefits: "$30,000", withoutBenefits: "$27,000" },
+                                { name: "Band 3", withBenefits: "$32,000", withoutBenefits: "$29,000" },
+                                { name: "Band 4", withBenefits: "$34,000", withoutBenefits: "$31,000" }
+                            ]
+                        }]
+                    },
+                    scheduled: {
+                        title: "Scheduled Services Band Details",
+                        description: "Pricing for planned visits",
+                        groups: [{
+                            name: "Full Day Visit (8hrs)",
+                            bands: [
+                                { name: "Band 0", price: "$300", duration: "8 hours", maxHours: "8" },
+                                { name: "Band 1", price: "$320", duration: "8 hours", maxHours: "8" },
+                                { name: "Band 2", price: "$350", duration: "8 hours", maxHours: "8" }
+                            ]
+                        }, {
+                            name: "1/2 Day Visit (4hrs)",
+                            bands: [
+                                { name: "Band 0", price: "$180", duration: "4 hours", maxHours: "4" },
+                                { name: "Band 1", price: "$200", duration: "4 hours", maxHours: "4" },
+                                { name: "Band 2", price: "$220", duration: "4 hours", maxHours: "4" }
+                            ]
+                        }]
+                    },
+                    project: {
+                        title: "Project Work Band Details",
+                        description: "Pricing for project-based engagements",
+                        groups: [{
+                            name: "Short Term (Up to 3 months)",
+                            bands: [
+                                { name: "Band 0", price: "$5,000", minTerm: "1 month", maxTerm: "3 months" },
+                                { name: "Band 1", price: "$5,500", minTerm: "1 month", maxTerm: "3 months" },
+                                { name: "Band 2", price: "$6,000", minTerm: "1 month", maxTerm: "3 months" },
+                                { name: "Band 3", price: "$6,500", minTerm: "1 month", maxTerm: "3 months" },
+                                { name: "Band 4", price: "$7,000", minTerm: "1 month", maxTerm: "3 months" }
+                            ]
+                        }, {
+                            name: "Long Term (more than 3 months)",
+                            bands: [
+                                { name: "Band 0", price: "$4,500", minTerm: "4 months", maxTerm: "12 months" },
+                                { name: "Band 1", price: "$5,000", minTerm: "4 months", maxTerm: "12 months" },
+                                { name: "Band 2", price: "$5,500", minTerm: "4 months", maxTerm: "12 months" },
+                                { name: "Band 3", price: "$6,000", minTerm: "4 months", maxTerm: "12 months" },
+                                { name: "Band 4", price: "$6,500", minTerm: "4 months", maxTerm: "12 months" }
+                            ]
+                        }]
+                    }
+                }));
+                
+                renderMatrixBody();
+                updateStats();
+                showNotification('All data cleared and reset to defaults', 'warning');
+            }
+        }
+
+        // Update matrix data
+        function updateMatrixData() {
+            const customer = document.getElementById('customerSelect').value;
+            loadSampleData(customer);
+        }
+
+        // Search records
+        function searchRecords(searchTerm) {
+            if (!searchTerm) return;
+            
+            searchTerm = searchTerm.toLowerCase();
+            const customerName = state.currentCustomer === 'hcl' ? 'hcl technologies' : 
+                               state.currentCustomer === 'fresenius' ? 'fresenius medical' : '';
+            
+            if (customerName.includes(searchTerm)) {
+                // Highlight all cells for this customer
+                document.querySelectorAll('td[data-table]').forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                        cell.style.backgroundColor = '#e0f2fe';
+                        setTimeout(() => {
+                            cell.style.backgroundColor = '';
+                        }, 3000);
+                    }
+                });
+                
+                showNotification(`Found records for ${searchTerm}`, 'info');
+            } else {
+                showNotification(`No records found for "${searchTerm}"`, 'warning');
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const allFields = new Set();
+            systemData.tables.forEach(table => {
+                table.columns.forEach(col => {
+                    allFields.add(col.name);
+                });
+            });
+            
+            const totalFields = Array.from(allFields).length;
+            const commonFields = Array.from(allFields).filter(field =>
+                systemData.tables.every(table =>
+                    table.columns.some(col => col.name === field)
+                )
+            ).length;
+            
+            const bandTables = systemData.tables.filter(t => t.hasBandDetails).length;
+            
+            document.getElementById('totalColumns').textContent = totalFields;
+            document.getElementById('commonColumns').textContent = commonFields;
+            document.getElementById('bandTablesCount').textContent = bandTables;
+        }
+
+        // Test band table
+        function testBandTable() {
+            const tableKey = document.getElementById('testBandTable').value;
+            if (tableKey) {
+                openBandDetails(tableKey);
+                document.getElementById('testBandTable').value = '';
+            }
+        }
+
+        // Open all band details
+        function openAllBandDetails() {
+            // Open the first band table
+            const bandTable = systemData.tables.find(t => t.hasBandDetails);
+            if (bandTable) {
+                openBandDetails(bandTable.key);
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+                color: white;
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow-lg);
+                z-index: 2000;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                animation: slideIn 0.3s ease;
+                max-width: 400px;
+            `;
+           
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+           
+            document.body.appendChild(notification);
+           
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+           
+            // Add animation styles if not present
+            if (!document.querySelector('#notification-animations')) {
+                const style = document.createElement('style');
+                style.id = 'notification-animations';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+    </script>
+</body>
+</html>
