@@ -31,6 +31,7 @@
 
 <link rel="stylesheet" href="./css/DedicatedTab.css">
 <link rel="stylesheet" href="./css/Monitor_Billing.css">
+<link rel="stylesheet" href="./css/ProjectTab.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -1617,266 +1618,247 @@
 </div>
     </div>
 </div>
-                        
-                        <!-- Project Tab -->
-                        <div class="tab-content" id="projectTab">
-                            <h3>Project Configuration</h3>
-                            <div class="tab-content-inner">
-                                <div class="config-section">
-                                    <h4><i class="fas fa-project-diagram"></i> Project Settings</h4>
-                                    <div class="config-grid">
-                                        <div class="config-item">
-                                            <label>Project Type</label>
-                                            <select>
-                                                <option>Implementation</option>
-                                                <option>Migration</option>
-                                                <option>Upgrade</option>
-                                                <option>Maintenance</option>
-                                                <option>Support</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Project Duration</label>
-                                            <select>
-                                                <option>Short-term (1-3 months)</option>
-                                                <option>Medium-term (3-6 months)</option>
-                                                <option>Long-term (6-12 months)</option>
-                                                <option>Ongoing</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Team Size</label>
-                                            <select>
-                                                <option>Single Engineer</option>
-                                                <option>Small Team (2-5)</option>
-                                                <option>Medium Team (5-10)</option>
-                                                <option>Large Team (10+)</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Budget Range</label>
-                                            <select>
-                                                <option>< $50K</option>
-                                                <option>$50K - $100K</option>
-                                                <option>$100K - $500K</option>
-                                                <option>> $500K</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="config-section">
-                                    <h4><i class="fas fa-calendar-alt"></i> Timeline & Milestones</h4>
-                                    <div class="config-grid">
-                                        <div class="config-item">
-                                            <label>Start Date</label>
-                                            <input type="date" value="2024-02-01">
-                                        </div>
-                                        <div class="config-item">
-                                            <label>End Date</label>
-                                            <input type="date" value="2024-06-30">
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Milestone Frequency</label>
-                                            <select>
-                                                <option>Weekly</option>
-                                                <option>Bi-weekly</option>
-                                                <option>Monthly</option>
-                                                <option>Quarterly</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Reporting Schedule</label>
-                                            <select>
-                                                <option>Daily</option>
-                                                <option>Weekly</option>
-                                                <option>Bi-weekly</option>
-                                                <option>Monthly</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="config-section">
-                                    <h4><i class="fas fa-tasks"></i> Deliverables & Requirements</h4>
-                                    <div class="config-grid">
-                                        <div class="config-item">
-                                            <label>Documentation Level</label>
-                                            <select>
-                                                <option>Minimal</option>
-                                                <option>Standard</option>
-                                                <option>Detailed</option>
-                                                <option>Comprehensive</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Testing Required</label>
-                                            <select>
-                                                <option>Basic Testing</option>
-                                                <option>Standard Testing</option>
-                                                <option>Comprehensive Testing</option>
-                                                <option>Full Validation</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Quality Assurance</label>
-                                            <select>
-                                                <option>Peer Review</option>
-                                                <option>Team Lead Review</option>
-                                                <option>QA Team Review</option>
-                                                <option>Client Review</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Success Metrics</label>
-                                            <select>
-                                                <option>On-time Delivery</option>
-                                                <option>Budget Adherence</option>
-                                                <option>Quality Standards</option>
-                                                <option>Client Satisfaction</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+   <!-- Project Tab -->
+<div class="tab-content" id="projectTab">
+    <h3>Project Configuration</h3>
+    <div class="project-tab-content-inner">
+        <!-- Filters and Controls Section -->
+        <div class="project-filters-section">
+            <div class="project-filter-row">
+                <div class="project-filter-group">
+                    <label for="projectCustomerSelect">Customer</label>
+                    <select id="projectCustomerSelect" class="project-filter-select">
+                        <option value="">All Customers</option>
+                        <option value="HCL">HCL</option>
+                        <option value="Microsoft">Microsoft</option>
+                        <option value="Google">Google</option>
+                        <option value="Amazon">Amazon</option>
+                    </select>
+                </div>
+                
+                <div class="project-filter-group">
+                    <label for="projectPartnerSelect">Partner</label>
+                    <select id="projectPartnerSelect" class="project-filter-select">
+                        <option value="">All Partners</option>
+                        <option value="HCL Partner">HCL Partner</option>
+                        <option value="Tech Solutions Inc">Tech Solutions Inc</option>
+                        <option value="Global Services">Global Services</option>
+                    </select>
+                </div>
+                
+                <div class="project-filter-group">
+                    <label for="projectCountrySelect">Country</label>
+                    <select id="projectCountrySelect" class="project-filter-select">
+                        <option value="">All Countries</option>
+                        <option value="Hungary">Hungary</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Netherlands">Netherlands</option>
+                        <option value="Germany">Germany</option>
+                        <option value="UAE">UAE</option>
+                    </select>
+                </div>
+                
+                <div class="project-filter-group">
+                    <label for="projectBandSelect">Band</label>
+                    <select id="projectBandSelect" class="project-filter-select">
+                        <option value="">All Bands</option>
+                        <option value="Band 1">Band 1</option>
+                        <option value="Band 2">Band 2</option>
+                        <option value="Band 3">Band 3</option>
+                    </select>
+                </div>
+                
+                <div class="project-filter-group">
+                    <label for="projectSearchInput">Search</label>
+                    <input type="text" id="projectSearchInput" class="project-filter-input" 
+                           placeholder="Search anything...">
+                </div>
+                
+                <button id="projectClearFiltersBtn" class="project-btn project-btn-secondary">
+                    <i class="fas fa-filter-circle-xmark"></i> Clear
+                </button>
+                
+                <div class="project-filter-group">
+                    <label>View Type:</label>
+                    <div class="project-view-toggle">
+                        <button class="project-view-btn active" data-view="table">
+                            <i class="fas fa-table"></i> Table
+                        </button>
+                        <button class="project-view-btn" data-view="form">
+                            <i class="fas fa-list"></i> Form
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sorting Controls -->
+            <div class="project-sorting-controls">
+                <div class="project-sort-group">
+                    <label for="projectSortField">Sort By:</label>
+                    <select id="projectSortField" class="project-sort-select">
+                        <option value="technicianName">Technician Name</option>
+                        <option value="country">Country</option>
+                        <option value="totalCost">Total Cost</option>
+                        <option value="serviceMonth">Service Month</option>
+                    </select>
+                </div>
+                
+                <div class="project-sort-group">
+                    <label>
+                        <input type="radio" name="projectSortOrder" value="asc" checked> Ascending
+                    </label>
+                    <label>
+                        <input type="radio" name="projectSortOrder" value="desc"> Descending
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Band Details Section -->
+        <div id="projectBandDetailsContainer" class="project-band-details-container">
+            <!-- Band details will be loaded here -->
+        </div>
+        
+        <!-- Table View -->
+        <div id="projectTableView" class="project-data-view active">
+            <div class="project-table-container">
+                <table id="projectDedicatedTable" class="project-data-table">
+                    <thead>
+                        <tr>
+                            <th>Actions</th>
+                            <th>Files</th>
+                            <th>Site Category</th>
+                            <th>Customer Name</th>
+                            <th>Partner Name</th>
+                            <th>Country</th>
+                            <th>State</th>
+                            <th>City</th>
+                            <th>Site Address</th>
+                            <th>Zip Code</th>
+                            <th>PO Number</th>
+                            <th>Technician Name</th>
+                            <th>Band</th>
+                            <th>Variant</th>
+                            <th>Working Days</th>
+                            <th>Worked Days</th>
+                            <th>Monthly Rate</th>
+                            <th>Daily Rate</th>
+                            <th>Actual Cost</th>
+                            <th>Currency</th>
+                            <th>OT Hours</th>
+                            <th>OT per Hour Rate</th>
+                            <th>OT Hours cost</th>
+                            <th>Weekened OT Hours</th>
+                            <th>Weekend Rate</th>
+                            <th>Weekend Cost</th>
+                            <th>Travel/extra cost</th>
+                            <th>Tax %</th>
+                            <th>Tax cost</th>
+                            <th>Total Cost</th>
+                            <th>SLA %</th>
+                            <th>SLA Met</th>
+                            <th>Reason for SLA not met</th>
+                            <th>Attendance Approved</th>
+                            <th>Service Month</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectTableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="project-pagination-container">
+                <div class="project-pagination-info" id="projectPaginationInfo">
+                    Showing 0 of 0 entries
+                </div>
+                <div class="project-pagination-controls">
+                    <button id="projectFirstPage" class="project-pagination-btn">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button id="projectPrevPage" class="project-pagination-btn">
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+                    <div class="project-page-numbers" id="projectPageNumbers"></div>
+                    <button id="projectNextPage" class="project-pagination-btn">
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button id="projectLastPage" class="project-pagination-btn">
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                </div>
+                <div class="project-page-size">
+                    <label>Show:</label>
+                    <select id="projectPageSizeSelect">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form View -->
+        <div id="projectFormView" class="project-data-view">
+            <!-- Form View Navigation -->
+            <div class="project-form-navigation">
+                <div class="project-form-nav-info">
+                    <span id="projectFormCurrentRecord">Record 1 of 11</span>
+                    <span id="projectFormRecordDetails">HCL - Mark Magyar (Hungary)</span>
+                </div>
+                <div class="project-form-nav-controls">
+                    <button id="projectFormFirstRecord" class="project-btn project-btn-secondary" 
+                            title="First Record">
+                        <i class="fas fa-fast-backward"></i>
+                    </button>
+                    <button id="projectFormPrevRecord" class="project-btn project-btn-secondary" 
+                            title="Previous Record">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <button id="projectFormNextRecord" class="project-btn project-btn-secondary" 
+                            title="Next Record">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button id="projectFormLastRecord" class="project-btn project-btn-secondary" 
+                            title="Last Record">
+                        <i class="fas fa-fast-forward"></i>
+                    </button>
+                    <button id="projectPrintForm" class="project-btn project-btn-info" title="Print">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button id="projectExportForm" class="project-btn project-btn-success" 
+                            title="Export as PDF">
+                        <i class="fas fa-file-pdf"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Single Record Form Display -->
+            <div class="project-form-page-container" id="projectFormPageContainer">
+                <!-- Content will be generated dynamically -->
+            </div>
+
+            <!-- Quick Navigation -->
+            <div class="project-form-quick-nav">
+                <span>Jump to record:</span>
+                <select id="projectFormRecordSelect" class="project-form-control">
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
                         
                         <!-- SV Full & Half Day Visit Tab -->
                         <div class="tab-content" id="svVisitTab">
                             <h3>SV Full & Half Day Visit Configuration</h3>
                             <div class="tab-content-inner">
-                                <div class="config-section">
-                                    <h4><i class="fas fa-calendar-check"></i> Visit Type & Schedule</h4>
-                                    <div class="config-grid">
-                                        <div class="config-item">
-                                            <label>Visit Type</label>
-                                            <select>
-                                                <option>Full Day Visit (8 hrs)</option>
-                                                <option>Half Day Visit (4 hrs)</option>
-                                                <option>Extended Day (10 hrs)</option>
-                                                <option>Short Visit (2 hrs)</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Visit Frequency</label>
-                                            <select>
-                                                <option>One-time</option>
-                                                <option>Weekly</option>
-                                                <option>Bi-weekly</option>
-                                                <option>Monthly</option>
-                                                <option>Quarterly</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Preferred Day</label>
-                                            <select>
-                                                <option>Monday</option>
-                                                <option>Tuesday</option>
-                                                <option>Wednesday</option>
-                                                <option>Thursday</option>
-                                                <option>Friday</option>
-                                                <option>Saturday</option>
-                                                <option>Sunday</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Time Slot</label>
-                                            <select>
-                                                <option>Morning (9 AM - 1 PM)</option>
-                                                <option>Afternoon (1 PM - 5 PM)</option>
-                                                <option>Full Day (9 AM - 5 PM)</option>
-                                                <option>Evening (5 PM - 9 PM)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="config-section">
-                                    <h4><i class="fas fa-clipboard-check"></i> Service Requirements</h4>
-                                    <div class="config-grid">
-                                        <div class="config-item">
-                                            <label>Service Type</label>
-                                            <select>
-                                                <option>Preventive Maintenance</option>
-                                                <option>Corrective Maintenance</option>
-                                                <option>Installation</option>
-                                                <option>Upgrade</option>
-                                                <option>Inspection</option>
-                                                <option>Training</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Skill Level Required</label>
-                                            <select>
-                                                <option>Basic Technician</option>
-                                                <option>Certified Technician</option>
-                                                <option>Senior Technician</option>
-                                                <option>Specialist</option>
-                                                <option>Engineer</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Tools Required</label>
-                                            <select>
-                                                <option>Basic Hand Tools</option>
-                                                <option>Specialized Tools</option>
-                                                <option>Diagnostic Equipment</option>
-                                                <option>Full Tool Kit</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Parts Required</label>
-                                            <select>
-                                                <option>No Parts Needed</option>
-                                                <option>Standard Parts</option>
-                                                <option>Special Parts</option>
-                                                <option>Complete Kit</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="config-section">
-                                    <h4><i class="fas fa-file-alt"></i> Documentation & Reporting</h4>
-                                    <div class="config-grid">
-                                        <div class="config-item">
-                                            <label>Report Type</label>
-                                            <select>
-                                                <option>Basic Summary</option>
-                                                <option>Detailed Report</option>
-                                                <option>Comprehensive Report</option>
-                                                <option>Photo Documentation</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Customer Sign-off Required</label>
-                                            <select>
-                                                <option>Yes</option>
-                                                <option>No</option>
-                                                <option>Digital Only</option>
-                                                <option>Physical Copy</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Follow-up Required</label>
-                                            <select>
-                                                <option>No Follow-up</option>
-                                                <option>Phone Call</option>
-                                                <option>Email Summary</option>
-                                                <option>On-site Follow-up</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Billing Method</label>
-                                            <select>
-                                                <option>Fixed Rate</option>
-                                                <option>Hourly Rate</option>
-                                                <option>Package Rate</option>
-                                                <option>Contract Rate</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+                              
                             </div>
                         </div>
                         
@@ -1884,135 +1866,7 @@
                         <div class="tab-content" id="dispatchTab">
                             <h3>Dispatch Configuration</h3>
                             <div class="tab-content-inner">
-                                <div class="config-section">
-                                    <h4><i class="fas fa-truck"></i> Dispatch Settings</h4>
-                                    <div class="config-grid">
-                                        <div class="config-item">
-                                            <label>Dispatch Priority</label>
-                                            <select>
-                                                <option>Low (24-48 hrs)</option>
-                                                <option>Medium (4-8 hrs)</option>
-                                                <option>High (1-4 hrs)</option>
-                                                <option>Emergency (Immediate)</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Response Time SLA</label>
-                                            <select>
-                                                <option>4 hours</option>
-                                                <option>2 hours</option>
-                                                <option>1 hour</option>
-                                                <option>30 minutes</option>
-                                                <option>15 minutes</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Technician Level</label>
-                                            <select>
-                                                <option>Level 1 - Basic</option>
-                                                <option>Level 2 - Intermediate</option>
-                                                <option>Level 3 - Advanced</option>
-                                                <option>Level 4 - Expert</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Travel Radius</label>
-                                            <select>
-                                                <option>Local (10 miles)</option>
-                                                <option>Regional (25 miles)</option>
-                                                <option>State-wide (100 miles)</option>
-                                                <option>National</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="config-section">
-                                    <h4><i class="fas fa-map-marker-alt"></i> Location & Coverage</h4>
-                                    <div class="config-grid">
-                                        <div class="config-item">
-                                            <label>Coverage Area</label>
-                                            <select>
-                                                <option>Urban Only</option>
-                                                <option>Suburban</option>
-                                                <option>Rural</option>
-                                                <option>Mixed</option>
-                                                <option>Nationwide</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Multiple Sites</label>
-                                            <select>
-                                                <option>Single Site</option>
-                                                <option>2-5 Sites</option>
-                                                <option>5-10 Sites</option>
-                                                <option>10+ Sites</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Access Requirements</label>
-                                            <select>
-                                                <option>Standard Access</option>
-                                                <option>Security Clearance</option>
-                                                <option>Escort Required</option>
-                                                <option>After Hours</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Parking/Logistics</label>
-                                            <select>
-                                                <option>Standard Parking</option>
-                                                <option>Reserved Parking</option>
-                                                <option>Loading Dock</option>
-                                                <option>Special Arrangement</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="config-section">
-                                    <h4><i class="fas fa-phone-alt"></i> Communication & Tracking</h4>
-                                    <div class="config-grid">
-                                        <div class="config-item">
-                                            <label>Customer Notification</label>
-                                            <select>
-                                                <option>Email Only</option>
-                                                <option>SMS/Text</option>
-                                                <option>Phone Call</option>
-                                                <option>Mobile App</option>
-                                                <option>All Methods</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Status Updates</label>
-                                            <select>
-                                                <option>On Arrival Only</option>
-                                                <option>Hourly Updates</option>
-                                                <option>Milestone Updates</option>
-                                                <option>Real-time Tracking</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Escalation Process</label>
-                                            <select>
-                                                <option>Standard Escalation</option>
-                                                <option>Manager Escalation</option>
-                                                <option>Client Escalation</option>
-                                                <option>Automated Escalation</option>
-                                            </select>
-                                        </div>
-                                        <div class="config-item">
-                                            <label>Completion Confirmation</label>
-                                            <select>
-                                                <option>Email Confirmation</option>
-                                                <option>Digital Sign-off</option>
-                                                <option>Photo Confirmation</option>
-                                                <option>Phone Confirmation</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                              </div> 
                         </div>
                     </div>
                 </div>
@@ -2137,6 +1991,7 @@
 <!-- Link to JavaScript file -->
 <script src="./js/Monitor_Billing.js"></script>
 <script src="./js/DedicatedTab.js"></script>
+<script src="./js/ProjectTab.js"></script>
         <!--**********************************
     Footer start
 ***********************************-->
